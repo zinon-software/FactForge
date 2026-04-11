@@ -1,0 +1,5 @@
+{
+  "last_updated": "2026-04-11T00:00:00Z",
+  "queue": [],
+  "note": "This queue is populated by Phase 2 database generation. Run: python agents/trend_agent.py then generate ideas."
+}

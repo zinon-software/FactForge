@@ -1,0 +1,34 @@
+# ─── Secrets ───────────────────────────────
+.env
+config/youtube_credentials.json
+config/youtube_token.json
+
+# ─── Generated output ──────────────────────
+output/
+*.mp4
+*.mp3
+*.wav
+
+# ─── Python ────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# ─── Node ──────────────────────────────────
+node_modules/
+video/remotion-project/node_modules/
+
+# ─── macOS ─────────────────────────────────
+.DS_Store
+*.DS_Store
+
+# ─── IDE ───────────────────────────────────
+.vscode/
+.idea/
