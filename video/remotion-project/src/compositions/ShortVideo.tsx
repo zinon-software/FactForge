@@ -1,185 +1,365 @@
+import "@fontsource/bebas-neue";
+import "@fontsource/dm-sans/700.css";
+import "@fontsource/space-mono/700.css";
+
+import React from "react";
 import {
   AbsoluteFill,
   Audio,
   interpolate,
+  Sequence,
   spring,
   useCurrentFrame,
   useVideoConfig,
   Video,
-  Sequence,
 } from "remotion";
 import { z } from "zod";
 
-export const shortVideoSchema = z.object({
-  videoId: z.string(),
-  hook: z.string(),
-  segments: z.array(z.object({
-    text: z.string(),
-    startFrame: z.number(),
-    endFrame: z.number(),
-  })),
-  audioFile: z.string().nullable(),
-  backgroundVideoUrl: z.string().nullable(),
-  colorTheme: z.enum(["islamic", "wealth", "military", "science", "general", "ancient"]),
-  format: z.string(),
+import { AccentLine, CategoryBadge, Watermark } from "../components/AccentLine";
+import { CountUpNumber } from "../components/CountUpNumber";
+import { ImpactFlash, ScalePunch } from "../components/ImpactFlash";
+import { Particles } from "../components/Particles";
+import { TopProgressBar } from "../components/TopProgressBar";
+import { WordByWordReveal } from "../components/WordByWordReveal";
+import { COLORS, ColorTheme, getAccentColor } from "../constants/colors";
+import { FONT_SIZES, FONTS } from "../constants/typography";
+
+// ─────────────────────────── Schema ────────────────────────────────────────
+
+export const segmentSchema = z.object({
+  text: z.string(),
+  startFrame: z.number(),
+  endFrame: z.number(),
+  // visual treatment
+  type: z.enum([
+    "hook",       // opening line — massive, accent
+    "fact",       // normal fact sentence
+    "impact",     // level-3 shock — punch + flash
+    "number",     // count-up statistic
+    "cta",        // call to action
+  ]),
+  // for type==="number"
+  numberValue: z.number().optional(),
+  numberPrefix: z.string().optional(),
+  numberSuffix: z.string().optional(),
+  numberLabel: z.string().optional(),
+  // optional words to highlight in accent color
+  highlightWords: z.array(z.string()).optional(),
 });
 
-type ShortVideoProps = z.infer<typeof shortVideoSchema>;
+export const shortVideoSchema = z.object({
+  videoId:             z.string(),
+  categoryLabel:       z.string(),          // e.g. "AI CRIME"
+  colorTheme:          z.enum(["wealth","power","history","science","comparison","shocking"]),
+  segments:            z.array(segmentSchema),
+  audioFile:           z.string().nullable(),
+  backgroundVideoUrl:  z.string().nullable(),
+  totalDurationFrames: z.number(),
+});
 
-const COLOR_THEMES = {
-  islamic:  { bg: "#0a1628", accent: "#d4af37", text: "#ffffff" },
-  wealth:   { bg: "#0d0d0d", accent: "#00e676", text: "#ffffff" },
-  military: { bg: "#1a0000", accent: "#ff3232", text: "#ffffff" },
-  science:  { bg: "#0d0021", accent: "#00e5ff", text: "#ffffff" },
-  general:  { bg: "#1a1a2e", accent: "#ff6b35", text: "#ffffff" },
-  ancient:  { bg: "#281400", accent: "#ffa500", text: "#ffffff" },
+export type ShortVideoProps = z.infer<typeof shortVideoSchema>;
+
+// ─────────────────────── Background gradient (per theme) ───────────────────
+
+const BG_GRADIENTS: Record<ColorTheme, string> = {
+  wealth:     "radial-gradient(ellipse at 30% 70%, #1a1000 0%, #0A0A0F 70%)",
+  power:      "radial-gradient(ellipse at 70% 30%, #1a0000 0%, #0A0A0F 70%)",
+  history:    "radial-gradient(ellipse at 20% 80%, #001230 0%, #0A0A0F 70%)",
+  science:    "radial-gradient(ellipse at 50% 50%, #001a1a 0%, #0A0A0F 70%)",
+  comparison: "radial-gradient(ellipse at 80% 20%, #120020 0%, #0A0A0F 70%)",
+  shocking:   "radial-gradient(ellipse at 40% 60%, #1a0800 0%, #0A0A0F 70%)",
 };
 
-const AnimatedText: React.FC<{
-  text: string;
-  startFrame: number;
-  theme: typeof COLOR_THEMES["general"];
-  isHook?: boolean;
-}> = ({ text, startFrame, theme, isHook = false }) => {
+// ─────────────────────────── Vignette ──────────────────────────────────────
+
+const Vignette: React.FC = () => (
+  <AbsoluteFill
+    style={{
+      background:
+        "radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.7) 100%)",
+      pointerEvents: "none",
+    }}
+  />
+);
+
+// ─────────────────────── Segment renderer ──────────────────────────────────
+
+interface SegmentViewProps {
+  seg: z.infer<typeof segmentSchema>;
+  accentColor: string;
+}
+
+const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const progress = spring({
-    frame: frame - startFrame,
-    fps,
-    config: { damping: 12, stiffness: 200, mass: 0.5 },
+  // Exit: fade + slide up when near segment end
+  const segDuration = seg.endFrame - seg.startFrame;
+  const exitStart = segDuration - 12;
+  const exitOpacity = interpolate(frame, [exitStart, segDuration], [1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
   });
-
-  const opacity = interpolate(frame - startFrame, [0, 15], [0, 1], {
+  const exitY = interpolate(frame, [exitStart, segDuration], [0, -20], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const translateY = interpolate(progress, [0, 1], [40, 0]);
+  // ── HOOK ──────────────────────────────────────────────────────────────────
+  if (seg.type === "hook") {
+    const entrance = spring({ frame, fps, config: { damping: 10, stiffness: 160 } });
+    const scale = interpolate(entrance, [0, 1], [0.82, 1]);
 
-  return (
-    <div
-      style={{
-        opacity,
-        transform: `translateY(${translateY}px)`,
-        padding: "0 60px",
-        textAlign: "center",
-      }}
-    >
-      <p
+    return (
+      <AbsoluteFill
         style={{
-          fontSize: isHook ? 72 : 56,
-          fontFamily: "Impact, Arial Black, sans-serif",
-          color: isHook ? theme.accent : theme.text,
-          lineHeight: 1.25,
-          textShadow: "4px 4px 8px rgba(0,0,0,0.8)",
-          margin: 0,
-          fontWeight: 900,
-          textTransform: "uppercase",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "60px 64px",
+          opacity: exitOpacity,
+          transform: `translateY(${exitY}px)`,
         }}
       >
-        {text}
-      </p>
-    </div>
-  );
-};
+        <div style={{ transform: `scale(${scale})`, textAlign: "center" }}>
+          <WordByWordReveal
+            text={seg.text}
+            fontSize={FONT_SIZES.HOOK}
+            color={COLORS.TEXT_PRIMARY}
+            accentColor={accentColor}
+            staggerFrames={3}
+            highlightWords={seg.highlightWords ?? []}
+          />
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <AccentLine accentColor={accentColor} maxWidth={320} height={4} delayFrames={18} />
+          </div>
+        </div>
+      </AbsoluteFill>
+    );
+  }
 
-const ProgressBar: React.FC<{ theme: typeof COLOR_THEMES["general"] }> = ({ theme }) => {
-  const frame = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
-  const progress = frame / durationInFrames;
+  // ── IMPACT ────────────────────────────────────────────────────────────────
+  if (seg.type === "impact") {
+    return (
+      <>
+        <ImpactFlash accentColor={accentColor} flashDurationFrames={10} />
+        <AbsoluteFill
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "60px 64px",
+            opacity: exitOpacity,
+            transform: `translateY(${exitY}px)`,
+          }}
+        >
+          <ScalePunch peakScale={1.08}>
+            <WordByWordReveal
+              text={seg.text}
+              fontSize={FONT_SIZES.FACT}
+              color={COLORS.TEXT_PRIMARY}
+              accentColor={accentColor}
+              staggerFrames={2}
+              highlightWords={seg.highlightWords ?? []}
+            />
+          </ScalePunch>
+        </AbsoluteFill>
+      </>
+    );
+  }
 
+  // ── COUNT-UP NUMBER ───────────────────────────────────────────────────────
+  if (seg.type === "number" && seg.numberValue !== undefined) {
+    return (
+      <>
+        <ImpactFlash accentColor={accentColor} flashDurationFrames={6} />
+        <AbsoluteFill
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            gap: 24,
+            padding: "60px 64px",
+            opacity: exitOpacity,
+            transform: `translateY(${exitY}px)`,
+          }}
+        >
+          <ScalePunch peakScale={1.06}>
+            <CountUpNumber
+              value={seg.numberValue}
+              prefix={seg.numberPrefix ?? ""}
+              suffix={seg.numberSuffix ?? ""}
+              label={seg.numberLabel ?? ""}
+              accentColor={accentColor}
+              fontSize={FONT_SIZES.NUMBER}
+              countDurationSeconds={0.8}
+            />
+          </ScalePunch>
+          {seg.text && (
+            <div
+              style={{
+                marginTop: 8,
+                opacity: interpolate(frame, [30, 45], [0, 1], {
+                  extrapolateLeft: "clamp",
+                  extrapolateRight: "clamp",
+                }),
+                transform: `translateY(${interpolate(
+                  spring({ frame: frame - 30, fps, config: { damping: 14, stiffness: 160 } }),
+                  [0, 1], [20, 0]
+                )}px)`,
+              }}
+            >
+              <WordByWordReveal
+                text={seg.text}
+                fontSize={FONT_SIZES.SUPPORT}
+                color={COLORS.TEXT_SECONDARY}
+                accentColor={accentColor}
+                staggerFrames={5}
+                highlightWords={seg.highlightWords ?? []}
+              />
+            </div>
+          )}
+        </AbsoluteFill>
+      </>
+    );
+  }
+
+  // ── CTA ───────────────────────────────────────────────────────────────────
+  if (seg.type === "cta") {
+    const ctaEntrance = spring({ frame, fps, config: { damping: 12, stiffness: 140 } });
+    const ctaOpacity = interpolate(ctaEntrance, [0, 1], [0, 1]);
+
+    return (
+      <AbsoluteFill
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: 32,
+          padding: "60px 64px",
+          opacity: exitOpacity,
+        }}
+      >
+        <div
+          style={{
+            opacity: ctaOpacity,
+            transform: `scale(${interpolate(ctaEntrance, [0, 1], [0.9, 1])})`,
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              fontFamily: FONTS.MONO,
+              fontSize: 28,
+              color: accentColor,
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              marginBottom: 24,
+            }}
+          >
+            ▶ FOLLOW THIS CHANNEL
+          </div>
+          <WordByWordReveal
+            text={seg.text}
+            fontSize={FONT_SIZES.CTA}
+            color={COLORS.TEXT_PRIMARY}
+            accentColor={accentColor}
+            staggerFrames={4}
+            highlightWords={seg.highlightWords ?? []}
+          />
+        </div>
+      </AbsoluteFill>
+    );
+  }
+
+  // ── FACT (default) ────────────────────────────────────────────────────────
   return (
-    <div
+    <AbsoluteFill
       style={{
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: 8,
-        backgroundColor: "rgba(255,255,255,0.2)",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "60px 64px",
+        opacity: exitOpacity,
+        transform: `translateY(${exitY}px)`,
       }}
     >
-      <div
-        style={{
-          height: "100%",
-          width: `${progress * 100}%`,
-          backgroundColor: theme.accent,
-          transition: "width 0.1s linear",
-        }}
-      />
-    </div>
+      <div style={{ textAlign: "center" }}>
+        <WordByWordReveal
+          text={seg.text}
+          fontSize={FONT_SIZES.FACT}
+          color={COLORS.TEXT_PRIMARY}
+          accentColor={accentColor}
+          staggerFrames={4}
+          highlightWords={seg.highlightWords ?? []}
+        />
+      </div>
+    </AbsoluteFill>
   );
 };
+
+// ─────────────────────────── Main Composition ──────────────────────────────
 
 export const ShortVideo: React.FC<ShortVideoProps> = ({
   videoId,
-  hook,
+  categoryLabel,
+  colorTheme,
   segments,
   audioFile,
   backgroundVideoUrl,
-  colorTheme,
-  format,
 }) => {
-  const theme = COLOR_THEMES[colorTheme] || COLOR_THEMES.general;
-  const frame = useCurrentFrame();
+  const accentColor = getAccentColor(colorTheme as ColorTheme);
+  const bgGradient = BG_GRADIENTS[colorTheme as ColorTheme] ?? BG_GRADIENTS.shocking;
 
   return (
-    <AbsoluteFill style={{ backgroundColor: theme.bg }}>
-      {/* Background video (blurred) */}
-      {backgroundVideoUrl && (
-        <AbsoluteFill style={{ opacity: 0.3 }}>
+    <AbsoluteFill style={{ backgroundColor: COLORS.BG_PRIMARY }}>
+
+      {/* ── Layer 1: Background ─────────────────────────────────────────── */}
+      {backgroundVideoUrl ? (
+        <AbsoluteFill>
           <Video
             src={backgroundVideoUrl}
-            style={{ width: "100%", height: "100%", objectFit: "cover", filter: "blur(8px)" }}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              filter: "blur(10px) brightness(0.28) saturate(0.6)",
+            }}
           />
         </AbsoluteFill>
+      ) : (
+        <AbsoluteFill style={{ background: bgGradient }} />
       )}
 
-      {/* Dark gradient overlay */}
+      {/* Dark overlay */}
       <AbsoluteFill
-        style={{
-          background: `linear-gradient(180deg, ${theme.bg}cc 0%, ${theme.bg}88 50%, ${theme.bg}cc 100%)`,
-        }}
+        style={{ backgroundColor: "rgba(10,10,15,0.72)", pointerEvents: "none" }}
       />
 
-      {/* Accent top bar */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 8,
-          backgroundColor: theme.accent,
-        }}
-      />
+      {/* Vignette */}
+      <Vignette />
 
-      {/* Content area — centered */}
-      <AbsoluteFill
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 40,
-        }}
-      >
-        {/* Hook (always visible) */}
-        <AnimatedText text={hook} startFrame={0} theme={theme} isHook />
+      {/* ── Layer 2: Ambient particles ───────────────────────────────────── */}
+      <Particles count={12} accentColor={accentColor} width={1080} height={1920} />
 
-        {/* Script segments — sequential reveal */}
-        {segments.map((segment, i) => (
-          <Sequence key={i} from={segment.startFrame} durationInFrames={segment.endFrame - segment.startFrame}>
-            <AnimatedText text={segment.text} startFrame={0} theme={theme} />
-          </Sequence>
-        ))}
-      </AbsoluteFill>
+      {/* ── Layer 3: Top progress bar ────────────────────────────────────── */}
+      <TopProgressBar accentColor={accentColor} />
 
-      {/* Progress bar */}
-      <ProgressBar theme={theme} />
+      {/* ── Layer 4: Category badge ──────────────────────────────────────── */}
+      <CategoryBadge label={categoryLabel} accentColor={accentColor} />
 
-      {/* Audio */}
+      {/* ── Layer 5: Content segments ────────────────────────────────────── */}
+      {segments.map((seg, i) => (
+        <Sequence
+          key={i}
+          from={seg.startFrame}
+          durationInFrames={seg.endFrame - seg.startFrame}
+        >
+          <SegmentView seg={seg} accentColor={accentColor} />
+        </Sequence>
+      ))}
+
+      {/* ── Layer 6: Watermark ───────────────────────────────────────────── */}
+      <Watermark text="FactForge" />
+
+      {/* ── Audio ────────────────────────────────────────────────────────── */}
       {audioFile && <Audio src={audioFile} />}
     </AbsoluteFill>
   );

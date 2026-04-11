@@ -1,31 +1,43 @@
+import React from "react";
 import { Composition } from "remotion";
-import { ShortVideo, shortVideoSchema } from "./compositions/ShortVideo";
 import { LongVideo, longVideoSchema } from "./compositions/LongVideo";
+import { ShortVideo, shortVideoSchema } from "./compositions/ShortVideo";
 
 export const Root: React.FC = () => {
   return (
     <>
-      {/* YouTube Short: 1080×1920, 60fps, max 58 seconds */}
+      {/* YouTube Short: 1080×1920, 60fps */}
       <Composition
         id="ShortVideo"
         component={ShortVideo}
-        durationInFrames={60 * 58}
+        durationInFrames={60 * 60}
         fps={60}
         width={1080}
         height={1920}
         schema={shortVideoSchema}
         defaultProps={{
-          videoId: "test",
-          hook: "One man owned more than all of Europe combined",
+          videoId: "S00000",
+          categoryLabel: "SHOCKING FACTS",
+          colorTheme: "shocking",
+          totalDurationFrames: 3600,
           segments: [
-            { text: "Mansa Musa was the richest human who ever lived.", startFrame: 0, endFrame: 150 },
-            { text: "Historians estimate his wealth at four hundred billion dollars.", startFrame: 150, endFrame: 310 },
-            { text: "He was so rich his charity caused a decade-long economic depression.", startFrame: 310, endFrame: 500 },
+            {
+              type: "hook",
+              text: "This will change how you see everything.",
+              startFrame: 0,
+              endFrame: 180,
+              highlightWords: ["change", "everything"],
+            },
+            {
+              type: "fact",
+              text: "A fact so shocking it stopped the world.",
+              startFrame: 180,
+              endFrame: 360,
+              highlightWords: [],
+            },
           ],
           audioFile: null,
           backgroundVideoUrl: null,
-          colorTheme: "islamic",
-          format: "shocking_stat",
         }}
       />
 
@@ -39,7 +51,7 @@ export const Root: React.FC = () => {
         height={1080}
         schema={longVideoSchema}
         defaultProps={{
-          videoId: "test",
+          videoId: "L00000",
           title: "Test Long Video",
           sections: [],
           audioFile: null,
