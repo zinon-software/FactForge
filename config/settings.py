@@ -1,6 +1,6 @@
 """
 YouTube Automation System — Configuration Constants
-All settings are here. Change here, not in individual agents.
+AI engine: Claude Code (active session) — no API key required.
 """
 
 import os
@@ -16,8 +16,7 @@ DATABASE_DIR = BASE_DIR / os.getenv("DATABASE_DIR", "database")
 STATE_DIR = BASE_DIR / os.getenv("STATE_DIR", "state")
 CONFIG_DIR = BASE_DIR / "config"
 
-# ─── API Keys ─────────────────────────────────────────────────────────────────
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+# ─── API Keys (no Anthropic key — Claude Code handles AI) ─────────────────────
 PEXELS_API_KEY = os.getenv("PEXELS_API_KEY", "")
 SERPER_API_KEY = os.getenv("SERPER_API_KEY", "")
 
@@ -33,12 +32,11 @@ YOUTUBE_SCOPES = [
 ]
 
 # ─── Video Settings ───────────────────────────────────────────────────────────
-MAX_SHORT_DURATION = int(os.getenv("MAX_SHORT_DURATION", 58))   # seconds
-MAX_LONG_DURATION = int(os.getenv("MAX_LONG_DURATION", 900))    # seconds (15 min)
-SHORT_TARGET_WORDS = (120, 160)   # word count range for short scripts
-LONG_TARGET_WORDS = (1400, 1900)  # word count range for long scripts
-
-SHORT_DIMENSIONS = (1080, 1920)   # width × height
+MAX_SHORT_DURATION = int(os.getenv("MAX_SHORT_DURATION", 58))
+MAX_LONG_DURATION = int(os.getenv("MAX_LONG_DURATION", 900))
+SHORT_TARGET_WORDS = (120, 160)
+LONG_TARGET_WORDS = (1400, 1900)
+SHORT_DIMENSIONS = (1080, 1920)
 LONG_DIMENSIONS = (1920, 1080)
 SHORT_FPS = 60
 LONG_FPS = 30
@@ -47,7 +45,6 @@ LONG_FPS = 30
 PUBLISH_INTERVAL_HOURS = int(os.getenv("PUBLISH_INTERVAL_HOURS", 48))
 TIMEZONE = os.getenv("TIMEZONE", "UTC")
 
-# Best publish windows (24h clock, EST → converted to UTC at runtime)
 OPTIMAL_PUBLISH_WINDOWS = [
     {"day": "tuesday",   "start_est": "14:00", "end_est": "16:00"},
     {"day": "wednesday", "start_est": "14:00", "end_est": "16:00"},
@@ -55,24 +52,16 @@ OPTIMAL_PUBLISH_WINDOWS = [
     {"day": "saturday",  "start_est": "09:00", "end_est": "11:00"},
 ]
 
-# ─── YouTube Categories ───────────────────────────────────────────────────────
 YOUTUBE_CATEGORY_EDUCATION = "27"
 YOUTUBE_CATEGORY_ENTERTAINMENT = "24"
 
-# ─── Content Settings ────────────────────────────────────────────────────────
+# ─── Content Settings ─────────────────────────────────────────────────────────
 CONTENT_ANGLES = ["islamic_history", "shocking_stats", "geopolitical_comparison"]
 
 FORMAT_TYPES = [
-    "top_10_list",
-    "top_5_list",
-    "shocking_stat",
-    "comparison",
-    "timeline",
-    "myth_vs_fact",
-    "price_reveal",
-    "size_comparison",
-    "what_if",
-    "hidden_truth",
+    "top_10_list", "top_5_list", "shocking_stat", "comparison",
+    "timeline", "myth_vs_fact", "price_reveal", "size_comparison",
+    "what_if", "hidden_truth",
 ]
 
 CONTENT_CATEGORIES = [
@@ -92,39 +81,18 @@ CONTENT_CATEGORIES = [
     "price_reveals",
 ]
 
-# Distribution targets for 10,000 ideas (approx per category)
-CATEGORY_DISTRIBUTION = {cat: 715 for cat in CONTENT_CATEGORIES}  # ~714 per category
-
-# ─── Translation Languages ────────────────────────────────────────────────────
-TRANSLATION_LANGUAGES = [
-    "es",  # Spanish
-    "fr",  # French
-    "de",  # German
-    "hi",  # Hindi
-    "pt",  # Portuguese
-    "id",  # Indonesian
-    "ja",  # Japanese
-    "ko",  # Korean
-    "tr",  # Turkish
-    "ar",  # Arabic
-]
+TRANSLATION_LANGUAGES = ["es", "fr", "de", "hi", "pt", "id", "ja", "ko", "tr", "ar"]
 
 # ─── TTS Settings ─────────────────────────────────────────────────────────────
-TTS_VOICE_PRIMARY = "kokoro"         # Local, free, high quality
-TTS_VOICE_FALLBACK = "en-US-AndrewNeural"  # Edge TTS fallback
-TTS_SPEED = 1.05                     # 5% faster than default
-TTS_SILENCE_SHORT = 0.5              # [PAUSE] tag → seconds of silence
-TTS_SILENCE_LONG = 1.0               # [BREAK] tag → seconds of silence
+TTS_VOICE_PRIMARY = "kokoro"
+TTS_VOICE_FALLBACK = "en-US-AndrewNeural"
+TTS_SPEED = 1.05
+TTS_SILENCE_SHORT = 0.5
+TTS_SILENCE_LONG = 1.0
 
-# ─── Anthropic Model Settings ────────────────────────────────────────────────
-CLAUDE_MODEL_MAIN = "claude-sonnet-4-6"       # Script writing, fact checking
-CLAUDE_MODEL_FAST = "claude-haiku-4-5-20251001"  # Title generation, simple tasks
-MAX_TOKENS_SCRIPT = 2000
-MAX_TOKENS_BATCH = 4000
-
-# ─── Database Limits ─────────────────────────────────────────────────────────
+# ─── Database ────────────────────────────────────────────────────────────────
 TARGET_SHORT_IDEAS = 10000
 TARGET_LONG_IDEAS = 500
-QUEUE_SIZE = 100          # Keep top N ideas in queue
-BATCH_SIZE = 500          # Ideas per generation batch
-TREND_REFRESH_COUNT = 100  # New ideas added per weekly refresh
+QUEUE_SIZE = 100
+BATCH_SIZE = 500
+TREND_REFRESH_COUNT = 100

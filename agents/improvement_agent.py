@@ -1,36 +1,31 @@
 """
-Improvement Agent — Analyzes YouTube analytics and updates the system.
-Run weekly via: python agents/improvement_agent.py
+Improvement Agent — Collects analytics and prepares improvement report for Claude Code.
+Claude Code reads the report and writes actionable updates.
+Run: python agents/improvement_agent.py
 """
 
 import json
 import sys
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import anthropic
-from config.settings import ANTHROPIC_API_KEY, CLAUDE_MODEL_MAIN, DATABASE_DIR, STATE_DIR
+from config.settings import DATABASE_DIR, STATE_DIR
 from utils.file_manager import load_json, save_json, log_improvement, now_utc
 
 
 def fetch_youtube_analytics(youtube_service, video_ids: list) -> list[dict]:
-    """Fetch performance metrics for published videos."""
+    """Fetch video statistics from YouTube API."""
     if not video_ids:
         return []
-
     try:
-        from googleapiclient.discovery import build
-
-        # Get video statistics
-        stats_response = youtube_service.videos().list(
+        response = youtube_service.videos().list(
             part="statistics,snippet",
             id=",".join(video_ids[:50]),
         ).execute()
-
         results = []
-        for item in stats_response.get("items", []):
+        for item in response.get("items", []):
             stats = item.get("statistics", {})
             results.append({
                 "youtube_id": item["id"],
@@ -42,166 +37,149 @@ def fetch_youtube_analytics(youtube_service, video_ids: list) -> list[dict]:
             })
         return results
     except Exception as e:
-        print(f"[improvement_agent] Analytics fetch error: {e}")
+        print(f"[improvement_agent] Analytics error: {e}")
         return []
 
 
-def analyze_performance(analytics_data: list[dict]) -> dict:
-    """Analyze patterns in performance data using Claude."""
+def build_analysis_report(analytics_data: list[dict]) -> dict:
+    """
+    Build analytics report for Claude Code to analyze.
+    Claude Code reads this and writes improvement recommendations.
+    """
     if not analytics_data:
-        return {"status": "no_data", "insights": []}
+        return {"status": "no_data"}
 
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    sorted_videos = sorted(analytics_data, key=lambda x: x.get("views", 0), reverse=True)
+    top5 = sorted_videos[:5]
+    bottom5 = sorted_videos[-5:] if len(sorted_videos) >= 5 else sorted_videos
 
-    # Format analytics for analysis
-    videos_summary = "\n".join([
-        f"- '{v['title'][:50]}': {v['views']} views, {v['likes']} likes"
-        for v in sorted(analytics_data, key=lambda x: x['views'], reverse=True)[:20]
-    ])
+    total_views = sum(v.get("views", 0) for v in analytics_data)
+    avg_views = total_views // len(analytics_data) if analytics_data else 0
 
-    prompt = f"""Analyze this YouTube channel performance data and identify patterns.
+    report = {
+        "generated_at": now_utc(),
+        "total_videos": len(analytics_data),
+        "total_views": total_views,
+        "average_views": avg_views,
+        "top_5_videos": [{"title": v["title"], "views": v["views"]} for v in top5],
+        "bottom_5_videos": [{"title": v["title"], "views": v["views"]} for v in bottom5],
+        "claude_code_task": {
+            "instruction": (
+                "Analyze this performance data. Identify: "
+                "1) What title/topic patterns correlate with high views? "
+                "2) What should be produced more of? "
+                "3) What changes to make to scripts, thumbnails, titles? "
+                "Write your analysis to state/improvement_analysis.json"
+            ),
+            "output_schema": {
+                "top_performing_patterns": ["pattern"],
+                "low_performing_patterns": ["pattern"],
+                "recommended_categories": ["category"],
+                "title_formula_insights": ["insight"],
+                "action_items": ["action"],
+                "priority_score_adjustments": {"category": "+10 or -5"}
+            }
+        }
+    }
 
-VIDEOS (sorted by views):
-{videos_summary}
-
-Identify:
-1. What topics/formats get the most views?
-2. What title patterns correlate with high performance?
-3. What should we produce more of?
-4. What should we do less of?
-
-Output JSON:
-{{
-  "top_performing_patterns": ["pattern 1", "pattern 2"],
-  "low_performing_patterns": ["pattern 1"],
-  "recommended_categories": ["category 1", "category 2"],
-  "title_formula_insights": ["insight 1"],
-  "action_items": ["action 1", "action 2"]
-}}"""
-
-    response = client.messages.create(
-        model=CLAUDE_MODEL_MAIN,
-        max_tokens=1000,
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    raw = response.content[0].text.strip()
-    try:
-        if "```" in raw:
-            raw = raw.split("```")[1].split("```")[0].strip()
-            if raw.startswith("json"):
-                raw = raw[4:].strip()
-        return json.loads(raw)
-    except Exception:
-        return {"raw_analysis": raw, "status": "parsed_error"}
+    return report
 
 
-def update_idea_priorities(analysis: dict) -> None:
-    """Adjust priority scores in ideas database based on analysis."""
-    recommended = analysis.get("recommended_categories", [])
-    if not recommended:
-        return
-
+def apply_priority_adjustments(adjustments: dict) -> None:
+    """Apply Claude Code's recommended priority score adjustments to ideas database."""
     ideas_path = DATABASE_DIR / "ideas_short.json"
-    if not ideas_path.exists():
+    if not ideas_path.exists() or not adjustments:
         return
 
     ideas_data = load_json(ideas_path)
     ideas = ideas_data.get("ideas", [])
+    updated = 0
 
-    boosted = 0
     for idea in ideas:
         if idea.get("status") != "pending":
             continue
         category = idea.get("category", "")
-        angle = idea.get("angle", "")
-        combined = f"{category} {angle}".lower()
-
-        for rec in recommended:
-            if rec.lower() in combined:
-                old_score = idea.get("priority_score", 50)
-                idea["priority_score"] = min(100, old_score + 10)
-                boosted += 1
+        for cat_key, adjustment in adjustments.items():
+            if cat_key.lower() in category.lower():
+                delta = int(str(adjustment).replace("+", "").replace(" ", ""))
+                idea["priority_score"] = max(0, min(100, idea.get("priority_score", 50) + delta))
+                updated += 1
                 break
 
-    if boosted > 0:
+    if updated:
         save_json(ideas_path, ideas_data)
-        print(f"[improvement_agent] Boosted priority for {boosted} ideas")
+        print(f"[improvement_agent] Updated priority scores for {updated} ideas")
 
 
-def write_weekly_report(analytics_data: list, analysis: dict) -> None:
-    """Append weekly report to improvement_log.md"""
+def write_weekly_log(report: dict, analysis: dict = None) -> None:
+    """Append weekly improvement report to log."""
     today = now_utc()[:10]
-    total_views = sum(v.get("views", 0) for v in analytics_data)
+    top = report.get("top_5_videos", [])
+    top_str = "\n".join([f"- '{v['title'][:50]}': {v['views']:,} views" for v in top]) or "No data"
 
-    top_video = max(analytics_data, key=lambda x: x.get("views", 0)) if analytics_data else None
+    actions = []
+    if analysis:
+        actions = analysis.get("action_items", [])
 
-    report = f"""
+    entry = f"""
 ## {today} Weekly Improvement Report
 
-### Performance Summary
-- Videos analyzed: {len(analytics_data)}
-- Total views (all time): {total_views:,}
-- Top video: {top_video['title'][:60] if top_video else 'N/A'} ({top_video.get('views', 0):,} views)
+### Channel Stats
+- Total videos: {report.get('total_videos', 0)}
+- Total views: {report.get('total_views', 0):,}
+- Average views per video: {report.get('average_views', 0):,}
 
-### What Worked
-{chr(10).join(['- ' + p for p in analysis.get('top_performing_patterns', ['No data yet'])])}
+### Top Performing Videos
+{top_str}
 
-### What Didn't Work
-{chr(10).join(['- ' + p for p in analysis.get('low_performing_patterns', ['No data yet'])])}
-
-### System Changes Made
-{chr(10).join(['- ' + a for a in analysis.get('action_items', ['No actions taken'])])}
-
-### Next Week Focus
-- Prioritized categories: {', '.join(analysis.get('recommended_categories', ['general']))}
+### Actions Taken
+{chr(10).join(['- ' + a for a in actions]) if actions else '- Pending Claude Code analysis'}
 """
-
-    log_improvement(report)
-    print(f"[improvement_agent] Weekly report written to improvement_log.md")
+    log_improvement(entry)
 
 
 def run(youtube_service=None) -> None:
-    """Main entry point: run full weekly improvement cycle."""
-    print("[improvement_agent] Starting weekly improvement analysis...")
+    """Main entry point."""
+    print("[improvement_agent] Collecting analytics...")
 
-    # Load published video IDs from used_ideas.json
     used = load_json(DATABASE_DIR / "used_ideas.json")
-    produced = used.get("produced_ideas", [])
-    youtube_ids = [v.get("youtube_id") for v in produced if v.get("youtube_id")]
+    youtube_ids = [v.get("youtube_id") for v in used.get("produced_ideas", []) if v.get("youtube_id")]
 
-    if not youtube_ids:
-        print("[improvement_agent] No published videos yet — nothing to analyze")
-        return
-
-    # Fetch analytics
     analytics_data = []
-    if youtube_service:
+    if youtube_service and youtube_ids:
         analytics_data = fetch_youtube_analytics(youtube_service, youtube_ids)
 
-    # Load existing analytics and merge
-    analytics_state = load_json(STATE_DIR / "analytics.json")
-    existing_ids = {v["youtube_id"] for v in analytics_state.get("videos", [])}
-    new_data = [v for v in analytics_data if v["youtube_id"] not in existing_ids]
+    # Load existing + merge
+    state = load_json(STATE_DIR / "analytics.json")
+    existing_ids = {v["youtube_id"] for v in state.get("videos", [])}
+    new = [v for v in analytics_data if v["youtube_id"] not in existing_ids]
+    state["videos"] = state.get("videos", []) + new
+    state["last_updated"] = now_utc()
+    save_json(STATE_DIR / "analytics.json", state)
 
-    analytics_state["videos"] = analytics_state.get("videos", []) + new_data
-    analytics_state["last_updated"] = now_utc()
-    analytics_state["channel_totals"]["total_views"] = sum(
-        v.get("views", 0) for v in analytics_state["videos"]
-    )
-    save_json(STATE_DIR / "analytics.json", analytics_state)
+    all_videos = state.get("videos", [])
+    report = build_analysis_report(all_videos)
 
-    # Analyze patterns
-    all_videos = analytics_state.get("videos", [])
-    analysis = analyze_performance(all_videos)
+    # Save report for Claude Code to read
+    report_path = STATE_DIR / "improvement_report.json"
+    save_json(report_path, report)
+    print(f"[improvement_agent] Report saved: {report_path}")
 
-    # Update idea priorities
-    update_idea_priorities(analysis)
+    # Check if Claude Code wrote an analysis
+    analysis_path = STATE_DIR / "improvement_analysis.json"
+    analysis = load_json(analysis_path) if analysis_path.exists() else {}
 
-    # Write report
-    write_weekly_report(all_videos, analysis)
+    if analysis.get("priority_score_adjustments"):
+        apply_priority_adjustments(analysis["priority_score_adjustments"])
 
-    print("[improvement_agent] Done.")
+    write_weekly_log(report, analysis)
+
+    print(f"""
+[improvement_agent] Report ready.
+
+Claude Code: Read state/improvement_report.json and write state/improvement_analysis.json
+with patterns, recommendations, and priority_score_adjustments.
+""")
 
 
 if __name__ == "__main__":

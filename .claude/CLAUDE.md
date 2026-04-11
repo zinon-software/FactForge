@@ -1,5 +1,8 @@
 # YouTube Automation System — Permanent Brain
 # Read this file at the START of every Claude Code session.
+#
+# ⚡ AI ENGINE: Claude Code (this session) — NO Anthropic API key needed.
+# Claude Code handles all intelligence. Python handles automation only.
 
 ---
 
@@ -42,12 +45,32 @@ Target audience: Global English speakers curious about history, economics, and g
 ## System Architecture
 
 ```
-User command → agents/ → output/[id]/ → YouTube API
-                ↓
-          state/ (progress, queue, analytics)
-                ↓
-          database/ (ideas, used_ideas, trending)
+User command → main.py (Python)
+                  ↓
+        ┌─────────────────────────────────┐
+        │  Claude Code (THIS SESSION)     │  ← Does ALL AI work
+        │  - Verifies facts               │
+        │  - Writes scripts               │
+        │  - Generates titles             │
+        │  - Translates metadata          │
+        │  - Generates video ideas        │
+        │  - Analyzes performance         │
+        └─────────────────────────────────┘
+                  ↓
+        ┌─────────────────────────────────┐
+        │  Python automation              │  ← Does non-AI work
+        │  - TTS audio (Kokoro/EdgeTTS)   │
+        │  - Remotion video render        │
+        │  - Pillow thumbnail             │
+        │  - YouTube API upload           │
+        │  - Web search (Serper)          │
+        └─────────────────────────────────┘
+                  ↓
+          output/[id]/ → YouTube API
 ```
+
+### How Claude Code gets tasks
+Python writes request JSON files → Claude Code reads + fills responses → Python continues
 
 ### Key Files
 - `state/progress.json` — what is currently being produced
