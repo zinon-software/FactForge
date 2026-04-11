@@ -1,7 +1,14 @@
 {
   "last_updated": "2026-04-11T00:00:00Z",
-  "produced_ideas": [],
+  "produced_ideas": [
+    {
+      "id": "S01220",
+      "youtube_id": "4Eal0yDUHXs",
+      "date": "2026-04-11T13:40:18Z",
+      "reason": "produced"
+    }
+  ],
   "skipped_ideas": [],
-  "total_produced": 0,
+  "total_produced": 1,
   "total_skipped": 0
 }

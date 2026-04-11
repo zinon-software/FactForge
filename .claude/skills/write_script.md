@@ -1,5 +1,65 @@
 # Skill: Write Script
 # Use this skill whenever writing a video script for any format
+# ⚠️ content_psychology.md MUST be applied to every script — no exceptions
+
+---
+
+## ⚠️ BEFORE WRITING ANY SCRIPT — MANDATORY STEPS
+
+1. Read `.claude/skills/content_psychology.md` completely
+2. Choose ONE hook formula (A/B/C/D/E/F — rotate, don't repeat last used)
+3. Plan the open loop: what question stays unanswered until the end?
+4. Map 3 emotional triggers (AWE / OUTRAGE / VALIDATION / FEAR / PRIDE / DISBELIEF / NOSTALGIA)
+5. Plan escalation: identify Level 1, Level 2, Level 3 facts
+6. Write the script using the pacing blueprint below
+7. Score script using Content Score Checklist (Part 8 of content_psychology.md)
+8. Only proceed to voice generation if score >= 80
+9. Save score to `output/[id]/script_score.json`
+
+---
+
+## SHORT VIDEO PACING BLUEPRINT (58 seconds)
+
+```
+[0-3s]   HOOK          → [SLOW] max 12 words, one of 6 hook formulas
+[3-5s]   PAUSE + TEASE → [PAUSE] "Here's what most people don't know..."
+[5-20s]  BUILD         → [FAST] Level 1 facts, short sentences, rising tension
+[20-22s] OPEN LOOP     → mention what's coming without revealing it
+[22-40s] ESCALATE      → Level 2 facts, "But here's where it gets strange..."
+[40-43s] RE-HOOK       → "But the real shock is this..." (recaptures late viewers)
+[43-52s] PEAK          → [SLOW] Level 3 fact, maximum weight, [PAUSE] after
+[52-55s] LOOP CLOSE    → pay off the open loop promise
+[55-58s] CTA           → rotate formula (never repeat last used)
+```
+
+## LONG VIDEO PACING BLUEPRINT (10 minutes)
+
+```
+[0:00-0:08]  COLD OPEN    → Level 3 fact first, no context, [PAUSE2]
+[0:08-0:30]  RE-ESTABLISH → "Here's the full story behind that..."
+[0:30-1:00]  PROMISE      → 3 open loops promised, shocking implication stated
+[1:00-2:30]  CONTEXT      → Background, make audience care
+[2:30-4:00]  FIRST ACT    → Facts 10-6, Level 1, close open loop 1
+[4:00-4:15]  PATTERN INT  → Sudden pace change or unexpected stat
+[4:15-6:00]  SECOND ACT   → Facts 5-3, Level 2, close open loop 2
+[6:00-6:30]  RE-HOOK      → "We're about to get to the one that changes everything"
+[6:30-8:30]  CLIMAX       → Facts 2-1, Level 3, [SLOW], [PAUSE2], close open loop 3
+[8:30-9:30]  IMPLICATION  → What this means for you/the world/the future
+[9:30-10:00] CTA          → Formula 5 (Continuation) preferred
+```
+
+## TTS TAGS
+- `[SLOW]` → -20% speed: hooks, Level 3 facts
+- `[FAST]` → +20% speed: lists, building tension
+- `[PAUSE]` → 0.5s silence: after revelations
+- `[PAUSE2]` → 1.0s silence: major transitions
+- `[BREATH]` → natural breath between long sentences
+- `[SCENE CHANGE]` → visual cue for video editor
+
+## CONTENT SCORE (must be 80+)
+- Hook: 30pts | Retention: 30pts | Emotion: 15pts | TTS: 15pts | CTA: 10pts
+- Save: `output/[id]/script_score.json`
+- Format: `{"score": 87, "approved": true, "hook_formula": "A", "emotions": ["DISBELIEF", "OUTRAGE", "AWE"]}`
 
 ---
 

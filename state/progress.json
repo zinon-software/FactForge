@@ -1,28 +1,20 @@
 {
-  "last_updated": "2026-04-11T00:00:00Z",
-  "system_status": "setup_in_progress",
-  "phases_completed": {
-    "phase_0_environment": true,
-    "phase_1_brain": true,
-    "phase_2_database": false,
-    "phase_3_pipeline_tested": false,
-    "phase_4_self_improvement": false
+  "current_id": "S01220",
+  "current_title": "He Transferred $25 Million to Criminals — Because of a Fake Video Call",
+  "phase": "production",
+  "steps": {
+    "research": "done",
+    "script": "done",
+    "script_score": 92,
+    "audio": "pending",
+    "thumbnail": "pending",
+    "video": "pending",
+    "metadata": "done",
+    "publish": "done",
+    "youtube_id": "4Eal0yDUHXs"
   },
-  "database_stats": {
-    "short_ideas_count": 0,
-    "long_ideas_count": 0,
-    "last_idea_id_short": "S00000",
-    "last_idea_id_long": "L00000"
-  },
-  "current_production": {
-    "idea_id": null,
-    "idea_title": null,
-    "step": null,
-    "started_at": null,
-    "steps_completed": []
-  },
-  "total_videos_produced": 0,
-  "total_videos_published": 0,
-  "last_published_at": null,
-  "next_scheduled_publish": null
+  "queue_position": 1,
+  "phase_2_database": true,
+  "short_ideas_total": 1800,
+  "long_ideas_total": 150
 }

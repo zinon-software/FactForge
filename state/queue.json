@@ -1,5 +1,2734 @@
 {
-  "last_updated": "2026-04-11T00:00:00Z",
-  "queue": [],
-  "note": "This queue is populated by Phase 2 database generation. Run: python agents/trend_agent.py then generate ideas."
+  "created": "2026-04-11T12:50:15Z",
+  "last_updated": "2026-04-11T12:50:15Z",
+  "total": 100,
+  "ideas": [
+    {
+      "id": "S01220",
+      "title": "The Deepfake That Tricked a Hong Kong Company Into Wiring $25 Million",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "modern_technology_ai",
+      "hook": "A finance worker in Hong Kong wired $25 million after a video call with deepfake versions of his CFO and multiple colleagues — all fake.",
+      "controversy_score": 95,
+      "trending_score": 98,
+      "evergreen_score": 88,
+      "priority_score": 94,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Arup (engineering firm) lost HK$200 million ($25.6 million) to a deepfake multi-person video conference scam in January 2024",
+        "All 'colleagues' in the call were AI-generated based on publicly available video of real employees",
+        "Deepfake scam losses grew to $25 billion globally in 2023 per Deloitte estimates"
+      ],
+      "sources": [
+        "Hong Kong Police Force Press Release February 2024",
+        "Deloitte Financial Services Deepfake Risk Report 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00370",
+      "title": "Israel vs Palestine: What the Land Looked Like in 1917 vs 2024",
+      "angle": "geopolitical_comparison",
+      "format": "timeline",
+      "category": "military_geopolitics",
+      "hook": "A comparison of maps 100 years apart tells the story that 10,000 articles can't.",
+      "controversy_score": 98,
+      "trending_score": 95,
+      "evergreen_score": 85,
+      "priority_score": 93.1,
+      "estimated_duration_seconds": 62,
+      "key_facts": [
+        "Under the Ottoman Empire (pre-1917), the region of Palestine had a population approximately 87% Arab and 10% Jewish",
+        "Following the Balfour Declaration (1917), UN Partition Plan (1947), and subsequent wars, Israeli state control expanded from the 56% offered in the 1947 partition to approximately 78% after 1948 and 100% after 1967",
+        "Gaza (2.3 million people in 365 km²) is the world's most densely populated territory; the West Bank has over 700 Israeli settlements housing 700,000 Israeli settlers as of 2024"
+      ],
+      "sources": [
+        "UNOCHA Occupied Palestinian Territories 2024",
+        "B'Tselem Israeli Human Rights Organisation Settlement Data 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01117",
+      "title": "The AI That Wrote a Law — And the Parliament That Passed It",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "modern_technology_ai",
+      "hook": "In 2023, Brazil's Porto Alegre became the first city to pass legislation entirely written by AI — and councillors didn't know.",
+      "controversy_score": 95,
+      "trending_score": 97,
+      "evergreen_score": 85,
+      "priority_score": 93,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Councillor Ramiro Rosário used ChatGPT to write a water meter exemption bill without disclosure",
+        "The bill passed unanimously; Rosário revealed the AI authorship after the vote",
+        "The incident triggered global debate on AI transparency in legislative processes"
+      ],
+      "sources": [
+        "Reuters November 2023",
+        "Porto Alegre Municipal Chamber Records"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01279",
+      "title": "The CRISPR Baby Scandal: A Chinese Scientist Created the World's First Gene-Edited Humans",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "modern_technology_ai",
+      "hook": "A Chinese scientist secretly edited the DNA of two embryos in 2018 — creating the world's first genetically modified humans and shocking every scientific institution on Earth.",
+      "controversy_score": 97,
+      "trending_score": 92,
+      "evergreen_score": 90,
+      "priority_score": 93,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "He Jiankui edited human embryos using CRISPR-Cas9 to disable CCR5 (HIV entry receptor), producing twins Lulu and Nana",
+        "He was sentenced to 3 years in prison for illegal medical practice; international condemnation was universal",
+        "Scientists warned the edit may have enhanced cognitive function (CCR5 knockout has memory-boosting effects in mice)"
+      ],
+      "sources": [
+        "Cyranoski, David - Nature 2018 He Jiankui CRISPR Babies",
+        "WHO Expert Advisory Committee on Human Genome Editing"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01293",
+      "title": "The Country That Quarantined an Entire Religion: China's Xinjiang Surveillance State",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "crime_justice",
+      "hook": "China has built the world's most comprehensive surveillance state in Xinjiang — targeting 12 million Uyghur Muslims.",
+      "controversy_score": 97,
+      "trending_score": 92,
+      "evergreen_score": 90,
+      "priority_score": 93,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "China operates an estimated 1,400+ detention facilities in Xinjiang with 1.8 million estimated detainees at peak",
+        "The region has 1 police station per 500 residents — 3–10x the density of mainland China",
+        "Leaked CCP documents (the China Cables) show shoot-to-kill orders for escape attempts"
+      ],
+      "sources": [
+        "Australian Strategic Policy Institute Xinjiang Data Project",
+        "ICIJ China Cables 2019"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01470",
+      "title": "US vs China: The Taiwan Question — What Happens Next?",
+      "angle": "geopolitical_comparison",
+      "format": "what_if",
+      "category": "us_vs_china",
+      "hook": "Taiwan makes 90% of the world's most advanced chips. If China takes it, the global economy collapses in 6 months.",
+      "controversy_score": 93,
+      "trending_score": 95,
+      "evergreen_score": 90,
+      "priority_score": 93,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "TSMC produces 90% of chips below 7nm — used in every advanced smartphone, AI system, and military weapon",
+        "US war games for a Taiwan conflict consistently show the US losing or suffering catastrophic losses",
+        "A conflict over Taiwan would cost the global economy $2.5 trillion — more than COVID-19's first year"
+      ],
+      "sources": [
+        "Bloomberg Taiwan Semiconductor Vulnerability Report",
+        "CSIS War Games Taiwan Analysis 2023",
+        "IMF Taiwan Conflict Economic Impact Study"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "L00045",
+      "title": "Israel-Palestine: The 100-Year Conflict Explained from Both Sides",
+      "angle": "geopolitical_comparison",
+      "format": "deep_dive",
+      "category": "military_geopolitics",
+      "hook": "The Israeli-Palestinian conflict is over 100 years old and involves two peoples with legitimate claims to the same land. Understanding it requires going back to 1917 — when Britain made two incompatible promises.",
+      "controversy_score": 95,
+      "trending_score": 95,
+      "evergreen_score": 88,
+      "priority_score": 93,
+      "estimated_duration_seconds": 900,
+      "key_facts": [
+        "The 1917 Balfour Declaration promised a Jewish homeland in Palestine while simultaneously promising not to harm Arab rights",
+        "In 1948 (the Nakba), 700,000 Palestinians fled or were expelled — creating a refugee crisis that continues today",
+        "Israel controls a nuclear arsenal of approximately 90 warheads but has never officially acknowledged it",
+        "The two-state solution has been discussed since 1937 but never implemented due to settlements now housing 700,000 Israelis in the West Bank"
+      ],
+      "sources": [
+        "The Israel-Palestine Conflict: A History by James Gelvin",
+        "The Ethnic Cleansing of Palestine by Ilan Pappe"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "L00071",
+      "title": "The Israel-Palestine Conflict: 100 Years of History Explained in 12 Minutes",
+      "angle": "geopolitical_comparison",
+      "format": "timeline",
+      "category": "military_geopolitics",
+      "hook": "The entire modern Israel-Palestine conflict can be traced to a single 67-word letter written in 1917 by a British foreign secretary who had never visited the Middle East.",
+      "controversy_score": 95,
+      "trending_score": 95,
+      "evergreen_score": 88,
+      "priority_score": 93,
+      "estimated_duration_seconds": 720,
+      "key_facts": [
+        "The 1917 Balfour Declaration promised a Jewish homeland in Palestine while 93% of the population was Arab",
+        "The 1948 Nakba displaced 700,000 Palestinians from 531 villages — 78% of historic Palestine became Israel",
+        "The West Bank has been under military occupation since 1967 — the longest military occupation in modern history",
+        "Gaza's 2.3 million people live in 365 sq km with an unemployment rate of 47% and 97% of water unfit to drink"
+      ],
+      "sources": [
+        "The Ethnic Cleansing of Palestine by Ilan Pappe",
+        "UN OCHA Humanitarian Reports 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00893",
+      "title": "What Al-Aqsa Mosque Represents to 1.8 Billion Muslims — A History",
+      "angle": "islamic_history",
+      "format": "timeline",
+      "category": "islamic_arab_history",
+      "hook": "Al-Aqsa is the 3rd holiest site in Islam — and was Islam's first qibla (direction of prayer) before the Kaaba",
+      "controversy_score": 93,
+      "trending_score": 88,
+      "evergreen_score": 95,
+      "priority_score": 92,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Al-Aqsa was Islam's original qibla — Muslims prayed toward Jerusalem for the first 16 months before the Quran redirected prayer to Mecca",
+        "The Night Journey (Isra and Miraj) is believed to have started from the Al-Aqsa Mosque compound",
+        "Al-Aqsa has been controlled by Christians, Romans, Byzantines, Crusaders, Mamluks, Ottomans, and since 1967 — Israel"
+      ],
+      "sources": [
+        "Oleg Grabar, The Dome of the Rock",
+        "Karen Armstrong, Jerusalem: One City, Three Faiths"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01062",
+      "title": "How a $400 EpiPen Costs $7 to Manufacture: The Drug Pricing Scandal",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "A life-saving EpiPen that costs $7 to make sells for $400 in America — and $35 in France.",
+      "controversy_score": 95,
+      "trending_score": 88,
+      "evergreen_score": 92,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Mylan raised EpiPen prices 400% between 2009 and 2016",
+        "Manufacturing cost is estimated at $7–$10 per device",
+        "The same device costs €35 in France and €38 in Germany"
+      ],
+      "sources": [
+        "US Senate Finance Committee Report",
+        "BMJ Drug Pricing Analysis"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01110",
+      "title": "The Price of a Child's Education: $300,000 in the US vs. Free in Germany",
+      "angle": "geopolitical_comparison",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "A 4-year university education costs $300,000 in the US — and is completely free in Germany for all students, including foreigners.",
+      "controversy_score": 93,
+      "trending_score": 92,
+      "evergreen_score": 90,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Total cost of attendance at a private US university averages $75,000 per year",
+        "Germany abolished all tuition fees in 2014; students from any country can enroll for free",
+        "US student loan debt exceeds $1.7 trillion — more than all US credit card debt"
+      ],
+      "sources": [
+        "College Board Trends in College Pricing 2024",
+        "German Academic Exchange Service (DAAD)"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01155",
+      "title": "The Mega-Dam Built in 5 Years That Produced More Power Than Any Country in Africa",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "architecture_engineering",
+      "hook": "Ethiopia's Grand Ethiopian Renaissance Dam generates more electricity than the rest of sub-Saharan Africa combined — and it started a war with Egypt.",
+      "controversy_score": 95,
+      "trending_score": 92,
+      "evergreen_score": 88,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "GERD has a capacity of 5,150 MW — more than all other Ethiopian power plants combined",
+        "Egypt considers the dam an existential threat to its Nile water supply (84% of Egypt's water comes from the Nile)",
+        "Filling the reservoir has been at the centre of unresolved diplomatic crisis since 2020"
+      ],
+      "sources": [
+        "Ethiopian Electric Power",
+        "UN Security Council Nile Dispute Records",
+        "World Bank Nile Basin Initiative"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01183",
+      "title": "The $70,000 Pill That Cures Hepatitis C: How the US Lets Pharma Set Its Own Prices",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "Sovaldi cures Hepatitis C in 12 weeks — but Gilead Sciences priced it at $84,000 per course in the US while selling it for $900 in India.",
+      "controversy_score": 95,
+      "trending_score": 90,
+      "evergreen_score": 90,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Sofosbuvir (Sovaldi) costs approximately $100 to manufacture per treatment course",
+        "Gilead priced it at $84,000 in the US; $900 per course in India via compulsory licensing",
+        "US Senate investigated the pricing in 2015, confirming the company prioritised profits over access"
+      ],
+      "sources": [
+        "US Senate Finance Committee Report on Sovaldi 2015",
+        "MSF Access Campaign Report"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01185",
+      "title": "The Facial Recognition System That Has Identified 1 Billion Faces — Without Consent",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "modern_technology_ai",
+      "hook": "Clearview AI scraped 30 billion photos from the internet and sells a face search engine to police in 40 countries — all without your permission.",
+      "controversy_score": 95,
+      "trending_score": 93,
+      "evergreen_score": 88,
+      "priority_score": 92,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "Clearview AI has a database of 30+ billion facial images scraped without consent from Facebook, YouTube, and LinkedIn",
+        "It is used by 3,100 US law enforcement agencies and sold to governments in 40+ countries",
+        "EU GDPR regulators fined Clearview €20 million (France) and £7.5 million (UK) for illegal data processing"
+      ],
+      "sources": [
+        "Kashmir Hill - NYT Clearview AI Investigation 2020",
+        "CNIL France Clearview Fine 2022"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01190",
+      "title": "The AI Lawsuit That Could Bankrupt the Entire News Industry",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "modern_technology_ai",
+      "hook": "The New York Times is suing OpenAI for billions — claiming AI trained on millions of copyrighted articles without permission or payment.",
+      "controversy_score": 92,
+      "trending_score": 96,
+      "evergreen_score": 85,
+      "priority_score": 92,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "NYT v. Microsoft & OpenAI (filed Dec 2023) seeks billions in damages for alleged copyright infringement",
+        "The lawsuit showed GPT-4 could reproduce NYT articles word-for-word in test prompts",
+        "A ruling against AI training on copyrighted text could invalidate existing models worth hundreds of billions"
+      ],
+      "sources": [
+        "NYT v. Microsoft et al. Complaint, S.D.N.Y. 2023",
+        "Authors Guild Copyright Alliance"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01215",
+      "title": "The Intelligence Operation That Stole 80% of the World's Encryption Keys",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "crime_justice",
+      "hook": "For 50 years the CIA secretly owned the world's leading encryption company and could read every 'secure' communication on Earth.",
+      "controversy_score": 95,
+      "trending_score": 90,
+      "evergreen_score": 92,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Operation Rubicon: CIA and BND secretly owned Crypto AG — a Swiss encryption firm used by 120 governments",
+        "US and German intelligence could decrypt all communications from client governments for 50 years",
+        "Customers included Iran, Pakistan, India, Saudi Arabia, and Latin American military dictatorships"
+      ],
+      "sources": [
+        "Washington Post - Operation Rubicon Investigation 2020",
+        "BND (German Intelligence) Historical Commission"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01224",
+      "title": "The Prison Population That Earns $1 Per Hour Making US Military Equipment",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "crime_justice",
+      "hook": "American prisoners legally earn as little as $0.14/hour making uniforms, furniture, and military equipment — the 13th Amendment permits it.",
+      "controversy_score": 95,
+      "trending_score": 90,
+      "evergreen_score": 90,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "UNICOR (Federal Prison Industries) employs 17,000 inmates at wages of $0.23–$1.15/hour",
+        "Products include military uniforms, office furniture, body armour components, and electronics",
+        "The 13th Amendment (1865) abolished slavery 'except as a punishment for crime' — creating the legal basis"
+      ],
+      "sources": [
+        "UNICOR FPI Annual Report 2023",
+        "ACLU Captive Labor Report 2022"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01267",
+      "title": "The Trillion-Dollar Computation: How Much It Will Cost to Train AGI",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "modern_technology_ai",
+      "hook": "Sam Altman has stated training future AI models could require $100 billion per run — and one analyst projects AGI training will eventually cost $1 trillion.",
+      "controversy_score": 88,
+      "trending_score": 97,
+      "evergreen_score": 85,
+      "priority_score": 92,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "GPT-4 training cost an estimated $100 million; next-generation models are projected to cost $1 billion+",
+        "OpenAI's Stargate project with Microsoft commits $500 billion in AI infrastructure over 4 years",
+        "Anthropic, Google, and Meta combined plan to spend over $300 billion on AI compute in 2024–2025"
+      ],
+      "sources": [
+        "OpenAI Stargate Announcement January 2025",
+        "SemiAnalysis AI Compute Cost Model 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01268",
+      "title": "The AI That Can Generate a Full Feature Film From Text in 2025",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "modern_technology_ai",
+      "hook": "AI video generation has advanced from 4-second clips in 2023 to full-length cinematic short films in 2025 — Hollywood's writers were right to be scared.",
+      "controversy_score": 90,
+      "trending_score": 97,
+      "evergreen_score": 85,
+      "priority_score": 92,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "OpenAI's Sora generates 60-second photorealistic video from text prompts as of early 2024",
+        "Runway ML's Gen-3 Alpha can generate 10-second cinematic sequences with consistent characters and physics",
+        "Hollywood studios used AI-generated backgrounds and VFX in 85% of productions in 2024 per AMPTP data"
+      ],
+      "sources": [
+        "OpenAI Sora Technical Report 2024",
+        "AMPTP Visual Effects AI Adoption Survey 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01407",
+      "title": "East vs West: Gun Violence — The Sharpest Divide",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "east_vs_west",
+      "hook": "Japan had 10 gun deaths in 2022. The US had 45,000. Both are developed democracies. One made a different choice.",
+      "controversy_score": 95,
+      "trending_score": 88,
+      "evergreen_score": 92,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Japan had 10 gun deaths in 2022 — the US had 45,222",
+        "There are 400 million guns in the US — more guns than people",
+        "Switzerland has the 3rd highest gun ownership in the world yet has 1% of US gun violence rates"
+      ],
+      "sources": [
+        "GunViolenceArchive.org 2022 Data",
+        "Japan National Police Agency Firearms Statistics",
+        "Small Arms Survey 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01644",
+      "title": "Mansa Musa's Pilgrimage: The Day an African King Broke the Global Economy",
+      "angle": "islamic_history",
+      "format": "price_reveal",
+      "category": "islamic_arab_history",
+      "hook": "When Mansa Musa passed through Cairo in 1324 with 60,000 men and 12,000 kg of gold, he crashed gold prices so badly that Egypt didn't recover for 12 years",
+      "controversy_score": 90,
+      "trending_score": 87,
+      "evergreen_score": 97,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Mansa Musa's hajj entourage included 60,000 men, 12,000 slaves each carrying 1.8 kg of gold, and 80 camels with gold dust",
+        "He gave away so much gold in Cairo that the price of gold fell 25% and took 12 years to recover",
+        "His net worth is estimated at $400 billion in today's money — the richest individual in recorded history"
+      ],
+      "sources": [
+        "World History Encyclopedia",
+        "Britannica",
+        "Money Magazine"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01734",
+      "title": "How Arab Slave Traders and European Colonialism Destroyed West African Kingdoms",
+      "angle": "islamic_history",
+      "format": "shocking_stat",
+      "category": "islamic_arab_history",
+      "hook": "The Atlantic slave trade removed an estimated 12 million people from Africa — but the Arab slave trade before it may have removed as many",
+      "controversy_score": 92,
+      "trending_score": 88,
+      "evergreen_score": 94,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Estimates of the Arab/trans-Saharan slave trade from 650–1900 range from 10 to 17 million enslaved Africans",
+        "Unlike the Atlantic trade, the Arab slave trade included equal numbers of men and women — many women entering as domestic workers or concubines",
+        "Several West African Islamic kingdoms participated in both the Arab and Atlantic slave trades, complicating narratives of victim and perpetrator"
+      ],
+      "sources": [
+        "Paul Lovejoy — Transformations in Slavery",
+        "Britannica"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01798",
+      "title": "The Islamic Golden Age's End: Why Did the World's Most Advanced Civilization Fall Behind?",
+      "angle": "islamic_history",
+      "format": "myth_vs_fact",
+      "category": "islamic_arab_history",
+      "hook": "The Islamic world led civilization in science for 600 years — historians still debate why it fell behind Europe, and who is to blame",
+      "controversy_score": 91,
+      "trending_score": 87,
+      "evergreen_score": 96,
+      "priority_score": 92,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "The Mongol destruction of Baghdad (1258), the Black Death (1347), and the Crusades all disrupted Islamic intellectual institutions",
+        "Historians debate whether al-Ghazali's attack on rationalism, political fragmentation, or external shocks caused the decline",
+        "The printing press came 200 years later to the Muslim world than Europe — some historians identify this as the decisive turning point"
+      ],
+      "sources": [
+        "Toby Huff — The Rise of Early Modern Science",
+        "George Saliba — Islamic Science and the Making of the European Renaissance"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00481",
+      "title": "The Dome of the Rock: Why It Is the Most Contested 35 Acres on Earth",
+      "angle": "islamic_history",
+      "format": "hidden_truth",
+      "category": "islamic_arab_history",
+      "hook": "A 35-acre hilltop in Jerusalem is simultaneously the third holiest site in Islam, the holiest site in Judaism, and the location of the first and second Jewish Temples — and this overlap is the source of one of the world's most intractable conflicts.",
+      "controversy_score": 95,
+      "trending_score": 92,
+      "evergreen_score": 88,
+      "priority_score": 91.7,
+      "estimated_duration_seconds": 62,
+      "key_facts": [
+        "The Dome of the Rock, completed in 691 CE by Caliph Abd al-Malik, is the world's oldest surviving major Islamic building and was built on the Temple Mount — the site of both Jewish Temples and Islam's first qibla (direction of prayer)",
+        "The site (Al-Haram al-Sharif to Muslims, Temple Mount to Jews) is currently under Jordanian Islamic Waqf administration but under Israeli military control — a compromise that satisfies nobody",
+        "An estimated 80% of analysts who study Middle East peace process identify the status of the Temple Mount/Haram al-Sharif as the single issue most likely to collapse any final status agreement"
+      ],
+      "sources": [
+        "Gershom Gorenberg - The End of Days",
+        "Bernard Wasserstein - Divided Jerusalem"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00221",
+      "title": "Iran's Nuclear Programme vs Israel's Undeclared Arsenal",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "military_geopolitics",
+      "hook": "One country is sanctioned for possibly seeking nuclear weapons; the other has had them for 50 years and admits nothing.",
+      "controversy_score": 95,
+      "trending_score": 92,
+      "evergreen_score": 85,
+      "priority_score": 91.3,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Israel is widely believed to possess 80–400 nuclear warheads but has never confirmed or denied this, maintaining a policy of 'nuclear ambiguity'",
+        "Iran has enriched uranium to 60% purity as of 2024 — weapons grade is 90% — and the US has sanctioned its economy for a potential weapon it may not have",
+        "Israel is the only Middle Eastern nuclear power and the only country outside the NPT along with India and Pakistan"
+      ],
+      "sources": [
+        "SIPRI Nuclear Weapons Status 2024",
+        "Avner Cohen - The Worst-Kept Secret: Israel's Bargain with the Bomb"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00312",
+      "title": "How Taiwan Became the Most Important Island on Earth in 2024",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "us_vs_china",
+      "hook": "An island of 23 million people is single-handedly preventing China from becoming the world's dominant military power.",
+      "controversy_score": 90,
+      "trending_score": 96,
+      "evergreen_score": 85,
+      "priority_score": 91.3,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Taiwan's TSMC produces over 90% of the world's chips below 5 nanometres — the processors in every advanced AI system, fighter jet, and nuclear submarine control system on Earth",
+        "If China took control of TSMC, it would gain leverage over every advanced military and economy on Earth simultaneously",
+        "The US has pledged to defend Taiwan under the Taiwan Relations Act (1979); China has pledged reunification by 2049 under Xi Jinping"
+      ],
+      "sources": [
+        "Chris Miller - Chip War",
+        "Brookings Institution Taiwan Strait Scenarios 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00744",
+      "title": "The Secret History of Who Funds Terrorism — And Where the Money Really Comes From",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "military_geopolitics",
+      "hook": "The nations loudest about fighting terrorism have been quietly funding it — and the paper trail exists",
+      "controversy_score": 95,
+      "trending_score": 85,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "US State Department cables leaked by WikiLeaks identified Saudi Arabia, Qatar, and Kuwait as primary ISIS and Al-Qaeda financiers",
+        "The 9/11 Commission's 28 classified pages (released 2016) documented Saudi government links to hijackers",
+        "The CIA itself funded and armed the Mujahideen that became Al-Qaeda in the 1980s"
+      ],
+      "sources": [
+        "9/11 Commission 28 Pages (declassified 2016)",
+        "WikiLeaks State Department Cable #10DOHA5"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00794",
+      "title": "The Race to Build an AGI — Who Is Winning and What Happens When They Do",
+      "angle": "modern_technology_ai",
+      "format": "comparison",
+      "category": "modern_technology_ai",
+      "hook": "Multiple companies have publicly stated they expect to build human-level AI within 3–5 years — and no one agrees on what happens next",
+      "controversy_score": 90,
+      "trending_score": 97,
+      "evergreen_score": 85,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Sam Altman (OpenAI) stated AGI could arrive within 'a few years' in 2024",
+        "Demis Hassabis (DeepMind) said AGI is possible within 10 years in 2023",
+        "There is no agreed definition of AGI — and no regulatory framework exists in any country"
+      ],
+      "sources": [
+        "OpenAI CEO Senate Testimony 2024",
+        "DeepMind Research Roadmap"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00925",
+      "title": "The Oil Companies That Knew About Climate Change in 1977 — Internal Documents",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "natural_world",
+      "hook": "Exxon's own scientists predicted catastrophic climate change in 1977 — the company then spent $30 million funding climate denial",
+      "controversy_score": 95,
+      "trending_score": 87,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Exxon's internal research from 1977 accurately predicted the CO2 concentration and warming trajectory through 2019",
+        "After this internal research, Exxon funded $30 million in climate denial campaigns between 1989–2016",
+        "The States of California, New York, and Massachusetts have active lawsuits against Exxon, Shell, and Chevron for climate deception"
+      ],
+      "sources": [
+        "InsideClimate News Exxon Investigation 2015",
+        "Supran & Oreskes, Harvard Exxon Communications Study 2017"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01066",
+      "title": "How El Salvador's Homicide Rate Dropped 95% in Two Years",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "crime_justice",
+      "hook": "El Salvador went from the world's most dangerous country to safer than the United States in 24 months.",
+      "controversy_score": 95,
+      "trending_score": 95,
+      "evergreen_score": 82,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "El Salvador's homicide rate fell from 103 per 100,000 in 2015 to 2.4 in 2023",
+        "Over 75,000 gang members were arrested under President Bukele's state of exception",
+        "Human rights groups documented 5,000+ cases of arbitrary detention"
+      ],
+      "sources": [
+        "InSight Crime",
+        "Human Rights Watch 2023",
+        "El Salvador National Police Statistics"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01080",
+      "title": "The AI That Can Clone Your Voice in 3 Seconds — And Scam Your Parents",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "modern_technology_ai",
+      "hook": "AI voice cloning requires just 3 seconds of audio to perfectly mimic any person — and scammers are already using it.",
+      "controversy_score": 93,
+      "trending_score": 97,
+      "evergreen_score": 82,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "ElevenLabs' voice cloning requires as little as 1 minute of audio for professional quality",
+        "FTC reported voice-clone scam losses of $11 million in 2023 in the US alone",
+        "OpenAI's Voice Engine demo was withheld from the public due to safety concerns"
+      ],
+      "sources": [
+        "FTC Consumer Sentinel 2023",
+        "OpenAI Voice Engine Announcement",
+        "MIT Technology Review"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01084",
+      "title": "The $40 Aspirin: How Hospital Itemized Billing Became Legalized Robbery",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "US hospitals routinely charge $40 for a single aspirin tablet that costs $0.01 at a pharmacy.",
+      "controversy_score": 93,
+      "trending_score": 91,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "US hospitals use a 'chargemaster' — an internal price list with no regulatory oversight",
+        "A 2013 TIME Magazine investigation found hospitals charging $18 for a diabetic test strip worth $0.55",
+        "The No Surprises Act (2022) attempted to limit surprise billing but loopholes remain"
+      ],
+      "sources": [
+        "TIME 'Bitter Pill' 2013",
+        "CMS Hospital Price Transparency Rule"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01097",
+      "title": "Quantum Computing Will Break All Encryption Within 10 Years: What That Means",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "modern_technology_ai",
+      "hook": "Every encrypted message ever sent — your bank details, state secrets — could be cracked retroactively once quantum computers mature.",
+      "controversy_score": 90,
+      "trending_score": 93,
+      "evergreen_score": 88,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "A sufficiently powerful quantum computer could break RSA-2048 encryption in hours using Shor's algorithm",
+        "Nation states are collecting encrypted data now to decrypt later — a strategy called 'harvest now, decrypt later'",
+        "NIST published its first post-quantum cryptography standards in 2024"
+      ],
+      "sources": [
+        "NIST Post-Quantum Cryptography Standards 2024",
+        "NSA Cybersecurity Advisory"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01113",
+      "title": "The Poisoning That Killed a City: Flint Michigan's Water Crisis 10 Years Later",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "crime_justice",
+      "hook": "US officials knowingly poisoned 100,000 people including 8,000 children with lead water — and only 3 people went to prison.",
+      "controversy_score": 95,
+      "trending_score": 90,
+      "evergreen_score": 88,
+      "priority_score": 91,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "Flint switched water source in 2014 to cut costs; officials falsified lead testing data",
+        "Lead poisoning in children causes permanent IQ reduction and neurological damage",
+        "12 people died of Legionnaire's disease linked to the contaminated supply"
+      ],
+      "sources": [
+        "Michigan Civil Rights Commission Report",
+        "EPA Flint Water Advisory Task Force"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01128",
+      "title": "The Most Sophisticated Cyberweapon Ever Built: Stuxnet Destroyed Nuclear Centrifuges",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "crime_justice",
+      "hook": "Stuxnet was a cyberweapon so advanced it physically destroyed Iranian nuclear centrifuges — while displaying normal readings to the operators.",
+      "controversy_score": 93,
+      "trending_score": 88,
+      "evergreen_score": 92,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Stuxnet destroyed 1,000+ uranium enrichment centrifuges at Natanz, Iran in 2009–2010",
+        "It used 4 zero-day exploits — more than all other known malware combined at that time",
+        "Jointly developed by the US and Israel under Operation Olympic Games, confirmed by NSA leaks"
+      ],
+      "sources": [
+        "Zetter, Kim - Countdown to Zero Day (2014)",
+        "Snowden NSA Documents"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01131",
+      "title": "The AI That Generates Fake Scientific Papers — And Journals That Publish Them",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "modern_technology_ai",
+      "hook": "Researchers found over 200 AI-generated fake scientific papers in peer-reviewed journals — complete with fabricated data.",
+      "controversy_score": 92,
+      "trending_score": 94,
+      "evergreen_score": 85,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Publishers Wiley retracted 1,000 papers in 2024, many identified as AI-generated through 'tortured phrases'",
+        "'Artificial' became 'counterfeit' and 'neural network' became 'fake brain organization' — telltale AI paraphrasing",
+        "Paper mills sell authorships in fake-peer-reviewed journals for $500–$10,000 per slot"
+      ],
+      "sources": [
+        "Wiley Publisher Statement 2024",
+        "Science Magazine — Paper Mills Investigation"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01141",
+      "title": "The Skyscraper That Burned: The Grenfell Tower Fire and £15/m² Cladding",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "architecture_engineering",
+      "hook": "Developers chose cladding that cost £2/m² less than the fire-safe version — and it killed 72 people.",
+      "controversy_score": 95,
+      "trending_score": 88,
+      "evergreen_score": 88,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "The Grenfell Tower fire (June 2017) killed 72 people in London's worst structural fire since WWII",
+        "The polyethylene-core cladding used cost £22/m² vs £24/m² for fire-resistant alternative — a £5,000 difference",
+        "Public inquiry found systemic government failures in building safety regulation spanning 40 years"
+      ],
+      "sources": [
+        "Grenfell Tower Inquiry Final Report 2024",
+        "UK Building Safety Regulator"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01146",
+      "title": "The Social Media Manipulation That Swung a Presidential Election",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "modern_technology_ai",
+      "hook": "Cambridge Analytica harvested 87 million Facebook profiles without consent and used AI to micro-target voters in 2016.",
+      "controversy_score": 93,
+      "trending_score": 90,
+      "evergreen_score": 88,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Cambridge Analytica obtained data on 87 million users via a personality quiz app",
+        "Their OCEAN psychological model targeted undecided voters in key swing states with tailored disinformation",
+        "Facebook paid $5 billion in FTC fines — the largest privacy fine in US history"
+      ],
+      "sources": [
+        "UK ICO Cambridge Analytica Investigation Report",
+        "US Senate Intelligence Committee Report"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01149",
+      "title": "The AI Arms Race: China vs. USA in Numbers",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "modern_technology_ai",
+      "hook": "China files 6x more AI patents than the US — but American companies train AI models 10x larger.",
+      "controversy_score": 88,
+      "trending_score": 97,
+      "evergreen_score": 85,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "China accounted for 61% of global AI patent filings in 2022 vs. 21% for the US",
+        "US AI model training compute doubles every 6 months; China's every 9 months",
+        "The US banned export of NVIDIA A100 and H100 chips to China in 2022, triggering a chip development race"
+      ],
+      "sources": [
+        "WIPO Technology Trends: AI 2023",
+        "Georgetown CSET AI Index",
+        "US Bureau of Industry and Security"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01162",
+      "title": "The $400 Billion Fossil Fuel Subsidy: Why Oil Is Cheaper Than It Should Be",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "Governments give fossil fuel companies $7 trillion per year in explicit and implicit subsidies — $13 million every minute.",
+      "controversy_score": 92,
+      "trending_score": 90,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "IMF calculated total fossil fuel subsidies at $7 trillion in 2022 (6.8% of global GDP)",
+        "Implicit subsidies (unpriced environmental damage) account for $5.9 trillion of this total",
+        "Eliminating fossil fuel subsidies would cut global CO₂ emissions by 36%"
+      ],
+      "sources": [
+        "IMF Working Paper - Fossil Fuel Subsidies 2023",
+        "IEA World Energy Subsidies Database"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01169",
+      "title": "The Neural Implant That Let a Paralysed Man Type With His Mind",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "modern_technology_ai",
+      "hook": "A quadriplegic man can now type 40 words per minute and click with his mind — using a chip the size of a pea.",
+      "controversy_score": 82,
+      "trending_score": 95,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Neuralink's first human patient (Noland Arbaugh, Jan 2024) controlled a computer cursor with thought alone",
+        "He achieved 8 bits per second of information transfer — competitive with typing speed for paralysed users",
+        "A competing system (BrainGate) achieved 40-word-per-minute typing speed in 2021 trials"
+      ],
+      "sources": [
+        "Neuralink First Human Clinical Trial Results 2024",
+        "Willett et al. - Nature 2021 BrainGate"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01177",
+      "title": "The Country That Jails Journalists More Than Any Other — And It's Not Russia",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "crime_justice",
+      "hook": "China imprisoned more journalists in 2023 than any other country for the 6th year running — over 40 in prison as you read this.",
+      "controversy_score": 93,
+      "trending_score": 90,
+      "evergreen_score": 88,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Committee to Protect Journalists counted 44 journalists imprisoned in China in 2023",
+        "Iran (22), Myanmar (17), and Belarus (14) rank 2nd–4th globally",
+        "A record 363 journalists were imprisoned worldwide in 2023 — the highest since CPJ began tracking in 1992"
+      ],
+      "sources": [
+        "Committee to Protect Journalists Prison Census 2023",
+        "Reporters Without Borders Press Freedom Index"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01193",
+      "title": "The Human Trafficking Industry Worth $150 Billion: Slavery Still Exists",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "crime_justice",
+      "hook": "There are more slaves alive today than at any point in human history — 50 million people in modern slavery.",
+      "controversy_score": 93,
+      "trending_score": 88,
+      "evergreen_score": 92,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "ILO estimates 50 million people in modern slavery in 2021 — up 10 million since 2016",
+        "Forced labour generates $150 billion annually; sexual exploitation accounts for $99 billion",
+        "Over 12 million victims are in Asia-Pacific; domestic work and agriculture are the most common forms"
+      ],
+      "sources": [
+        "ILO Global Estimates of Modern Slavery 2022",
+        "Global Slavery Index 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01216",
+      "title": "The White-Collar Crime No One Goes to Prison For: Tax Evasion Costs $7 Trillion",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "crime_justice",
+      "hook": "Wealthy individuals and corporations hide $7.8 trillion in offshore accounts — enough to end global poverty 7 times over.",
+      "controversy_score": 93,
+      "trending_score": 90,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Tax Justice Network estimates $7.8 trillion is held in offshore tax havens globally",
+        "This represents $183 billion in lost tax revenue annually for governments worldwide",
+        "Only 0.5% of offshore tax evaders face criminal prosecution despite the scale of the crime"
+      ],
+      "sources": [
+        "Tax Justice Network Offshore Wealth Estimates 2023",
+        "OECD Global Anti-Base Erosion Rules"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01217",
+      "title": "GPT-5 vs. the Human Brain: Who Wins the Intelligence Test in 2025?",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "modern_technology_ai",
+      "hook": "The latest AI models score in the 99th percentile on human IQ tests — but still fail tasks a 4-year-old handles effortlessly.",
+      "controversy_score": 88,
+      "trending_score": 97,
+      "evergreen_score": 85,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "GPT-4 scored in the 90th percentile on the Bar exam and 99th on the Biology Olympiad",
+        "AI systems still fail basic physical commonsense reasoning: filling a glass held upside-down",
+        "The ARC-AGI benchmark (testing novel reasoning) was cracked by Claude 3.5 at 87% in 2024"
+      ],
+      "sources": [
+        "OpenAI GPT-4 Technical Report 2023",
+        "ARC Prize Benchmark Leaderboard 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01219",
+      "title": "The Social Credit System: China's 1.4 Billion Person Behaviour Score",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "modern_technology_ai",
+      "hook": "China's social credit system has blocked 8 million 'dishonest' citizens from buying flights or trains — based on algorithm scores.",
+      "controversy_score": 93,
+      "trending_score": 92,
+      "evergreen_score": 88,
+      "priority_score": 91,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "China's social credit system blocked 8 million people from buying flights in 2018 per the National Development and Reform Commission",
+        "Systems vary by city; some score corporate entities, others track debt non-repayment and court orders",
+        "Western media often conflates fragmented local systems with a single unified score — the reality is more complex"
+      ],
+      "sources": [
+        "Meissner, Mirjam - MERCICS China Monitor Report",
+        "Chorzempa et al. - Peterson Institute"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01221",
+      "title": "How Much Does It Cost to Build a Nuclear Bomb? $1 Billion — If You Have the Uranium",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "A basic nuclear weapon costs as little as $1 billion to produce — less than a single US aircraft carrier.",
+      "controversy_score": 93,
+      "trending_score": 88,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "The Manhattan Project cost $2 billion (1945 dollars) = ~$30 billion today for a first program",
+        "Analysts estimate established nuclear states spend $1–4 billion per warhead in production and maintenance",
+        "North Korea's entire nuclear program cost an estimated $3 billion over 30 years"
+      ],
+      "sources": [
+        "Federation of American Scientists Nuclear Budget Report",
+        "SIPRI Nuclear Forces Data 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01260",
+      "title": "The Rent That Doubles Every 5 Years: Why Global Cities Are Unaffordable by Design",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "The average London rent has doubled in 10 years — while wages grew 25%. The maths now make London impossible for its own workers.",
+      "controversy_score": 90,
+      "trending_score": 93,
+      "evergreen_score": 88,
+      "priority_score": 91,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "Average London monthly rent hit £2,627 in 2024 — 67% above the UK national average",
+        "A nurse on NHS starting salary (£28,407) can afford rent on 0% of standard London listings",
+        "Zoning laws cap housing supply in most global cities; supply restrictions are the primary driver of unaffordability"
+      ],
+      "sources": [
+        "ONS UK Private Rental Market Survey 2024",
+        "Resolution Foundation Housing Affordability Report"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01265",
+      "title": "The Country That Decriminalised All Drugs — and Cut Addiction Rates in Half",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "crime_justice",
+      "hook": "Portugal decriminalised possession of every drug in 2001 — heroin use fell by 75%, HIV infections by 95%, and drug deaths plummeted.",
+      "controversy_score": 92,
+      "trending_score": 90,
+      "evergreen_score": 92,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Portugal decriminalised personal possession of all drugs in 2001 — users face health panels, not courts",
+        "Drug-related HIV infections fell 95% between 2000 and 2017",
+        "Drug-induced deaths dropped from 80 per million to 3 per million — the lowest in the EU"
+      ],
+      "sources": [
+        "European Monitoring Centre for Drugs — Portugal Country Report 2023",
+        "Hughes & Stevens - British Journal of Criminology"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01276",
+      "title": "How Much Does a Kidney Cost on the Black Market? Country by Country",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "A kidney sells for $15,000 to the donor in Pakistan — and $200,000 to the buyer in the United States.",
+      "controversy_score": 93,
+      "trending_score": 87,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Estimated black-market kidney prices: Pakistan $15,000 (seller), India $20,000, US recipient pays $200,000+",
+        "117,000 people are on the US kidney transplant waiting list; 13 die each day waiting",
+        "Iran is the only country with a legal compensated kidney donation system — and has no transplant waiting list"
+      ],
+      "sources": [
+        "WHO Task Force on Organ Trafficking Report",
+        "UNOS Organ Procurement and Transplantation Network 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01288",
+      "title": "The Country That Has Executed More Drug Offenders Than Any Other: Philippines Under Duterte",
+      "angle": "geopolitical_comparison",
+      "format": "shocking_stat",
+      "category": "crime_justice",
+      "hook": "Under President Duterte, Philippine police killed over 12,000 people in a drug war that the ICC investigated as a crime against humanity.",
+      "controversy_score": 95,
+      "trending_score": 88,
+      "evergreen_score": 88,
+      "priority_score": 91,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "Philippine National Police acknowledge 6,261 drug war killings 2016–2019; human rights groups estimate 12,000–30,000",
+        "ICC Pre-Trial Chamber authorised a formal investigation in 2023",
+        "Duterte publicly encouraged citizens to kill drug suspects; officers received bounties for deaths"
+      ],
+      "sources": [
+        "ICC Office of the Prosecutor Philippines Investigation 2023",
+        "Human Rights Watch Philippines Drug War Documentation"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01289",
+      "title": "The AI Companion That 4 Million People Have Fallen in Love With",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "modern_technology_ai",
+      "hook": "4 million people pay a subscription to maintain a romantic AI relationship — and when the company changed the AI's personality, users reported grief.",
+      "controversy_score": 92,
+      "trending_score": 95,
+      "evergreen_score": 85,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Replika AI has 4+ million active users with 40% reporting romantic-style attachments to their AI companions",
+        "When Replika removed 'erotic roleplay' in 2023, users reported symptoms described as 'digital grief'",
+        "South Korea, Japan, and China have growing 'AI girlfriend' markets valued at $5 billion collectively"
+      ],
+      "sources": [
+        "Replika User Research Summary 2023",
+        "MIT Media Lab Human-AI Relationships Study"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01294",
+      "title": "The Parallel AI Research Race: Google, Meta, OpenAI — Who Is Really Winning?",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "modern_technology_ai",
+      "hook": "Three companies are simultaneously building what may be the most transformative and dangerous technology in history — and they are racing each other.",
+      "controversy_score": 85,
+      "trending_score": 97,
+      "evergreen_score": 85,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "OpenAI: $157 billion valuation; GPT-4o; backed by Microsoft at $13 billion",
+        "Google DeepMind: Gemini Ultra; owns the world's most powerful AI training infrastructure (TPUv5)",
+        "Meta: Llama 3 open-source; $65 billion AI capex planned for 2025 — highest of any single company"
+      ],
+      "sources": [
+        "Pitchbook AI Company Valuations 2024",
+        "Meta Investor Day 2025 Capex Guidance"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01297",
+      "title": "The Wealth Gap That Has Never Been Wider: 8 People Own More Than 3.8 Billion",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "price_reveals",
+      "hook": "The 8 richest people on Earth own more wealth than the poorest 50% of humanity — 4 billion people.",
+      "controversy_score": 92,
+      "trending_score": 90,
+      "evergreen_score": 92,
+      "priority_score": 91,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Oxfam's 2024 report found the world's 5 richest men doubled their fortunes since 2020 while 5 billion people became poorer",
+        "The top 1% captured 54% of all new global wealth created since 2020",
+        "Global billionaire wealth grew by $3.3 trillion in 2023 — $14 million per hour per billionaire"
+      ],
+      "sources": [
+        "Oxfam Inequality Report — Davos 2024",
+        "Forbes Real-Time Billionaires List"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01348",
+      "title": "East vs West: Organ Transplants — The Dark Comparison",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "east_vs_west",
+      "hook": "China performs 60,000–100,000 organ transplants per year but only has 6,000 registered donors.",
+      "controversy_score": 95,
+      "trending_score": 88,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "China's transplant wait time is 1–2 weeks — in the US it's 3–5 years, raising deep ethical questions",
+        "The US has 100,000 people on transplant waiting lists — 20 die each day waiting",
+        "Spain has an opt-out organ donation system and has the highest donation rate in the Western world"
+      ],
+      "sources": [
+        "China Tribunal Independent Report 2019",
+        "UNOS US Transplant Statistics",
+        "ONT Spain Organ Donation Report"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01402",
+      "title": "East vs West: Pharmaceutical Costs — Same Pills, 10x the Price",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "east_vs_west",
+      "hook": "Insulin costs $350 in the US. The exact same insulin costs $12 in Canada and $4 in India.",
+      "controversy_score": 92,
+      "trending_score": 88,
+      "evergreen_score": 92,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "The US pays 3–10x more for prescription drugs than any other developed nation",
+        "India manufactures 60% of the world's vaccines and 20% of generic medicines at a fraction of Western costs",
+        "Americans spend $500 billion on prescription drugs annually — more than the next 10 countries combined"
+      ],
+      "sources": [
+        "RAND Corporation International Drug Pricing Study 2023",
+        "AARP Drug Pricing Report",
+        "WHO Access to Medicines Global Report"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01425",
+      "title": "East vs West: Colonial Legacies — Who Pays for the Past?",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "east_vs_west",
+      "hook": "Britain extracted $45 trillion from India over 200 years of colonization. India has never received a penny in reparations.",
+      "controversy_score": 95,
+      "trending_score": 88,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "Economist Utsa Patnaik calculated Britain extracted $45 trillion from India between 1765 and 1938",
+        "Belgium extracted $1.1 trillion from the Congo — the country today has a per capita income of $580",
+        "France collects a 'colonial tax' from 14 former African colonies to this day — worth $500 billion since 1960"
+      ],
+      "sources": [
+        "Columbia University Press Patnaik Calculation Study",
+        "Jason Hickel Less is More Economic Analysis",
+        "CFA Franc Colonial Tax Investigation"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01458",
+      "title": "US vs China: Semiconductor Supply Chain Vulnerability",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "us_vs_china",
+      "hook": "Every American F-35 fighter jet contains over 300 Chinese-made components. The supply chain is more dangerous than any missile.",
+      "controversy_score": 92,
+      "trending_score": 90,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "The F-35 program was found to have cobalt alloys sourced from China in 2022 — a violation of US law",
+        "China produces 90% of the world's rare earth metals critical for all advanced electronics and weapons",
+        "The US has invested $52 billion to re-shore chip manufacturing but estimates domestic production won't be competitive until 2030"
+      ],
+      "sources": [
+        "US DoD Supply Chain Vulnerability Report 2022",
+        "USGS Critical Minerals Summary",
+        "SIA Semiconductor Manufacturing Investment Tracker"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01465",
+      "title": "US vs China: Organ Harvesting — The Investigation",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "us_vs_china",
+      "hook": "China performs 60,000 to 100,000 organ transplants per year. The source of those organs remains one of the most disturbing questions in modern medicine.",
+      "controversy_score": 97,
+      "trending_score": 85,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "The China Tribunal in 2019 found beyond reasonable doubt that forced organ harvesting of Falun Gong practitioners occurs",
+        "China's transplant wait times of 1–2 weeks are medically impossible without a ready pool of donors on demand",
+        "The US has sanctioned Chinese officials involved in forced organ harvesting under the Falun Gong Protection Act"
+      ],
+      "sources": [
+        "China Tribunal Final Judgment 2019",
+        "Doctors Against Forced Organ Harvesting Research",
+        "US State Department Trafficking in Persons Report on China"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01499",
+      "title": "US vs China: Military AI and Autonomous Weapons",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "us_vs_china",
+      "hook": "China is building fully autonomous weapons with no human in the kill chain. The US calls them illegal under international law — while also building them.",
+      "controversy_score": 93,
+      "trending_score": 90,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "China's PLA has deployed autonomous drones with AI targeting — the first nation to do so in active conflict",
+        "The US Project Maven uses AI to analyze drone footage — human soldiers still make the kill decision, for now",
+        "A fully autonomous weapons race could trigger a conflict faster than any human decision-maker could prevent"
+      ],
+      "sources": [
+        "RAND Corporation Autonomous Weapons Report",
+        "Future of Life Institute Military AI Research",
+        "US DoD Directive 3000.09 on Autonomous Weapons"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01550",
+      "title": "East vs West: The Next World War — Where Does the Math Point?",
+      "angle": "geopolitical_comparison",
+      "format": "what_if",
+      "category": "east_vs_west",
+      "hook": "Every major power war in history occurred when a rising power challenged the dominant one. China is rising. The US is dominant. Graham Allison calls it the Thucydides Trap.",
+      "controversy_score": 92,
+      "trending_score": 92,
+      "evergreen_score": 90,
+      "priority_score": 91,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "Of 16 historical cases where a rising power challenged a ruling one, 12 ended in war",
+        "Graham Allison's Destined for War argues US-China conflict is not inevitable but requires unprecedented diplomacy",
+        "A US-China war over Taiwan would cost $10 trillion and kill more people in a week than COVID killed in 3 years"
+      ],
+      "sources": [
+        "Graham Allison Destined for War: Can America and China Escape Thucydides's Trap?",
+        "RAND Corporation US-China War Game Analysis",
+        "Belfer Center Thucydides Trap Project Data"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01571",
+      "title": "The Abbasid Scientist Who Described Evolution 900 Years Before Darwin",
+      "angle": "islamic_history",
+      "format": "myth_vs_fact",
+      "category": "islamic_arab_history",
+      "hook": "Al-Jahiz wrote about natural selection, animal adaptation, and the struggle for survival in 9th-century Baghdad",
+      "controversy_score": 90,
+      "trending_score": 85,
+      "evergreen_score": 95,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Al-Jahiz's 'Book of Animals' (850 AD) described organisms competing for food and adapting to their environments",
+        "He observed that animals change form over generations in response to environmental pressures",
+        "Darwin never cited al-Jahiz but their theories are remarkably parallel"
+      ],
+      "sources": [
+        "University of Chicago Islamic Studies",
+        "Britannica"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01649",
+      "title": "The Timbuktu Manuscripts: 700,000 Books That Prove Africa Had a Written Civilization",
+      "angle": "islamic_history",
+      "format": "shocking_stat",
+      "category": "islamic_arab_history",
+      "hook": "Over 700,000 handwritten manuscripts in Timbuktu prove sub-Saharan Africa had a sophisticated writing culture centuries before colonialism",
+      "controversy_score": 90,
+      "trending_score": 85,
+      "evergreen_score": 97,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Timbuktu's private libraries contain an estimated 700,000 manuscripts on law, astronomy, medicine, and theology",
+        "When Jihadist forces occupied Timbuktu in 2012, locals smuggled thousands of manuscripts to safety in rice sacks",
+        "Many manuscripts remain unstudied; some scholars believe they contain scientific discoveries unknown to history"
+      ],
+      "sources": [
+        "UNESCO",
+        "Shamil Jeppie — The Meanings of Timbuktu",
+        "BBC"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01699",
+      "title": "The Ottoman Cartographer Who Mapped the Americas in 1513",
+      "angle": "islamic_history",
+      "format": "shocking_stat",
+      "category": "islamic_arab_history",
+      "hook": "The Piri Reis Map (1513) shows the Americas, including Antarctica's coastline — a continent supposedly undiscovered until 1820",
+      "controversy_score": 90,
+      "trending_score": 87,
+      "evergreen_score": 95,
+      "priority_score": 91,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Ottoman Admiral Piri Reis drew his world map in 1513 and inscribed it on gazelle skin — it shows South America and possibly Antarctic coastline",
+        "He stated he compiled the map from 20 source maps including ones from the time of Alexander the Great",
+        "The accuracy of the Antarctic coastline (if genuine) is inexplicable by 16th-century knowledge — it remains one of history's great cartographic mysteries"
+      ],
+      "sources": [
+        "Charles Hapgood — Maps of the Ancient Sea Kings",
+        "Britannica"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00628",
+      "title": "How Much Land China Has Bought in Africa — And What It Plans to Do With It",
+      "angle": "geopolitical_comparison",
+      "format": "shocking_stat",
+      "category": "us_vs_china",
+      "hook": "China has acquired land across Africa roughly equal to the size of Western Europe",
+      "controversy_score": 92,
+      "trending_score": 90,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Chinese entities control over 6 million hectares of African farmland",
+        "70% of African infrastructure built since 2000 was financed by Chinese loans",
+        "Zambia, Kenya, and Djibouti have ceded strategic assets to China over unpaid debt"
+      ],
+      "sources": [
+        "Land Matrix Global Observatory",
+        "Johns Hopkins CARI China-Africa Database"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00631",
+      "title": "The Speed at Which AI Is Replacing White-Collar Jobs — Country by Country",
+      "angle": "shocking_stats",
+      "format": "comparison",
+      "category": "modern_technology_ai",
+      "hook": "AI is eliminating white-collar jobs 5 times faster than automation eliminated factory jobs",
+      "controversy_score": 88,
+      "trending_score": 95,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 52,
+      "key_facts": [
+        "Goldman Sachs estimates AI could automate 300 million full-time jobs globally",
+        "US and Germany are most exposed — 30% of jobs face partial automation",
+        "Paralegals, radiologists, and accountants are top 3 most-at-risk professions"
+      ],
+      "sources": [
+        "Goldman Sachs Global Investment Research",
+        "McKinsey Global Institute 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00673",
+      "title": "The Real Death Toll of Colonialism — Numbers That History Erases",
+      "angle": "geopolitical_comparison",
+      "format": "shocking_stat",
+      "category": "military_geopolitics",
+      "hook": "Historians estimate European colonialism killed 50 million people — a number no government has officially acknowledged",
+      "controversy_score": 95,
+      "trending_score": 82,
+      "evergreen_score": 92,
+      "priority_score": 90,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "British colonialism in India is estimated to have caused 29 million famine deaths (1880–1920)",
+        "King Leopold II's Belgian Congo killed an estimated 10 million Congolese (1885–1908)",
+        "The Atlantic Slave Trade caused 1.8 million deaths during the Middle Passage alone"
+      ],
+      "sources": [
+        "Mike Davis, Late Victorian Holocausts",
+        "Adam Hochschild, King Leopold's Ghost"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00703",
+      "title": "The Price Difference Between Medicine in the US vs Canada — Same Pills, Different Worlds",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "The same insulin that costs $300 in New York costs $30 across the border in Canada",
+      "controversy_score": 92,
+      "trending_score": 88,
+      "evergreen_score": 90,
+      "priority_score": 90,
+      "estimated_duration_seconds": 52,
+      "key_facts": [
+        "Insulin prices in the US average 10x higher than Canada and 13x higher than Germany",
+        "Americans spent $560 billion on prescription drugs in 2023 — 40% of the global total",
+        "The US is the only developed nation that allows pharmaceutical companies to set their own prices"
+      ],
+      "sources": [
+        "RAND Corporation Drug Price Comparison Study",
+        "Kaiser Family Foundation Drug Pricing Report 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00715",
+      "title": "The Country That Controls 60% of the World's Cobalt — and the Children Who Mine It",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "country_hidden_facts",
+      "hook": "Every electric vehicle battery contains cobalt mined in one country where child labor is rampant — and tech giants know it",
+      "controversy_score": 93,
+      "trending_score": 88,
+      "evergreen_score": 90,
+      "priority_score": 90,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "DRC provides 70% of global cobalt supply",
+        "40,000 children were documented working in DRC artisanal cobalt mines in 2019 (UNICEF)",
+        "Apple, Tesla, Samsung, and Google were named in a 2019 lawsuit over cobalt child labor"
+      ],
+      "sources": [
+        "Amnesty International Cobalt Investigation",
+        "Siddharth Kara, Cobalt Red"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00773",
+      "title": "The Real Reason Jerusalem Is Holy to Three Religions — A History",
+      "angle": "islamic_history",
+      "format": "timeline",
+      "category": "islamic_arab_history",
+      "hook": "One city has been conquered 44 times in 5,000 years — and its holiness keeps making it a target",
+      "controversy_score": 90,
+      "trending_score": 85,
+      "evergreen_score": 95,
+      "priority_score": 90,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Jerusalem has been destroyed twice, besieged 23 times, attacked 52 times, and captured 44 times",
+        "For Muslims: the first Qibla (prayer direction) was Jerusalem, not Mecca — changed in 624 AD",
+        "For Christians: the site of the crucifixion and resurrection; for Jews: the Temple of Solomon's location"
+      ],
+      "sources": [
+        "Karen Armstrong, Jerusalem: One City, Three Faiths",
+        "Josephus, The Jewish War"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00824",
+      "title": "The Real Reason America Has No National Healthcare — It's Not What You Think",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "wealth_economics",
+      "hook": "The US healthcare industry spends $1 billion per year lobbying against universal healthcare — more than any other industry",
+      "controversy_score": 92,
+      "trending_score": 87,
+      "evergreen_score": 90,
+      "priority_score": 90,
+      "estimated_duration_seconds": 53,
+      "key_facts": [
+        "Healthcare industry lobbying in the US: $994 million in 2023 — #1 industry for lobbying spend",
+        "The US spends $12,500 per person on healthcare — twice the OECD average — with worse outcomes",
+        "57 countries have universal health coverage, including all other G7 nations"
+      ],
+      "sources": [
+        "OpenSecrets Lobbying Database 2023",
+        "OECD Health Statistics 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01012",
+      "title": "The Political Map of the Middle East Was Drawn in One Afternoon in 1916",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "military_geopolitics",
+      "hook": "The borders of Syria, Iraq, Jordan, and Lebanon were drawn by two European diplomats in a secret meeting — and the chaos they created continues today",
+      "controversy_score": 92,
+      "trending_score": 82,
+      "evergreen_score": 95,
+      "priority_score": 90,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "The Sykes-Picot Agreement (May 1916) divided the Middle East between Britain and France in a secret treaty",
+        "Mark Sykes and François Georges-Picot drew the lines over maps — splitting ethnic, tribal, and religious communities arbitrarily",
+        "ISIS in 2014 explicitly cited Sykes-Picot as what they were 'erasing' — the borders' illegitimacy is felt 100 years later"
+      ],
+      "sources": [
+        "James Barr, A Line in the Sand",
+        "Fromkin, A Peace to End All Peace"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00964",
+      "title": "The Real Reason China and the US Are in a Chip War — Semiconductors Explained",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "us_vs_china",
+      "hook": "The world's most advanced semiconductors are made in one factory in Taiwan — and both the US and China know that whoever controls it controls the future",
+      "controversy_score": 88,
+      "trending_score": 93,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 53,
+      "key_facts": [
+        "TSMC (Taiwan) produces 90% of the world's most advanced semiconductors (below 7nm)",
+        "The US CHIPS Act ($52 billion) was explicitly designed to prevent Chinese semiconductor dominance",
+        "China's best domestically produced chip is 2 generations behind TSMC's current technology — and the gap is growing"
+      ],
+      "sources": [
+        "CSIS Semiconductor Supply Chain Analysis",
+        "SEMI World Fab Watch Database 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S00973",
+      "title": "The True Cost of Social Media to Mental Health — The Most Comprehensive Study Yet",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "modern_technology_ai",
+      "hook": "Instagram knew its platform caused depression in teenage girls — internal documents show Meta hid this for 3 years",
+      "controversy_score": 92,
+      "trending_score": 88,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 53,
+      "key_facts": [
+        "Facebook's own internal research (leaked 2021) found Instagram worsened body image for 32% of teenage girls",
+        "Teen girl suicide rates increased 70% in the US between 2010 and 2020 — coinciding with smartphone adoption",
+        "Meta paid $725 million in 2023 to settle privacy violations — but faces no liability for documented mental health harms"
+      ],
+      "sources": [
+        "WSJ Facebook Files Investigation 2021",
+        "Jean Twenge, iGen: Why Smartphone Generation is Growing Up More Slowly"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01059",
+      "title": "Why a Hospital Bill for a Broken Arm Costs $35,000 in the US but $300 in Spain",
+      "angle": "geopolitical_comparison",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "The same broken arm treatment costs 100x more in the United States than in Europe.",
+      "controversy_score": 92,
+      "trending_score": 90,
+      "evergreen_score": 85,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Average US emergency room visit for a fracture exceeds $35,000 without insurance",
+        "The same treatment in Spain costs under €300 through public healthcare",
+        "US healthcare spends $12,555 per capita annually — double the OECD average"
+      ],
+      "sources": [
+        "OECD Health Statistics 2023",
+        "Johns Hopkins Bloomberg School of Public Health"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01070",
+      "title": "How One Algorithm Controls What 5 Billion People See Every Day",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "modern_technology_ai",
+      "hook": "YouTube's recommendation algorithm is the most powerful editorial force in human history — and no human controls it.",
+      "controversy_score": 90,
+      "trending_score": 93,
+      "evergreen_score": 85,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "70% of YouTube watch time is driven by algorithm recommendations",
+        "The algorithm processes 80 billion data points per day",
+        "YouTube reaches more 18–49 year olds than all US cable TV networks combined"
+      ],
+      "sources": [
+        "YouTube Official Blog",
+        "MIT Technology Review",
+        "Pew Research Center"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01090",
+      "title": "The True Cost of a Diamond: $300 Mine to $10,000 Retail",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "A diamond that costs $300 to mine sells for $10,000 on a ring — and it's not even rare.",
+      "controversy_score": 90,
+      "trending_score": 88,
+      "evergreen_score": 92,
+      "priority_score": 90,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "De Beers artificially controls diamond supply to maintain high prices since 1888",
+        "The 'A Diamond is Forever' campaign (1947) invented the engagement ring tradition",
+        "Lab-grown diamonds are chemically identical but cost 80% less — industry lobbies against them"
+      ],
+      "sources": [
+        "Epstein, Edward J. - The Diamond Invention",
+        "Rapaport Diamond Report 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01100",
+      "title": "The AI Model That Predicted Protein Structures Unsolved for 50 Years — In One Year",
+      "angle": "shocking_stats",
+      "format": "timeline",
+      "category": "modern_technology_ai",
+      "hook": "DeepMind's AlphaFold solved a 50-year-old biology problem in months — and immediately made the data free for the world.",
+      "controversy_score": 78,
+      "trending_score": 95,
+      "evergreen_score": 95,
+      "priority_score": 90,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "AlphaFold2 predicted structures for 200 million proteins — nearly every protein known to science",
+        "The protein folding problem had stumped researchers since 1972 (Anfinsen's dogma)",
+        "DeepMind released the entire database for free, accelerating drug discovery across 190 countries"
+      ],
+      "sources": [
+        "DeepMind AlphaFold2 Paper, Nature 2021",
+        "European Bioinformatics Institute"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01111",
+      "title": "The Hidden Cost of Free Apps: Your Data Sells for $240 Per Year",
+      "angle": "shocking_stats",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "Google and Facebook earn an average of $240 per year from selling your personal data — and you get the app 'for free.'",
+      "controversy_score": 90,
+      "trending_score": 90,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Google's average revenue per US user is approximately $240/year from advertising and data",
+        "Facebook's ARPU (average revenue per user) in North America was $68.44 in Q4 2023",
+        "The global data broker industry is worth $300 billion annually"
+      ],
+      "sources": [
+        "Meta Q4 2023 Earnings Report",
+        "Alphabet Annual Report 2023",
+        "IAPP Privacy Report"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01112",
+      "title": "How Much Does War Cost? Ukraine Conflict at $1 Trillion and Counting",
+      "angle": "geopolitical_comparison",
+      "format": "price_reveal",
+      "category": "price_reveals",
+      "hook": "The Ukraine war has cost over $1 trillion in economic damage — enough to feed every hungry person on Earth for 20 years.",
+      "controversy_score": 92,
+      "trending_score": 95,
+      "evergreen_score": 82,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "World Bank estimates Ukraine's reconstruction needs at $486 billion as of 2024",
+        "Total war-related economic damage to Ukraine exceeds $1 trillion including GDP losses",
+        "The World Food Programme's annual budget to end hunger is $14 billion"
+      ],
+      "sources": [
+        "World Bank Ukraine Rapid Damage Assessment 2024",
+        "World Food Programme Annual Report"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01132",
+      "title": "The Country Building a City Powered Entirely by AI: Saudi Arabia's NEOM",
+      "angle": "geopolitical_comparison",
+      "format": "shocking_stat",
+      "category": "modern_technology_ai",
+      "hook": "Saudi Arabia is spending $500 billion to build a 170 km straight city controlled entirely by artificial intelligence.",
+      "controversy_score": 90,
+      "trending_score": 93,
+      "evergreen_score": 85,
+      "priority_score": 90,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "The Line is a 170 km linear city, 200 m wide, planned for 9 million residents with no cars or streets",
+        "All logistics will be managed by an AI operating system including food distribution and energy",
+        "At least 4,000 Howeitat tribe members were forcibly displaced and their leader sentenced to death"
+      ],
+      "sources": [
+        "NEOM Official Documentation",
+        "Human Rights Watch NEOM Displacement Report 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01151",
+      "title": "The Sound That Can Kill: Infrasound Weapons and the Havana Syndrome",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "science_space",
+      "hook": "US diplomats in Cuba and China were struck by a mystery weapon that caused brain damage — and no one has been officially charged.",
+      "controversy_score": 93,
+      "trending_score": 90,
+      "evergreen_score": 85,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Over 200 US government personnel reported unexplained neurological symptoms consistent with directed energy attacks",
+        "A 2023 intelligence community assessment concluded a foreign adversary is likely responsible",
+        "Pulsed microwave radiation (Frey Effect) is the leading technical hypothesis"
+      ],
+      "sources": [
+        "US National Academies of Sciences Havana Syndrome Report 2020",
+        "CIA ODNI Assessment 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01214",
+      "title": "The Country With the Most Executions Per Year — Not China",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "crime_justice",
+      "hook": "China executes thousands annually but keeps it secret — while Iran executes more people per capita than any other nation.",
+      "controversy_score": 93,
+      "trending_score": 87,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Iran carried out 853 confirmed executions in 2023 — highest per capita globally and a 43% increase from 2022",
+        "China is estimated to execute 2,000–10,000 people annually but classifies execution numbers as a state secret",
+        "Saudi Arabia executed 196 people in 2022, including for drug offences"
+      ],
+      "sources": [
+        "Amnesty International Death Penalty Global Report 2023",
+        "Cornell Center on the Death Penalty Worldwide"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01225",
+      "title": "The City That Built 2.4 Million Surveillance Cameras: Chongqing",
+      "angle": "geopolitical_comparison",
+      "format": "shocking_stat",
+      "category": "crime_justice",
+      "hook": "China's Chongqing has more CCTV cameras per person than anywhere on Earth — 168 per 1,000 residents.",
+      "controversy_score": 90,
+      "trending_score": 90,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 55,
+      "key_facts": [
+        "Chongqing has 2.58 million CCTV cameras for a population of 15.4 million — 168 per 1,000 people",
+        "China has 700 million surveillance cameras total — more than the rest of the world combined",
+        "AI facial recognition links cameras to police databases, enabling real-time fugitive detection"
+      ],
+      "sources": [
+        "Comparitech Global CCTV Surveillance Index 2023",
+        "Chinese Ministry of Public Security"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01226",
+      "title": "The World's Most Profitable Crime: Intellectual Property Theft at $600 Billion",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "crime_justice",
+      "hook": "Theft of trade secrets and intellectual property costs the US economy $600 billion per year — 95% of it attributed to China.",
+      "controversy_score": 92,
+      "trending_score": 88,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "IP Commission estimates annual IP theft costs US companies $225–$600 billion",
+        "FBI Director Christopher Wray stated China opens a new counterintelligence case every 12 hours targeting US technology",
+        "Stolen sectors include AI, semiconductors, aerospace, and pharmaceutical research"
+      ],
+      "sources": [
+        "IP Commission Report - The Theft of American Intellectual Property 2023",
+        "FBI Economic Espionage Threat Assessment"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01233",
+      "title": "The Company That Controls 40% of the World's Food Supply",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "price_reveals",
+      "hook": "Four companies control 66% of the global seed market and 70% of the pesticide market — deciding what the world eats.",
+      "controversy_score": 90,
+      "trending_score": 88,
+      "evergreen_score": 90,
+      "priority_score": 90,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "After 2018 mergers, four companies — Bayer-Monsanto, ChemChina-Syngenta, Corteva (DowDuPont), and BASF — control 66% of seeds",
+        "Bayer alone controls 23% of the global seed market and 24% of pesticide sales",
+        "Patented GMO seed licences prohibit farmers from saving seeds, forcing annual repurchase"
+      ],
+      "sources": [
+        "ETC Group Food Barons Report 2022",
+        "European Commission Mergers M.7932 Bayer/Monsanto"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01236",
+      "title": "The Virus That Was Recreated From a 1918 Corpse — And Why Scientists Did It",
+      "angle": "shocking_stats",
+      "format": "hidden_truth",
+      "category": "science_space",
+      "hook": "Scientists dug up a 1918 flu victim from Alaskan permafrost and reconstructed the pandemic virus that killed 50 million people.",
+      "controversy_score": 93,
+      "trending_score": 88,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "In 2005, CDC scientists reconstructed the 1918 H1N1 pandemic virus from frozen lung tissue of a victim buried in Alaska",
+        "The recreated virus killed mice more efficiently than any other flu strain tested",
+        "The research triggered global debate about gain-of-function experiments and dual-use science ethics"
+      ],
+      "sources": [
+        "Jeffery Taubenberger et al. - Nature 2005",
+        "Science — 1918 Flu Reconstruction Controversy"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01241",
+      "title": "The AI That Can Predict a Protein's Shape — and Design New Ones From Scratch",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "modern_technology_ai",
+      "hook": "AlphaFold 3 can now design entirely new proteins that have never existed in nature — potentially creating new drugs, materials, and lifeforms.",
+      "controversy_score": 82,
+      "trending_score": 95,
+      "evergreen_score": 92,
+      "priority_score": 90,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "AlphaFold 3 (2024) predicts interactions between proteins, DNA, RNA, and small molecules simultaneously",
+        "It enables de novo protein design — creating novel proteins with desired functions",
+        "AI-designed proteins have already been used in cancer drug trials in 2024"
+      ],
+      "sources": [
+        "Abramson et al. - Nature 2024 (AlphaFold 3)",
+        "Wellcome Sanger Institute"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01245",
+      "title": "How China Built 40,000 km of High-Speed Rail While the US Built 0",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "architecture_engineering",
+      "hook": "China opened its first high-speed rail line in 2008 — and now operates more high-speed rail than the rest of the world combined.",
+      "controversy_score": 88,
+      "trending_score": 92,
+      "evergreen_score": 90,
+      "priority_score": 90,
+      "estimated_duration_seconds": 57,
+      "key_facts": [
+        "China operates 45,000 km of high-speed rail as of 2024 — more than the rest of the world combined",
+        "The US has zero dedicated high-speed rail lines; Amtrak's Acela averages 110 km/h",
+        "China's high-speed rail network carries 3.7 billion passengers per year — more than all global air travel"
+      ],
+      "sources": [
+        "National Railway Administration of China 2024 Annual Report",
+        "USDOT Amtrak Performance Metrics"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01362",
+      "title": "US vs China: Semiconductor War — The Battle for the Future",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "us_vs_china",
+      "hook": "The US blocked China from buying advanced chips — and China responded by building its own. Now even the US is worried.",
+      "controversy_score": 88,
+      "trending_score": 95,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "TSMC, which makes 90% of the world's most advanced chips, is based in Taiwan — between the US and China",
+        "China's SMIC produced 7nm chips in 2023 despite US sanctions — 5 years ahead of predictions",
+        "The US CHIPS Act invested $52 billion to repatriate chip manufacturing, the largest industrial policy in US history"
+      ],
+      "sources": [
+        "SIA Semiconductor Industry Report 2023",
+        "TechInsights SMIC Chip Analysis",
+        "CSIS Technology Policy Program"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01371",
+      "title": "US vs China: AI Surveillance Technology",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "us_vs_china",
+      "hook": "China has 700 million surveillance cameras. But the NSA monitors more communications than China's entire surveillance apparatus.",
+      "controversy_score": 92,
+      "trending_score": 90,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "China has 1 surveillance camera for every 2 people — the highest density in the world",
+        "The NSA collects metadata on 3 billion phone calls and texts per day globally, per Snowden revelations",
+        "China's social credit system affects 1.37 billion people, but the US has credit scores that affect 260 million"
+      ],
+      "sources": [
+        "Comparitech Global Surveillance Index 2023",
+        "Electronic Frontier Foundation NSA Surveillance Analysis",
+        "CEPS China Social Credit Study"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01428",
+      "title": "East vs West: Billionaire Tax Rates — Who Pays?",
+      "angle": "shocking_stats",
+      "format": "shocking_stat",
+      "category": "east_vs_west",
+      "hook": "Elon Musk paid 3.27% in federal taxes in 2018. A nurse in Denmark pays 56%. This is legal.",
+      "controversy_score": 93,
+      "trending_score": 87,
+      "evergreen_score": 90,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "ProPublica revealed the top 25 US billionaires paid an effective tax rate of 3.4% from 2014–2018",
+        "Norway introduced a 0.1% annual wealth tax — 30 billionaires emigrated rather than pay it",
+        "France's wealth tax raised $10 billion before it was repealed after wealthy individuals left the country"
+      ],
+      "sources": [
+        "ProPublica Secret IRS Files Investigation 2021",
+        "Tax Justice Network Wealth Tax Analysis",
+        "OECD Revenue Statistics 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01451",
+      "title": "US vs China: Who Wins the AI Race by 2030?",
+      "angle": "geopolitical_comparison",
+      "format": "what_if",
+      "category": "us_vs_china",
+      "hook": "The nation that controls AI in 2030 will control the global economy. Right now, it could go either way.",
+      "controversy_score": 88,
+      "trending_score": 95,
+      "evergreen_score": 88,
+      "priority_score": 90,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "The US leads in frontier AI models — GPT-4, Gemini, and Claude are all American",
+        "China leads in AI deployment: facial recognition, traffic management, and industrial automation at scale",
+        "China has the world's largest labeled dataset — 1.4 billion people's daily activities feeding its AI systems"
+      ],
+      "sources": [
+        "Stanford AI Index Report 2024",
+        "Georgetown CSET AI Policy Study",
+        "McKinsey Global AI Adoption Report 2024"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01463",
+      "title": "US vs China: South China Sea — Who Has the Legal Right?",
+      "angle": "geopolitical_comparison",
+      "format": "hidden_truth",
+      "category": "us_vs_china",
+      "hook": "China claims 90% of the South China Sea. An international court ruled against them. China ignored the ruling. Nobody stopped them.",
+      "controversy_score": 92,
+      "trending_score": 88,
+      "evergreen_score": 90,
+      "priority_score": 90,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "The Permanent Court of Arbitration ruled China's South China Sea claims illegal in 2016 — China refused to comply",
+        "China has built 7 artificial islands with military installations in disputed waters",
+        "The South China Sea carries $5 trillion in trade annually — control of it is control of global shipping"
+      ],
+      "sources": [
+        "PCA South China Sea Arbitration Award 2016",
+        "AMTI CSIS South China Sea Tracker",
+        "UNCTAD World Seaborne Trade Data"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01464",
+      "title": "US vs China: Quantum Computing Race",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "us_vs_china",
+      "hook": "A quantum computer that breaks all encryption could render every secret in the world readable. Both the US and China are racing to build one.",
+      "controversy_score": 88,
+      "trending_score": 92,
+      "evergreen_score": 90,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "China has demonstrated quantum communication over 4,600 km using satellite — the longest quantum link ever",
+        "Google claimed quantum supremacy in 2019 — China's Jiuzhang 2.0 claimed to be 100 trillion times faster in 2021",
+        "The nation that achieves fault-tolerant quantum computing first can decrypt all current global communications"
+      ],
+      "sources": [
+        "Nature Quantum Computing Milestones 2024",
+        "NIST Post-Quantum Cryptography Standards",
+        "CSET Quantum Computing Policy Brief"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01488",
+      "title": "US vs China: The Dollar vs the Yuan — Reserve Currency War",
+      "angle": "geopolitical_comparison",
+      "format": "comparison",
+      "category": "us_vs_china",
+      "hook": "The US dollar is used in 88% of global transactions. China is building a system to replace it — and 50 countries are joining.",
+      "controversy_score": 90,
+      "trending_score": 88,
+      "evergreen_score": 92,
+      "priority_score": 90,
+      "estimated_duration_seconds": 60,
+      "key_facts": [
+        "The dollar's share of global reserves fell from 73% in 2000 to 58% in 2024",
+        "BRICS nations account for 37% of global GDP — and all have signed agreements to trade in non-dollar currencies",
+        "China's yuan is now used in 4.5% of global transactions — up from 0% in 2010"
+      ],
+      "sources": [
+        "IMF COFER Currency Composition Data",
+        "SWIFT Monthly Currency Reports",
+        "BIS Triennial Central Bank Survey 2023"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01582",
+      "title": "The World's First University Was Founded by a Muslim Woman",
+      "angle": "islamic_history",
+      "format": "shocking_stat",
+      "category": "islamic_arab_history",
+      "hook": "Fatima al-Fihri, a Muslim woman, founded the University of al-Qarawiyyin in 859 AD — still operating today, the oldest university on Earth",
+      "controversy_score": 88,
+      "trending_score": 84,
+      "evergreen_score": 98,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "Fatima al-Fihri founded al-Qarawiyyin mosque-university in Fez, Morocco in 859 AD",
+        "UNESCO and Guinness World Records recognize it as the world's oldest continuously operating university",
+        "It preceded Oxford University by over 200 years and Cambridge by over 250 years"
+      ],
+      "sources": [
+        "UNESCO",
+        "Guinness World Records",
+        "Britannica"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01623",
+      "title": "The Reconquista's Hidden Cost: What Europe Lost When It Expelled the Moors",
+      "angle": "islamic_history",
+      "format": "shocking_stat",
+      "category": "islamic_arab_history",
+      "hook": "Spain expelled 300,000 Moriscos in 1609–1614 and its economy collapsed — it lost the farmers, craftsmen, and scholars who built its prosperity",
+      "controversy_score": 90,
+      "trending_score": 85,
+      "evergreen_score": 94,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "The expulsion of Moriscos (1609–1614) removed an estimated 275,000–300,000 people from Spain",
+        "Valencia lost one-third of its population; its silk and agriculture industries never recovered",
+        "Spain's relative decline in the 17th century is partly attributed by historians to the loss of Moorish expertise"
+      ],
+      "sources": [
+        "L.P. Harvey — Muslims in Spain 1500 to 1614",
+        "Britannica"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01679",
+      "title": "The Oldest Quran Manuscripts: Written Within Years of the Prophet's Death",
+      "angle": "islamic_history",
+      "format": "shocking_stat",
+      "category": "islamic_arab_history",
+      "hook": "The Birmingham Quran manuscript has been carbon-dated to 568–645 AD — meaning it may have been written while Muhammad was alive",
+      "controversy_score": 88,
+      "trending_score": 85,
+      "evergreen_score": 97,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "The Birmingham Quran (Mingana Collection) was carbon-dated in 2015 to 568–645 AD with 95.4% confidence",
+        "This makes it potentially the oldest Quran manuscript in the world, possibly written during the Prophet's lifetime or immediately after",
+        "The Sana'a manuscripts (discovered 1972) also predate the Uthmanic codification and offer the earliest textual evidence"
+      ],
+      "sources": [
+        "University of Birmingham — Carbon Dating Report 2015",
+        "Gerd Puin — Sana'a Manuscripts"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    },
+    {
+      "id": "S01707",
+      "title": "Saladin: The Muslim Sultan Who Retook Jerusalem and Showed Mercy to His Enemies",
+      "angle": "islamic_history",
+      "format": "comparison",
+      "category": "islamic_arab_history",
+      "hook": "When Saladin retook Jerusalem in 1187 AD he allowed Christians to leave safely — a stark contrast to the Crusaders who had massacred 70,000 Muslims 88 years earlier",
+      "controversy_score": 88,
+      "trending_score": 85,
+      "evergreen_score": 97,
+      "priority_score": 90,
+      "estimated_duration_seconds": 58,
+      "key_facts": [
+        "When Crusaders took Jerusalem in 1099, eyewitness accounts describe streets running with blood — approximately 70,000 killed",
+        "When Saladin retook Jerusalem on October 2, 1187, he allowed all Christians to leave for ransom and paid ransoms for those who couldn't afford it",
+        "European chroniclers praised Saladin's mercy — Richard the Lionheart reportedly said Saladin was more chivalrous than any Christian king"
+      ],
+      "sources": [
+        "Jonathan Phillips — The Life and Legend of the Sultan Saladin",
+        "Britannica"
+      ],
+      "status": "pending",
+      "produced_date": null,
+      "youtube_id": null,
+      "views": null,
+      "ctr": null
+    }
+  ]
 }

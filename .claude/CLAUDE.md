@@ -96,18 +96,36 @@ Python writes request JSON files → Claude Code reads + fills responses → Pyt
 
 ---
 
+## Pre-Publish Quality Gates (MANDATORY)
+
+BEFORE publishing any video, ALL FOUR must pass in order:
+1. `.claude/skills/fact_verification.md` → accuracy score ≥ 18/20 (runs BEFORE script is written)
+2. `.claude/skills/content_psychology.md` → script score ≥ 80/100
+3. `.claude/skills/visual_design.md` → visual score ≥ 14/16
+4. `.claude/skills/youtube_seo.md` → SEO checklist score ≥ 18/22
+
+If any gate fails, revise and re-score before proceeding to the next gate.
+Script is written FROM verified facts — never verify after writing.
+
+---
+
 ## Production Pipeline (Phase 3)
 
 When user says "produce next video":
 1. Read queue.json → show next idea → ask for approval
-2. Research: web search → verify facts → save to output/[id]/research.json
-3. Script: write TTS-optimized script → save to output/[id]/script.json
-4. Voice: Kokoro TTS (fallback: Edge TTS) → save to output/[id]/audio.mp3
-5. Thumbnail: Pillow generation → save to output/[id]/thumbnail.png
-6. Video: Remotion render → save to output/[id]/video.mp4
-7. Metadata: title × 5 variants + description + tags + translations → output/[id]/metadata.json
-8. Schedule: calculate optimal publish time
-9. Publish: YouTube API upload → mark as produced in database
+2. Research: web search → verify facts → save to output/[id]/research.json + sources.json
+3. Accuracy gate: score research ≥ 18/20 (fact_verification.md) — stop if fails
+4. Script: write TTS-optimized script FROM verified facts → save to output/[id]/script.json
+5. Content gate: score script ≥ 80/100 (content_psychology.md) — revise if fails
+6. Voice: Edge TTS (en-US-AndrewNeural +8%) → save to output/[id]/audio.mp3
+7. Background: fetch from Pexels by category (visual_design.md)
+8. Video: Remotion render (no audio) → ffmpeg merge audio → output/[id]/video.mp4
+9. Visual gate: score ≥ 14/16 (visual_design.md) — revise if fails
+10. Thumbnail: Pillow generation → save to output/[id]/thumbnail.png
+11. Metadata: title × 5 variants + description + tags + translations → output/[id]/metadata.json
+12. SEO gate: score metadata ≥ 18/22 (youtube_seo.md) — revise if fails
+13. Schedule: calculate optimal publish time
+14. Publish: YouTube API upload → mark as produced in database
 
 ---
 
