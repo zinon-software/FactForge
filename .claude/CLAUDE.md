@@ -22,11 +22,53 @@ Target audience: Global English speakers curious about history, economics, and g
 
 ## How to Resume Any Session
 
-1. Read this file (you are doing that now)
-2. Read `state/progress.json` — what was last being produced
-3. Read `state/queue.json` — what ideas are next
-4. Report current status to user
-5. Wait for user command before doing anything
+At the START of every session (or when user says "resume", "status", or opens a new chat):
+
+1. Read `state/progress.json`
+2. Read `state/pending_uploads.json`
+3. Read `state/published_videos.json`
+4. Read `state/queue.json` (first 3 ideas only)
+4. Output EXACTLY this dashboard format — nothing else, no preamble:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📺  FactForge — لوحة التحكم
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔴 قيد الإنتاج
+   [id] — [title]
+   الخطوة: [current step] | النتيجة: [script_score if available]/100
+
+⏳ في انتظار الإكمال  ([count] مقاطع)
+   • [id] — [title]  →  [pending_tasks بالعربي]
+
+✅ مرفوعة على يوتيوب  ([count] مقاطع)
+   • [id] — [youtube_id]  |  رُفع: [published_at]  |  [إذا cleaned: "🧹 منظّف" وإلا: "📁 يمكن تنظيفه ← clean [id]"]
+
+📋 قائمة الانتظار  ([total] فكرة جاهزة)
+   التالي: "[next idea title]"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+الأوامر:
+  produce      → ابدأ إنتاج المقطع التالي
+  upload       → ارفع كل المقاطع الجاهزة الآن
+  queue        → اعرض قائمة الأفكار كاملة
+  skip         → تخطى الفكرة التالية
+  clean [id]   → نظّف ملفات المقطع المرفوع ووفّر مساحة
+  status       → حدّث هذه اللوحة
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Translate pending_tasks to Arabic:
+- subtitles_7_languages → "ترجمات نصية (7 لغات)"
+- thumbnail → "صورة مصغرة"
+- upload → "رفع على يوتيوب"
+- subtitles_uploaded → "✅ ترجمات مرفوعة"
+
+Fill in real values from the state files. If nothing in progress, show "✅ Nothing in progress".
+If pending_uploads is empty, show "✅ All videos uploaded".
+Always suggest the next idea at the bottom — never wait to be asked.
+5. Then STOP and wait for user command.
 
 ---
 
@@ -118,27 +160,41 @@ When user says "produce next video":
 4. Script: write TTS-optimized script FROM verified facts → save to output/[id]/script.json
 5. Content gate: score script ≥ 80/100 (content_psychology.md) — revise if fails
 6. Voice: Edge TTS (en-US-AndrewNeural +8%) → save to output/[id]/audio.mp3
-7. Background: fetch from Pexels by category (visual_design.md)
-8. Video: Remotion render (no audio) → ffmpeg merge audio → output/[id]/video.mp4
-9. Visual gate: score ≥ 14/16 (visual_design.md) — revise if fails
-10. Thumbnail: Pillow generation → save to output/[id]/thumbnail.png
-11. Metadata: title × 5 variants + description + tags + translations → output/[id]/metadata.json
-12. SEO gate: score metadata ≥ 18/22 (youtube_seo.md) — revise if fails
-13. Schedule: calculate optimal publish time
+7. SFX: generate_all_sfx() if not exists → calculate_sfx_timestamps(segments) → output/[id]/sfx_events.json
+8. Background: fetch from Pexels by category (visual_design.md) → assign backgroundVideo per segment
+9. Video: Remotion render (no audio) → ffmpeg merge voice + music + SFX → output/[id]/video.mp4
+10. Visual gate: score ≥ 14/16 (visual_design.md) — revise if fails
+11. Thumbnail: Pillow generation → save to output/[id]/thumbnail.png
+12. Metadata: title × 5 variants + description + tags → output/[id]/metadata.json
+13. SEO gate: score metadata ≥ 18/22 (youtube_seo.md) — revise if fails
 14. Publish: YouTube API upload → mark as produced in database
+15. Subtitles: generate SRT for 7 languages (EN/AR/ES/FR/HI/PT/TR) → upload via Captions API
 
 ---
 
-## User Commands
+## User Commands (Simple)
 
-- `produce next video` → runs full production pipeline on next queued idea
-- `show queue` → lists next 10 ideas in priority order
-- `skip this idea` → removes from queue, moves to next
-- `add idea: [topic]` → adds custom idea to top of queue
-- `show analytics` → displays performance report
-- `refresh trends` → runs trend_agent.py and adds new ideas
-- `improve system` → runs improvement_agent.py analysis
-- `resume` → reads this file + progress.json and continues
+| Command | ماذا يفعل |
+|---------|-----------|
+| `produce` | ابدأ الإنتاج الكامل للفكرة التالية — اعرضها أولاً وانتظر الموافقة |
+| `upload` | ارفع كل المقاطع + الترجمات الجاهزة الآن (يتحقق من الحصة أولاً) |
+| `queue` | اعرض أفضل 10 أفكار قادمة |
+| `skip` | تخطى الفكرة الحالية وانتقل للتالية |
+| `add: [موضوع]` | أضف فكرة مخصصة في أعلى القائمة |
+| `analytics` | اعرض تقرير أداء القناة |
+| `status` | اعرض لوحة التحكم |
+| `resume` | نفس status — اعرض اللوحة واستمر |
+| `clean [id]` | احذف ملفات المقطع المرفوع من الكمبيوتر — احتفظ فقط بـ metadata.json و script.json و thumbnail.png |
+| `clean all` | نظّف كل المقاطع المرفوعة دفعة واحدة |
+
+### قواعد الـ clean (لا تُخالَف):
+- احذف فقط إذا كان `status = uploaded` في pending_uploads.json أو youtube_id موجود في progress.json
+- الملفات التي تُحذف: video*.mp4، audio*.mp3، video_noaudio*.mp4، bg_videos/، dubbed/، images/، subtitles/
+- الملفات التي تُبقى دائماً: metadata.json، script.json، research.json، sources.json، thumbnail.png، remotion_props.json
+- اعرض قائمة ما سيُحذف وحجمه قبل الحذف، واطلب تأكيداً
+
+Any variation of these works: "produce next", "show me the queue", "what's next" etc.
+Understand intent, not exact wording.
 
 ---
 

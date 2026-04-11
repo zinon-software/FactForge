@@ -1015,3 +1015,322 @@ The visual system is the final layer that transforms
 verified facts + great scripts + SEO optimization
 into a video that looks worth watching before the first second plays.
 Design is not decoration — it is credibility at first glance.
+
+---
+
+## 🎭 PART 8 — ADVANCED ANIMATION STANDARDS (MANDATORY)
+
+These animations are REQUIRED in every Short video. Non-negotiable.
+Weak animation = viewer drops off in first 3 seconds.
+
+### Hook Segment — Drop + Glitch Entrance
+
+```typescript
+// Instead of simple scale spring, Hook MUST use:
+// 1. Words drop from above with bounce (not slide from bottom)
+// 2. Brief glitch flash on first frame (accent color, 2 frames)
+// 3. Chromatic aberration effect on impact words
+
+// Word drop entrance (per word, staggered 3 frames):
+const wordDrop = spring({ frame: frame - (i * 3), fps: 60,
+  config: { damping: 8, stiffness: 300 } })  // bouncy drop
+transform: `translateY(${interpolate(wordDrop, [0,1], [-120, 0])}px)`
+
+// Glitch flash (frames 0-2 only):
+if (frame < 3) return <AbsoluteFill style={{
+  backgroundColor: accentColor, opacity: interpolate(frame, [0,2], [0.5, 0])
+}} />
+
+// Accent words get chromatic aberration (CSS text-shadow offset):
+textShadow: `2px 0 ${accentColor}80, -2px 0 #ff000040`
+```
+
+### Impact Segment — Shake + Zoom Punch
+
+```typescript
+// Impact segments MUST have:
+// 1. Screen shake (translateX oscillation, 6 frames)
+// 2. Scale punch (1.25 → 1.0 with tight spring)
+// 3. Full-screen accent flash (frames 0-4)
+// 4. Vignette darkens temporarily
+
+// Screen shake:
+const shakeX = frame < 6 ? Math.sin(frame * 2.8) * interpolate(frame, [0,6], [14, 0]) : 0
+const shakeY = frame < 6 ? Math.cos(frame * 3.2) * interpolate(frame, [0,6], [8, 0]) : 0
+transform: `translate(${shakeX}px, ${shakeY}px) scale(${punchScale})`
+
+// Scale punch:
+const punch = spring({ frame, fps: 60, config: { damping: 6, stiffness: 500 } })
+const punchScale = interpolate(punch, [0,1], [1.25, 1.0])
+```
+
+### Fact Segment — Typewriter with Blinking Cursor
+
+```typescript
+// Facts MUST use typewriter effect (not word-by-word):
+// 1. Characters appear one by one (1-2 frames each)
+// 2. Blinking cursor "|" at end while typing
+// 3. Cursor disappears after text completes + 0.5s
+
+const charsToShow = Math.floor(frame / 1.5)  // 1.5 frames per char
+const displayText = text.slice(0, charsToShow)
+const showCursor = charsToShow < text.length || Math.floor(frame / 18) % 2 === 0
+
+// Render:
+<span>{displayText}</span>
+{showCursor && <span style={{ opacity: 1, color: accentColor }}>|</span>}
+```
+
+### Number Segment — Slot Machine Spin → Lock
+
+```typescript
+// Numbers MUST use slot machine effect:
+// Phase 1 (0-20 frames): random digits spinning fast
+// Phase 2 (20-35 frames): slowing down
+// Phase 3 (35-45 frames): final number locks with glow burst
+
+const phase = frame < 20 ? "spin" : frame < 35 ? "slow" : "lock"
+
+// Spin phase: random digit each frame
+if (phase === "spin") displayValue = Math.floor(Math.random() * targetValue)
+
+// Lock phase: glow burst
+if (phase === "lock") {
+  const lockProgress = (frame - 35) / 10
+  boxShadow: `0 0 ${interpolate(lockProgress, [0,1], [60, 20])}px ${accentColor}`
+  transform: `scale(${interpolate(spring({frame: frame-35, fps:60, 
+    config:{damping:5, stiffness:600}}), [0,1], [1.3, 1.0])})`
+}
+```
+
+### Transition Between Segments — Blur Wipe
+
+```typescript
+// Segment transitions MUST use blur wipe (not hard cut):
+// Outgoing segment: blur increases + translateY(-30px) + opacity fade (last 12 frames)
+// Incoming segment: blur decreases + translateY(30px→0) + opacity rise (first 12 frames)
+
+// Outgoing (add to every segment's exit):
+const exitBlur = interpolate(frame, [segDuration-12, segDuration], [0, 12], {extrapolateLeft:"clamp"})
+filter: `blur(${exitBlur}px)`
+transform: `translateY(${interpolate(frame, [segDuration-12, segDuration], [0, -30], {extrapolateLeft:"clamp"})}px)`
+
+// Incoming (add to every segment's entrance):
+const entryBlur = interpolate(frame, [0, 12], [8, 0], {extrapolateRight:"clamp"})
+filter: `blur(${entryBlur}px)`
+```
+
+### CTA Segment — Pulse Ring + Scale Bounce
+
+```typescript
+// CTA MUST have:
+// 1. Pulsing ring around follow button text
+// 2. Bouncing subscribe arrow
+// 3. Text entrance with scale bounce
+
+// Pulse ring (repeating every 60 frames):
+const pulseFrame = frame % 60
+const ringScale = interpolate(pulseFrame, [0, 60], [0.8, 1.8], {extrapolateRight:"clamp"})
+const ringOpacity = interpolate(pulseFrame, [0, 60], [0.8, 0], {extrapolateRight:"clamp"})
+// Ring: borderRadius 50%, border 3px solid accentColor, scale + opacity
+
+// Arrow bounce (every 45 frames):
+const arrowBounce = spring({ frame: frame % 45, fps: 60, config: {damping:6, stiffness:400} })
+transform: `translateY(${interpolate(arrowBounce, [0,1], [0, -12])}px)`
+```
+
+---
+
+## 🔊 PART 9 — SOUND EFFECTS SYSTEM (MANDATORY)
+
+Every Short video MUST include layered sound effects. Voice-only = flat and boring.
+Generate SFX using Python synthesis or download from freesound.org (CC0 license only).
+
+### SFX Per Segment Type
+
+| Segment Type | Required SFX | Volume | Timing |
+|-------------|-------------|--------|--------|
+| **Hook** | Bass whoosh + deep impact thud | 0.7 | Frame 0 |
+| **Fact** | Subtle tension drone loop | 0.15 | Entire segment (loop) |
+| **Impact** | Heavy impact boom + reverb tail | 0.85 | Frame 0, fades over 30 frames |
+| **Number** | Slot machine ticks → cash register ding | 0.6 | Slot: frame 0-35, Ding: frame 35 |
+| **CTA** | Uplifting musical sting (2 notes) | 0.5 | Frame 0 |
+| **Transition** | Whoosh (high to low frequency) | 0.4 | Last 8 frames of previous segment |
+
+### Python SFX Generation (save as `agents/sfx_agent.py`)
+
+```python
+import numpy as np
+from scipy.io import wavfile
+
+SAMPLE_RATE = 44100
+
+def generate_bass_whoosh(duration=0.8, output_path="assets/sfx/whoosh.wav"):
+    """Deep bass whoosh for hook entrance"""
+    t = np.linspace(0, duration, int(SAMPLE_RATE * duration))
+    freq = np.linspace(200, 40, len(t))          # Sweep down
+    wave = np.sin(2 * np.pi * freq * t)
+    envelope = np.exp(-t * 3) * np.linspace(1, 0.1, len(t))
+    wave = (wave * envelope * 0.7 * 32767).astype(np.int16)
+    wavfile.write(output_path, SAMPLE_RATE, wave)
+
+def generate_impact_boom(duration=1.2, output_path="assets/sfx/impact.wav"):
+    """Heavy impact boom for impact segments"""
+    t = np.linspace(0, duration, int(SAMPLE_RATE * duration))
+    # Sub bass thud
+    sub = np.sin(2 * np.pi * 60 * t) * np.exp(-t * 4)
+    # Noise burst (first 0.05s)
+    noise = np.random.normal(0, 0.3, len(t)) * np.exp(-t * 20)
+    wave = (sub + noise * 0.4)
+    envelope = np.exp(-t * 2.5)
+    wave = (wave * envelope * 32767 * 0.85).astype(np.int16)
+    wavfile.write(output_path, SAMPLE_RATE, wave)
+
+def generate_tension_drone(duration=5.0, output_path="assets/sfx/tension.wav"):
+    """Subtle tension loop for fact segments"""
+    t = np.linspace(0, duration, int(SAMPLE_RATE * duration))
+    # Low hum with slow wobble
+    base = np.sin(2 * np.pi * 80 * t)
+    wobble = np.sin(2 * np.pi * 0.3 * t) * 0.15
+    harmonic = np.sin(2 * np.pi * 160 * t) * 0.3
+    wave = (base + wobble + harmonic)
+    # Fade in and out for seamless loop
+    fade = np.minimum(t / 0.5, 1) * np.minimum((duration - t) / 0.5, 1)
+    wave = (wave * fade * 0.15 * 32767).astype(np.int16)
+    wavfile.write(output_path, SAMPLE_RATE, wave)
+
+def generate_slot_machine_ticks(count=20, output_path="assets/sfx/slots.wav"):
+    """Slot machine ticking for number segments"""
+    tick_duration = 0.04  # 40ms per tick
+    silence_duration = 0.03
+    full_duration = count * (tick_duration + silence_duration)
+    wave = np.zeros(int(SAMPLE_RATE * full_duration))
+    
+    for i in range(count):
+        start = int(i * (tick_duration + silence_duration) * SAMPLE_RATE)
+        t = np.linspace(0, tick_duration, int(SAMPLE_RATE * tick_duration))
+        # Higher pitch ticks as it slows = illusion of locking
+        pitch = 1200 - (i * 30)
+        tick = np.sin(2 * np.pi * pitch * t) * np.exp(-t * 40) * 0.6
+        wave[start:start+len(tick)] = tick
+    
+    wavfile.write(output_path, SAMPLE_RATE, (wave * 32767).astype(np.int16))
+
+def generate_cash_ding(output_path="assets/sfx/ding.wav"):
+    """Cash register ding for number lock"""
+    duration = 0.8
+    t = np.linspace(0, duration, int(SAMPLE_RATE * duration))
+    wave = (np.sin(2*np.pi*1400*t) * 0.6 +
+            np.sin(2*np.pi*2800*t) * 0.3 +
+            np.sin(2*np.pi*4200*t) * 0.1)
+    envelope = np.exp(-t * 5)
+    wavfile.write(output_path, SAMPLE_RATE, (wave * envelope * 32767 * 0.6).astype(np.int16))
+
+def generate_all_sfx():
+    """Run once to pre-generate all required SFX"""
+    import os
+    os.makedirs("assets/sfx", exist_ok=True)
+    generate_bass_whoosh()
+    generate_impact_boom()
+    generate_tension_drone()
+    generate_slot_machine_ticks()
+    generate_cash_ding()
+    print("✅ All SFX generated in assets/sfx/")
+```
+
+### SFX Mixing in ffmpeg (after Remotion render)
+
+```bash
+# After rendering video_noaudio.mp4 and generating voice audio.mp3:
+# Mix voice + background music + SFX together
+
+# Step 1: Generate SFX timeline file (Python outputs this)
+# sfx_timeline.txt: timestamp|sfx_file|volume for each event
+
+# Step 2: Build complex ffmpeg filter
+ffmpeg -i video_noaudio.mp4 \
+       -i audio.mp3 \
+       -i assets/music/dark_ambient.mp3 \
+       -i assets/sfx/whoosh.wav \
+       -i assets/sfx/impact.wav \
+       -i assets/sfx/slots.wav \
+       -i assets/sfx/ding.wav \
+       -filter_complex "
+         [1:a]volume=1.0[voice];
+         [2:a]volume=0.12,aloop=loop=-1:size=2e+09[music];
+         [3:a]adelay={hook_ms}|{hook_ms},volume=0.7[whoosh];
+         [4:a]adelay={impact_ms}|{impact_ms},volume=0.85[boom];
+         [5:a]adelay={number_ms}|{number_ms},volume=0.6[slots];
+         [6:a]adelay={lock_ms}|{lock_ms},volume=0.6[ding];
+         [voice][music][whoosh][boom][slots][ding]amix=inputs=6:normalize=0[audio_out]
+       " \
+       -map 0:v -map "[audio_out]" \
+       -c:v copy -c:a aac -b:a 192k \
+       -shortest output/[id]/video.mp4
+```
+
+### SFX Timing Calculation (Python)
+
+```python
+def calculate_sfx_timestamps(segments: list, fps: int = 60) -> dict:
+    """
+    Given remotion_props segments, return millisecond timestamps for each SFX event.
+    Call this during production pipeline, BEFORE ffmpeg merge step.
+    """
+    sfx_events = {}
+    
+    for seg in segments:
+        start_ms = int((seg["startFrame"] / fps) * 1000)
+        
+        if seg["type"] == "hook":
+            sfx_events["hook_ms"] = start_ms
+        elif seg["type"] == "impact":
+            sfx_events.setdefault("impact_ms", start_ms)  # First impact
+        elif seg["type"] == "number":
+            sfx_events.setdefault("number_ms", start_ms)
+            sfx_events.setdefault("lock_ms", start_ms + 583)  # +35 frames at 60fps
+    
+    return sfx_events
+```
+
+### Subtitles — Multilingual (MANDATORY for Every Video)
+
+Every published video MUST have subtitles in these 7 languages uploaded via YouTube Captions API:
+`en` (English), `ar` (Arabic), `es` (Spanish), `fr` (French), `hi` (Hindi), `pt` (Portuguese), `tr` (Turkish)
+
+Generate SRT files from script.json using frame-accurate timestamps from remotion_props.json.
+Upload with `youtube.captions().insert()` after video is published.
+This is non-negotiable — multilingual subtitles multiply discoverability across markets.
+
+---
+
+## ✅ UPDATED VISUAL QUALITY CHECKLIST (16 points)
+
+```
+DESIGN CONSISTENCY (4 points):
+[ ] Uses correct color palette for category
+[ ] Correct fonts (Bebas Neue + DM Sans + Space Mono)
+[ ] Channel watermark present and subtle
+[ ] Visual style matches channel identity
+
+ANIMATION QUALITY — ADVANCED (4 points):
+[ ] Hook uses word-drop + glitch flash (NOT simple scale spring)
+[ ] Impact segments have screen shake + zoom punch
+[ ] Numbers use slot-machine spin → lock effect
+[ ] Segment transitions use blur wipe (NOT hard cut)
+
+SOUND EFFECTS (4 points):
+[ ] Bass whoosh on hook
+[ ] Impact boom on impact segments
+[ ] Slot machine ticks + ding on number reveals
+[ ] Tension drone under fact segments (low volume)
+
+TECHNICAL (4 points):
+[ ] Shorts: 1080×1920, 60fps
+[ ] Multilingual subtitles uploaded (7 languages minimum)
+[ ] Thumbnail generated and ready for upload
+[ ] File size < 256MB (YouTube Shorts limit)
+
+VISUAL SCORE: __ / 16
+Minimum to render: 14/16
+```

@@ -1,19 +1,19 @@
 {
-  "current_id": "S01220",
-  "current_title": "He Transferred $25 Million to Criminals \u2014 Because of a Fake Video Call",
+  "current_id": "L00100",
+  "current_title": "Richest People on Earth — From Least to Most Wealthy",
   "phase": "production",
   "steps": {
     "research": "done",
-    "script": "done",
-    "script_score": 92,
-    "audio": "done",
+    "script": "pending",
+    "script_score": null,
+    "audio": "pending",
+    "video": "pending",
     "thumbnail": "pending",
-    "video": "done",
-    "metadata": "done",
-    "publish": "done",
-    "youtube_id": "sUQq321Q_T0"
+    "metadata": "pending",
+    "publish": "pending",
+    "youtube_id": null
   },
-  "queue_position": 1,
+  "queue_position": 2,
   "phase_2_database": true,
   "short_ideas_total": 1800,
   "long_ideas_total": 150

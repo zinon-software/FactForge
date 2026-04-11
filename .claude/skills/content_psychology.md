@@ -541,3 +541,65 @@ BEFORE writing any script:
 This skill file is the difference between a video that gets 1,000 views
 and a video that gets 10,000,000 views.
 Apply it without exception to every single piece of content produced.
+
+---
+
+## ⚡ PART 10 — PRODUCTION QUALITY STANDARDS (MANDATORY — Added from User Feedback)
+
+These rules are PERMANENT and apply to every video without exception.
+Do NOT produce a video that violates any of these.
+
+### Hook Quality — Non-Negotiable
+```
+❌ NEVER: "In January 2024, an employee joined a video call..."
+✅ ALWAYS: Start with the consequence, not the context.
+           "A finance worker wired $25 million to criminals."
+           Context comes AFTER the shock, never before it.
+
+❌ NEVER: Hook longer than 12 words
+✅ ALWAYS: Count the words. Rewrite until ≤ 12.
+
+❌ NEVER: Hook that requires prior knowledge
+✅ ALWAYS: Any stranger should feel the punch of the first sentence instantly.
+```
+
+### Content Density — Every Sentence Must Earn Its Place
+```
+- Remove any sentence that could be cut without losing information
+- Every sentence must either: (a) deliver new information, OR (b) amplify shock
+- Transitions like "Here's what most people don't know" are ONLY allowed if
+  they create a genuine tension before a reveal — not as filler
+- Minimum 3 hard facts (verifiable numbers or specific events) per Short
+```
+
+### Segment Escalation — Never Flat
+```
+Map every script before writing:
+Level 1 (surprising): opens the video
+Level 2 (shocking): middle of the video
+Level 3 (mind-blowing): 80% through the video — this is the peak
+CTA: follows immediately after Level 3
+
+If any segment feels equal or weaker than the previous one, reorder or replace it.
+Viewer attention is a downward slope — fight it by always going higher.
+```
+
+### Numbers — Mandatory in Every Short
+```
+Every Short MUST contain at least 2 specific numbers.
+Numbers are the most shareable element in factual content.
+
+Format rules for TTS:
+- Always spoken as words: "twenty-five million" not "$25M"  
+- Include context: "twenty-five million dollars — more than most people earn in 300 lifetimes"
+- Comparisons make numbers land: "the cost of seventeen thousand iPhones"
+```
+
+### CTA — Specific, Not Generic
+```
+❌ "Like and subscribe!"
+❌ "Follow for more content!"
+✅ "Follow this channel. Because we cover what most people don't find out until it's too late."
+✅ CTAs must connect to the emotion the video just created (fear, outrage, awe)
+✅ Imply exclusivity: the viewer is now part of a group that knows the truth
+```

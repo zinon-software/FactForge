@@ -19,6 +19,7 @@ import { AccentLine, CategoryBadge, Watermark } from "../components/AccentLine";
 import { CountUpNumber } from "../components/CountUpNumber";
 import { ImpactFlash, ScalePunch } from "../components/ImpactFlash";
 import { Particles } from "../components/Particles";
+import { SegmentBackground } from "../components/SegmentBackground";
 import { TopProgressBar } from "../components/TopProgressBar";
 import { WordByWordReveal } from "../components/WordByWordReveal";
 import { COLORS, ColorTheme, getAccentColor } from "../constants/colors";
@@ -38,6 +39,9 @@ export const segmentSchema = z.object({
     "number",     // count-up statistic
     "cta",        // call to action
   ]),
+  // per-segment background video (staticFile key, e.g. "bg_videos/scene_call.mp4")
+  backgroundVideo: z.string().optional(),
+  kenBurns: z.enum(["zoom-in", "zoom-out", "pan-left", "pan-right"]).optional(),
   // for type==="number"
   numberValue: z.number().optional(),
   numberPrefix: z.string().optional(),
@@ -87,11 +91,16 @@ const Vignette: React.FC = () => (
 interface SegmentViewProps {
   seg: z.infer<typeof segmentSchema>;
   accentColor: string;
+  globalBgGradient: string;
 }
 
-const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor }) => {
+const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor, globalBgGradient }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+
+  const KB_MODES: Array<"zoom-in" | "zoom-out" | "pan-left" | "pan-right"> =
+    ["zoom-in", "zoom-out", "pan-left", "pan-right"];
+  const kenBurns = seg.kenBurns ?? KB_MODES[seg.startFrame % 4];
 
   // Exit: fade + slide up when near segment end
   const segDuration = seg.endFrame - seg.startFrame;
@@ -105,13 +114,27 @@ const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor }) => {
     extrapolateRight: "clamp",
   });
 
+  // ── Per-segment background ────────────────────────────────────────────────
+  const bg = seg.backgroundVideo ? (
+    <SegmentBackground
+      src={seg.backgroundVideo}
+      kenBurns={kenBurns}
+      overlayOpacity={seg.type === "impact" ? 0.72 : 0.62}
+      accentColor={accentColor}
+    />
+  ) : (
+    <AbsoluteFill style={{ background: globalBgGradient }} />
+  );
+
   // ── HOOK ──────────────────────────────────────────────────────────────────
   if (seg.type === "hook") {
     const entrance = spring({ frame, fps, config: { damping: 10, stiffness: 160 } });
     const scale = interpolate(entrance, [0, 1], [0.82, 1]);
 
     return (
-      <AbsoluteFill
+      <AbsoluteFill>
+        {bg}
+        <AbsoluteFill
         style={{
           justifyContent: "center",
           alignItems: "center",
@@ -133,6 +156,7 @@ const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor }) => {
             <AccentLine accentColor={accentColor} maxWidth={320} height={4} delayFrames={18} />
           </div>
         </div>
+        </AbsoluteFill>
       </AbsoluteFill>
     );
   }
@@ -140,7 +164,8 @@ const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor }) => {
   // ── IMPACT ────────────────────────────────────────────────────────────────
   if (seg.type === "impact") {
     return (
-      <>
+      <AbsoluteFill>
+        {bg}
         <ImpactFlash accentColor={accentColor} flashDurationFrames={10} />
         <AbsoluteFill
           style={{
@@ -162,14 +187,15 @@ const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor }) => {
             />
           </ScalePunch>
         </AbsoluteFill>
-      </>
+      </AbsoluteFill>
     );
   }
 
   // ── COUNT-UP NUMBER ───────────────────────────────────────────────────────
   if (seg.type === "number" && seg.numberValue !== undefined) {
     return (
-      <>
+      <AbsoluteFill>
+        {bg}
         <ImpactFlash accentColor={accentColor} flashDurationFrames={6} />
         <AbsoluteFill
           style={{
@@ -218,7 +244,7 @@ const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor }) => {
             </div>
           )}
         </AbsoluteFill>
-      </>
+      </AbsoluteFill>
     );
   }
 
@@ -228,6 +254,8 @@ const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor }) => {
     const ctaOpacity = interpolate(ctaEntrance, [0, 1], [0, 1]);
 
     return (
+      <AbsoluteFill>
+        {bg}
       <AbsoluteFill
         style={{
           justifyContent: "center",
@@ -267,30 +295,34 @@ const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor }) => {
           />
         </div>
       </AbsoluteFill>
+      </AbsoluteFill>
     );
   }
 
   // ── FACT (default) ────────────────────────────────────────────────────────
   return (
-    <AbsoluteFill
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "60px 64px",
-        opacity: exitOpacity,
-        transform: `translateY(${exitY}px)`,
-      }}
-    >
-      <div style={{ textAlign: "center" }}>
-        <WordByWordReveal
-          text={seg.text}
-          fontSize={FONT_SIZES.FACT}
-          color={COLORS.TEXT_PRIMARY}
-          accentColor={accentColor}
-          staggerFrames={4}
-          highlightWords={seg.highlightWords ?? []}
-        />
-      </div>
+    <AbsoluteFill>
+      {bg}
+      <AbsoluteFill
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "60px 64px",
+          opacity: exitOpacity,
+          transform: `translateY(${exitY}px)`,
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <WordByWordReveal
+            text={seg.text}
+            fontSize={FONT_SIZES.FACT}
+            color={COLORS.TEXT_PRIMARY}
+            accentColor={accentColor}
+            staggerFrames={4}
+            highlightWords={seg.highlightWords ?? []}
+          />
+        </div>
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
@@ -311,30 +343,8 @@ export const ShortVideo: React.FC<ShortVideoProps> = ({
   return (
     <AbsoluteFill style={{ backgroundColor: COLORS.BG_PRIMARY }}>
 
-      {/* ── Layer 1: Background ─────────────────────────────────────────── */}
-      {backgroundVideoUrl ? (
-        <AbsoluteFill>
-          <Video
-            src={backgroundVideoUrl}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              filter: "blur(10px) brightness(0.28) saturate(0.6)",
-            }}
-          />
-        </AbsoluteFill>
-      ) : (
-        <AbsoluteFill style={{ background: bgGradient }} />
-      )}
-
-      {/* Dark overlay */}
-      <AbsoluteFill
-        style={{ backgroundColor: "rgba(10,10,15,0.72)", pointerEvents: "none" }}
-      />
-
-      {/* Vignette */}
-      <Vignette />
+      {/* ── Layer 1: Global fallback background (hidden by segment backgrounds) */}
+      <AbsoluteFill style={{ background: bgGradient }} />
 
       {/* ── Layer 2: Ambient particles ───────────────────────────────────── */}
       <Particles count={12} accentColor={accentColor} width={1080} height={1920} />
@@ -345,14 +355,14 @@ export const ShortVideo: React.FC<ShortVideoProps> = ({
       {/* ── Layer 4: Category badge ──────────────────────────────────────── */}
       <CategoryBadge label={categoryLabel} accentColor={accentColor} />
 
-      {/* ── Layer 5: Content segments ────────────────────────────────────── */}
+      {/* ── Layer 5: Content segments (each has own background) ─────────── */}
       {segments.map((seg, i) => (
         <Sequence
           key={i}
           from={seg.startFrame}
           durationInFrames={seg.endFrame - seg.startFrame}
         >
-          <SegmentView seg={seg} accentColor={accentColor} />
+          <SegmentView seg={seg} accentColor={accentColor} globalBgGradient={bgGradient} />
         </Sequence>
       ))}
 

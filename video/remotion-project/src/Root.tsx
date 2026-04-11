@@ -2,6 +2,7 @@ import React from "react";
 import { Composition } from "remotion";
 import { LongVideo, longVideoSchema } from "./compositions/LongVideo";
 import { ShortVideo, shortVideoSchema } from "./compositions/ShortVideo";
+import { WealthRanking, wealthRankingSchema } from "./compositions/WealthRanking";
 
 export const Root: React.FC = () => {
   return (
@@ -57,6 +58,22 @@ export const Root: React.FC = () => {
           audioFile: null,
           backgroundVideoUrl: null,
           colorTheme: "general",
+        }}
+      />
+      {/* Wealth Ranking: 1920×1080, 30fps */}
+      <Composition
+        id="WealthRanking"
+        component={WealthRanking}
+        durationInFrames={30 * 420}
+        fps={30}
+        width={1920}
+        height={1080}
+        schema={wealthRankingSchema}
+        defaultProps={{
+          videoId: "L00100",
+          audioFile: null,
+          totalDurationFrames: 12600,
+          segments: [],
         }}
       />
     </>
