@@ -1165,33 +1165,6 @@
       "ctr": null
     },
     {
-      "id": "S00044",
-      "title": "Taiwan Makes 90% of the World's Most Advanced Microchips",
-      "angle": "geopolitical_comparison",
-      "format": "shocking_stat",
-      "category": "us_vs_china",
-      "hook": "A single company on a small island controls the world's most critical technology",
-      "controversy_score": 85,
-      "trending_score": 88,
-      "evergreen_score": 82,
-      "priority_score": 85,
-      "estimated_duration_seconds": 52,
-      "key_facts": [
-        "TSMC makes 92% of chips under 10 nanometers",
-        "If Taiwan stops producing chips global economy collapses within weeks",
-        "US passed $52 billion CHIPS Act to reduce this dependence"
-      ],
-      "sources": [
-        "Bloomberg",
-        "US Semiconductor Industry Association"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "S00045",
       "title": "The Human Body Replaces Itself Completely Every 7 Years — Except Your Brain",
       "angle": "shocking_stats",
@@ -5976,33 +5949,6 @@
       "ctr": null
     },
     {
-      "id": "S00221",
-      "title": "Iran's Nuclear Programme vs Israel's Undeclared Arsenal",
-      "angle": "geopolitical_comparison",
-      "format": "comparison",
-      "category": "military_geopolitics",
-      "hook": "One country is sanctioned for possibly seeking nuclear weapons; the other has had them for 50 years and admits nothing.",
-      "controversy_score": 95,
-      "trending_score": 92,
-      "evergreen_score": 85,
-      "priority_score": 91.3,
-      "estimated_duration_seconds": 58,
-      "key_facts": [
-        "Israel is widely believed to possess 80–400 nuclear warheads but has never confirmed or denied this, maintaining a policy of 'nuclear ambiguity'",
-        "Iran has enriched uranium to 60% purity as of 2024 — weapons grade is 90% — and the US has sanctioned its economy for a potential weapon it may not have",
-        "Israel is the only Middle Eastern nuclear power and the only country outside the NPT along with India and Pakistan"
-      ],
-      "sources": [
-        "SIPRI Nuclear Weapons Status 2024",
-        "Avner Cohen - The Worst-Kept Secret: Israel's Bargain with the Bomb"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "S00222",
       "title": "The Ancient City That Had Sewage Systems Before Rome Was Even Founded",
       "angle": "shocking_stats",
@@ -8433,33 +8379,6 @@
       "ctr": null
     },
     {
-      "id": "S00312",
-      "title": "How Taiwan Became the Most Important Island on Earth in 2024",
-      "angle": "geopolitical_comparison",
-      "format": "hidden_truth",
-      "category": "us_vs_china",
-      "hook": "An island of 23 million people is single-handedly preventing China from becoming the world's dominant military power.",
-      "controversy_score": 90,
-      "trending_score": 96,
-      "evergreen_score": 85,
-      "priority_score": 91.3,
-      "estimated_duration_seconds": 58,
-      "key_facts": [
-        "Taiwan's TSMC produces over 90% of the world's chips below 5 nanometres — the processors in every advanced AI system, fighter jet, and nuclear submarine control system on Earth",
-        "If China took control of TSMC, it would gain leverage over every advanced military and economy on Earth simultaneously",
-        "The US has pledged to defend Taiwan under the Taiwan Relations Act (1979); China has pledged reunification by 2049 under Xi Jinping"
-      ],
-      "sources": [
-        "Chris Miller - Chip War",
-        "Brookings Institution Taiwan Strait Scenarios 2024"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "S00313",
       "title": "The Gulf Stream Is Slowing Down — And It Could Freeze Europe",
       "angle": "shocking_stats",
@@ -9991,33 +9910,6 @@
       "sources": [
         "The Economist - Catholic Church Wealth Analysis 2012 (cited widely)",
         "Jason Berry - Render Unto Rome"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S00370",
-      "title": "Israel vs Palestine: What the Land Looked Like in 1917 vs 2024",
-      "angle": "geopolitical_comparison",
-      "format": "timeline",
-      "category": "military_geopolitics",
-      "hook": "A comparison of maps 100 years apart tells the story that 10,000 articles can't.",
-      "controversy_score": 98,
-      "trending_score": 95,
-      "evergreen_score": 85,
-      "priority_score": 93.1,
-      "estimated_duration_seconds": 62,
-      "key_facts": [
-        "Under the Ottoman Empire (pre-1917), the region of Palestine had a population approximately 87% Arab and 10% Jewish",
-        "Following the Balfour Declaration (1917), UN Partition Plan (1947), and subsequent wars, Israeli state control expanded from the 56% offered in the 1947 partition to approximately 78% after 1948 and 100% after 1967",
-        "Gaza (2.3 million people in 365 km²) is the world's most densely populated territory; the West Bank has over 700 Israeli settlements housing 700,000 Israeli settlers as of 2024"
-      ],
-      "sources": [
-        "UNOCHA Occupied Palestinian Territories 2024",
-        "B'Tselem Israeli Human Rights Organisation Settlement Data 2024"
       ],
       "status": "pending",
       "produced_date": null,
@@ -14365,33 +14257,6 @@
       "sources": [
         "World Bank ID4D Dataset 2023",
         "UNICEF Birth Registration Global Statistics 2024"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S00532",
-      "title": "The Arab-Israeli Peace Deals Nobody Expected — Abraham Accords Explained",
-      "angle": "geopolitical_comparison",
-      "format": "timeline",
-      "category": "military_geopolitics",
-      "hook": "Four Arab states normalised relations with Israel in 2020 — without a single concession to Palestinians. The Arab Street's reaction surprised everyone.",
-      "controversy_score": 90,
-      "trending_score": 88,
-      "evergreen_score": 82,
-      "priority_score": 87.4,
-      "estimated_duration_seconds": 60,
-      "key_facts": [
-        "The Abraham Accords (2020) normalised relations between Israel and UAE, Bahrain, Sudan, and Morocco — the largest Arab-Israeli diplomatic breakthrough since Egypt (1979) and Jordan (1994)",
-        "All four countries received specific US rewards: UAE got F-35 jets approved, Sudan was removed from the terror list, Morocco got US recognition of its Western Sahara claim",
-        "Polls across the Arab world showed 80%+ opposition to normalisation without a Palestinian state — yet the governments signed anyway, revealing the growing disconnect between Arab leaders and their publics"
-      ],
-      "sources": [
-        "Council on Foreign Relations Abraham Accords Analysis 2024",
-        "Arab Barometer Poll on Normalisation 2021"
       ],
       "status": "pending",
       "produced_date": null,
@@ -26365,33 +26230,6 @@
       "ctr": null
     },
     {
-      "id": "S01026",
-      "title": "The Crusader Kingdom That Survived 200 Years in Arab Land — The Kingdom of Jerusalem",
-      "angle": "islamic_history",
-      "format": "timeline",
-      "category": "military_geopolitics",
-      "hook": "A Christian kingdom survived in the heart of the Islamic world for 200 years — in what is now Israel and Palestine",
-      "controversy_score": 82,
-      "trending_score": 68,
-      "evergreen_score": 90,
-      "priority_score": 80,
-      "estimated_duration_seconds": 52,
-      "key_facts": [
-        "The Kingdom of Jerusalem (1099–1291) was a feudal state centered on modern Israel/Palestine",
-        "At its peak it covered modern Israel, West Bank, parts of Jordan, Lebanon, and Syria",
-        "Despite being surrounded by Muslim powers, it survived through trade, alliances, and the Crusaders' formidable fortresses"
-      ],
-      "sources": [
-        "Runciman, A History of the Crusades",
-        "Prawer, The Latin Kingdom of Jerusalem"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "S01027",
       "title": "The Countries With the Most Languages Spoken — A Map of Diversity",
       "angle": "shocking_stats",
@@ -26573,33 +26411,6 @@
       "sources": [
         "US Energy Information Administration",
         "Daniel Yergin, The Prize: The Epic Quest for Oil"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S01034",
-      "title": "The First Arab Nobel Peace Prize Winner — Anwar Sadat's Controversial Legacy",
-      "angle": "islamic_history",
-      "format": "hidden_truth",
-      "category": "islamic_arab_history",
-      "hook": "Anwar Sadat won the Nobel Peace Prize for making peace with Israel — then was assassinated by his own army for it",
-      "controversy_score": 88,
-      "trending_score": 70,
-      "evergreen_score": 90,
-      "priority_score": 82,
-      "estimated_duration_seconds": 52,
-      "key_facts": [
-        "Anwar Sadat was the first Arab leader to recognize Israel — signing the 1979 Camp David Accords with Menachem Begin",
-        "He was assassinated by Egyptian Islamic Jihad on October 6, 1981 — during a military parade",
-        "Egypt was expelled from the Arab League for 10 years after the peace treaty — readmitted in 1989"
-      ],
-      "sources": [
-        "Avi Shlaim, The Iron Wall",
-        "Kenneth Stein, Heroic Diplomacy: Sadat, Kissinger, Carter, Begin, and the Quest for Arab-Israeli Peace"
       ],
       "status": "pending",
       "produced_date": null,
@@ -27383,33 +27194,6 @@
       "sources": [
         "Holt-Lunstad et al., Perspectives on Psychological Science 2015",
         "US Surgeon General Advisory on Loneliness 2023"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S00964",
-      "title": "The Real Reason China and the US Are in a Chip War — Semiconductors Explained",
-      "angle": "geopolitical_comparison",
-      "format": "hidden_truth",
-      "category": "us_vs_china",
-      "hook": "The world's most advanced semiconductors are made in one factory in Taiwan — and both the US and China know that whoever controls it controls the future",
-      "controversy_score": 88,
-      "trending_score": 93,
-      "evergreen_score": 88,
-      "priority_score": 90,
-      "estimated_duration_seconds": 53,
-      "key_facts": [
-        "TSMC (Taiwan) produces 90% of the world's most advanced semiconductors (below 7nm)",
-        "The US CHIPS Act ($52 billion) was explicitly designed to prevent Chinese semiconductor dominance",
-        "China's best domestically produced chip is 2 generations behind TSMC's current technology — and the gap is growing"
-      ],
-      "sources": [
-        "CSIS Semiconductor Supply Chain Analysis",
-        "SEMI World Fab Watch Database 2024"
       ],
       "status": "pending",
       "produced_date": null,
@@ -30041,33 +29825,6 @@
       "ctr": null
     },
     {
-      "id": "S01112",
-      "title": "How Much Does War Cost? Ukraine Conflict at $1 Trillion and Counting",
-      "angle": "geopolitical_comparison",
-      "format": "price_reveal",
-      "category": "price_reveals",
-      "hook": "The Ukraine war has cost over $1 trillion in economic damage — enough to feed every hungry person on Earth for 20 years.",
-      "controversy_score": 92,
-      "trending_score": 95,
-      "evergreen_score": 82,
-      "priority_score": 90,
-      "estimated_duration_seconds": 58,
-      "key_facts": [
-        "World Bank estimates Ukraine's reconstruction needs at $486 billion as of 2024",
-        "Total war-related economic damage to Ukraine exceeds $1 trillion including GDP losses",
-        "The World Food Programme's annual budget to end hunger is $14 billion"
-      ],
-      "sources": [
-        "World Bank Ukraine Rapid Damage Assessment 2024",
-        "World Food Programme Annual Report"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "S01113",
       "title": "The Poisoning That Killed a City: Flint Michigan's Water Crisis 10 Years Later",
       "angle": "shocking_stats",
@@ -31926,33 +31683,6 @@
       "sources": [
         "NASA Psyche Mission Overview",
         "Arizona State University Psyche Science Team"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S01182",
-      "title": "The Abandoned City That Nature Reclaimed in 30 Years: Chernobyl's Pripyat",
-      "angle": "shocking_stats",
-      "format": "hidden_truth",
-      "category": "architecture_engineering",
-      "hook": "Chernobyl's abandoned city of Pripyat now has more wildlife than any national park in Ukraine — radiation turns out to be less harmful than humans.",
-      "controversy_score": 88,
-      "trending_score": 88,
-      "evergreen_score": 90,
-      "priority_score": 89,
-      "estimated_duration_seconds": 57,
-      "key_facts": [
-        "Pripyat (population 50,000) was evacuated in 36 hours after the 1986 reactor explosion",
-        "The Chernobyl Exclusion Zone now has thriving populations of wolves, bison, bears, and lynx",
-        "Wildlife biomass in the exclusion zone is comparable to uncontaminated European nature reserves"
-      ],
-      "sources": [
-        "Deryabina et al. - Current Biology 2015",
-        "Chernobyl Exclusion Zone Ecology Study, University of Georgia"
       ],
       "status": "pending",
       "produced_date": null,
@@ -34931,33 +34661,6 @@
       "ctr": null
     },
     {
-      "id": "S01293",
-      "title": "The Country That Quarantined an Entire Religion: China's Xinjiang Surveillance State",
-      "angle": "geopolitical_comparison",
-      "format": "hidden_truth",
-      "category": "crime_justice",
-      "hook": "China has built the world's most comprehensive surveillance state in Xinjiang — targeting 12 million Uyghur Muslims.",
-      "controversy_score": 97,
-      "trending_score": 92,
-      "evergreen_score": 90,
-      "priority_score": 93,
-      "estimated_duration_seconds": 58,
-      "key_facts": [
-        "China operates an estimated 1,400+ detention facilities in Xinjiang with 1.8 million estimated detainees at peak",
-        "The region has 1 police station per 500 residents — 3–10x the density of mainland China",
-        "Leaked CCP documents (the China Cables) show shoot-to-kill orders for escape attempts"
-      ],
-      "sources": [
-        "Australian Strategic Policy Institute Xinjiang Data Project",
-        "ICIJ China Cables 2019"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "S01294",
       "title": "The Parallel AI Research Race: Google, Meta, OpenAI — Who Is Really Winning?",
       "angle": "geopolitical_comparison",
@@ -35920,34 +35623,6 @@
         "CDC National Health Statistics",
         "Japan Ministry of Health Nutrition Survey",
         "WHO Obesity Report 2023"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S01329",
-      "title": "East vs West: Water Security and Scarcity Compared",
-      "angle": "geopolitical_comparison",
-      "format": "comparison",
-      "category": "east_vs_west",
-      "hook": "Israel grows crops in the desert with recycled water while California pays farmers to not plant.",
-      "controversy_score": 80,
-      "trending_score": 78,
-      "evergreen_score": 90,
-      "priority_score": 83,
-      "estimated_duration_seconds": 55,
-      "key_facts": [
-        "Israel recycles 90% of its wastewater — Spain recycles 25%, the US recycles 8%",
-        "Singapore has achieved water self-sufficiency through NEWater technology in a city with no rivers",
-        "The Yellow River in China no longer reaches the sea for 200 days per year due to overuse"
-      ],
-      "sources": [
-        "FAO AQUASTAT Database",
-        "PUB Singapore Water Story",
-        "UN World Water Development Report 2023"
       ],
       "status": "pending",
       "produced_date": null,
@@ -39868,34 +39543,6 @@
         "IEA Carbon Capture and Storage Review 2023",
         "Global CCS Institute Facilities Database",
         "IPCC Climate Mitigation Pathways Report"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S01470",
-      "title": "US vs China: The Taiwan Question — What Happens Next?",
-      "angle": "geopolitical_comparison",
-      "format": "what_if",
-      "category": "us_vs_china",
-      "hook": "Taiwan makes 90% of the world's most advanced chips. If China takes it, the global economy collapses in 6 months.",
-      "controversy_score": 93,
-      "trending_score": 95,
-      "evergreen_score": 90,
-      "priority_score": 93,
-      "estimated_duration_seconds": 60,
-      "key_facts": [
-        "TSMC produces 90% of chips below 7nm — used in every advanced smartphone, AI system, and military weapon",
-        "US war games for a Taiwan conflict consistently show the US losing or suffering catastrophic losses",
-        "A conflict over Taiwan would cost the global economy $2.5 trillion — more than COVID-19's first year"
-      ],
-      "sources": [
-        "Bloomberg Taiwan Semiconductor Vulnerability Report",
-        "CSIS War Games Taiwan Analysis 2023",
-        "IMF Taiwan Conflict Economic Impact Study"
       ],
       "status": "pending",
       "produced_date": null,
@@ -47149,33 +46796,6 @@
       "sources": [
         "UNESCO World Heritage",
         "Jonathan Bloom — Architecture of the Islamic World"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S01736",
-      "title": "Ibn Jubayr: The Spanish Muslim Who Described the Crusader Kingdom From Inside",
-      "angle": "islamic_history",
-      "format": "hidden_truth",
-      "category": "islamic_arab_history",
-      "hook": "An Andalusian Muslim traveler passed through Crusader-held Palestine in 1184 AD and wrote the most detailed Arab description of life under Crusader rule",
-      "controversy_score": 80,
-      "trending_score": 72,
-      "evergreen_score": 90,
-      "priority_score": 81,
-      "estimated_duration_seconds": 52,
-      "key_facts": [
-        "Ibn Jubayr traveled from Granada to Mecca in 1183–1185 AD, passing through Crusader Palestine",
-        "He described Muslim merchants trading freely in Crusader Acre and noted that some Muslims preferred Crusader governance to Muslim rulers",
-        "His Rihla (travel account) is one of the most important documents for understanding Arab-Crusader coexistence"
-      ],
-      "sources": [
-        "R.J.C. Broadhurst — The Travels of Ibn Jubayr",
-        "Britannica"
       ],
       "status": "pending",
       "produced_date": null,

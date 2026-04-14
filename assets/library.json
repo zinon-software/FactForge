@@ -1,0 +1,437 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-04-13",
+  "description": "FactForge asset library — all files are royalty-free for commercial use",
+  "videos": [
+    {
+      "id": "scene_ai",
+      "file": "bg_videos/scene_ai.mp4",
+      "path_remotion": "bg_videos/scene_ai.mp4",
+      "tags": [
+        "ai",
+        "technology",
+        "digital",
+        "neural",
+        "data",
+        "future",
+        "computer"
+      ],
+      "mood": "tech",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 6.8,
+      "quality": "good"
+    },
+    {
+      "id": "scene_ai_law",
+      "file": "bg_videos/scene_ai_law.mp4",
+      "path_remotion": "bg_videos/scene_ai_law.mp4",
+      "tags": [
+        "ai",
+        "law",
+        "legal",
+        "justice",
+        "technology",
+        "document"
+      ],
+      "mood": "serious",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 0.86,
+      "quality": "good"
+    },
+    {
+      "id": "scene_call",
+      "file": "bg_videos/scene_call.mp4",
+      "path_remotion": "bg_videos/scene_call.mp4",
+      "tags": [
+        "video call",
+        "meeting",
+        "zoom",
+        "conference",
+        "business",
+        "deepfake"
+      ],
+      "mood": "neutral",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 2.0,
+      "quality": "good"
+    },
+    {
+      "id": "scene_chatgpt",
+      "file": "bg_videos/scene_chatgpt.mp4",
+      "path_remotion": "bg_videos/scene_chatgpt.mp4",
+      "tags": [
+        "chatgpt",
+        "ai",
+        "chatbot",
+        "typing",
+        "technology",
+        "language model"
+      ],
+      "mood": "tech",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 2.2,
+      "quality": "good"
+    },
+    {
+      "id": "scene_cyber",
+      "file": "bg_videos/scene_cyber.mp4",
+      "path_remotion": "bg_videos/scene_cyber.mp4",
+      "tags": [
+        "cyber",
+        "hacking",
+        "security",
+        "digital",
+        "dark",
+        "matrix",
+        "code",
+        "surveillance"
+      ],
+      "mood": "dark_tech",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 4.4,
+      "quality": "good"
+    },
+    {
+      "id": "scene_govt",
+      "file": "bg_videos/scene_govt.mp4",
+      "path_remotion": "bg_videos/scene_govt.mp4",
+      "tags": [
+        "government",
+        "politics",
+        "parliament",
+        "law",
+        "policy",
+        "senate",
+        "congress",
+        "institution"
+      ],
+      "mood": "serious",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 2.0,
+      "quality": "good"
+    },
+    {
+      "id": "scene_money",
+      "file": "bg_videos/scene_money.mp4",
+      "path_remotion": "bg_videos/scene_money.mp4",
+      "tags": [
+        "money",
+        "cash",
+        "wealth",
+        "finance",
+        "dollar",
+        "economy",
+        "rich",
+        "price",
+        "cost"
+      ],
+      "mood": "wealth",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 0.6,
+      "quality": "good"
+    },
+    {
+      "id": "scene_office",
+      "file": "bg_videos/scene_office.mp4",
+      "path_remotion": "bg_videos/scene_office.mp4",
+      "tags": [
+        "office",
+        "work",
+        "business",
+        "corporate",
+        "meeting",
+        "desk",
+        "professional"
+      ],
+      "mood": "neutral",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 2.7,
+      "quality": "good"
+    },
+    {
+      "id": "scene_prison",
+      "file": "bg_videos/scene_prison.mp4",
+      "path_remotion": "bg_videos/scene_prison.mp4",
+      "tags": [
+        "prison",
+        "jail",
+        "crime",
+        "justice",
+        "sentence",
+        "bars",
+        "punishment",
+        "law"
+      ],
+      "mood": "dark",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 6.0,
+      "quality": "good"
+    },
+    {
+      "id": "scene_reveal",
+      "file": "bg_videos/scene_reveal.mp4",
+      "path_remotion": "bg_videos/scene_reveal.mp4",
+      "tags": [
+        "reveal",
+        "dramatic",
+        "discovery",
+        "shock",
+        "twist",
+        "announcement",
+        "breaking"
+      ],
+      "mood": "dramatic",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 1.0,
+      "quality": "good"
+    },
+    {
+      "id": "scene_vote",
+      "file": "bg_videos/scene_vote.mp4",
+      "path_remotion": "bg_videos/scene_vote.mp4",
+      "tags": [
+        "vote",
+        "election",
+        "democracy",
+        "congress",
+        "decision",
+        "parliament",
+        "law",
+        "majority"
+      ],
+      "mood": "serious",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 13.0,
+      "quality": "good"
+    },
+    {
+      "id": "scene_factory",
+      "file": "bg_videos/scene_factory.mp4",
+      "path_remotion": "bg_videos/scene_factory.mp4",
+      "tags": [
+        "factory",
+        "manufacturing",
+        "production",
+        "industry",
+        "workers",
+        "factory manufacturing production industry workers"
+      ],
+      "mood": "neutral",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 5.3,
+      "quality": "good"
+    },
+    {
+      "id": "scene_hospital",
+      "file": "bg_videos/scene_hospital.mp4",
+      "path_remotion": "bg_videos/scene_hospital.mp4",
+      "tags": [
+        "hospital",
+        "medical",
+        "doctor",
+        "pharmacy",
+        "pills",
+        "hospital medical doctor pharmacy pills"
+      ],
+      "mood": "neutral",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 8.6,
+      "quality": "good"
+    },
+    {
+      "id": "scene_court",
+      "file": "bg_videos/scene_court.mp4",
+      "path_remotion": "bg_videos/scene_court.mp4",
+      "tags": [
+        "court",
+        "trial",
+        "lawsuit",
+        "judge",
+        "gavel",
+        "court trial lawsuit judge gavel"
+      ],
+      "mood": "neutral",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 25.4,
+      "quality": "good"
+    },
+    {
+      "id": "scene_city_aerial",
+      "file": "bg_videos/scene_city_aerial.mp4",
+      "path_remotion": "bg_videos/scene_city_aerial.mp4",
+      "tags": [
+        "city",
+        "aerial",
+        "skyline",
+        "urban",
+        "buildings",
+        "city aerial skyline urban buildings"
+      ],
+      "mood": "neutral",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 45.4,
+      "quality": "good"
+    },
+    {
+      "id": "scene_school",
+      "file": "bg_videos/scene_school.mp4",
+      "path_remotion": "bg_videos/scene_school.mp4",
+      "tags": [
+        "school",
+        "classroom",
+        "education",
+        "university",
+        "students",
+        "school classroom education university students"
+      ],
+      "mood": "neutral",
+      "source": "pexels",
+      "license": "pexels_free_commercial",
+      "size_mb": 94.2,
+      "quality": "good"
+    }
+  ],
+  "images": [
+    {
+      "id": "elon_musk",
+      "file": "images/elon_musk.jpg",
+      "tags": [
+        "elon musk",
+        "billionaire",
+        "tesla",
+        "spacex",
+        "tech ceo",
+        "richest"
+      ],
+      "person": "Elon Musk",
+      "source": "wikipedia",
+      "license": "wikipedia_cc",
+      "quality": "good"
+    },
+    {
+      "id": "jeff_bezos",
+      "file": "images/jeff_bezos.jpg",
+      "tags": [
+        "jeff bezos",
+        "amazon",
+        "billionaire",
+        "richest",
+        "tech ceo"
+      ],
+      "person": "Jeff Bezos",
+      "source": "wikipedia",
+      "license": "wikipedia_cc",
+      "quality": "good"
+    },
+    {
+      "id": "mark_zuckerberg",
+      "file": "images/mark_zuckerberg.jpg",
+      "tags": [
+        "mark zuckerberg",
+        "meta",
+        "facebook",
+        "billionaire",
+        "tech ceo"
+      ],
+      "person": "Mark Zuckerberg",
+      "source": "wikipedia",
+      "license": "wikipedia_cc",
+      "quality": "good"
+    },
+    {
+      "id": "warren_buffett",
+      "file": "images/warren_buffett.jpg",
+      "tags": [
+        "warren buffett",
+        "berkshire",
+        "investor",
+        "billionaire",
+        "richest"
+      ],
+      "person": "Warren Buffett",
+      "source": "wikipedia",
+      "license": "wikipedia_cc",
+      "quality": "good"
+    },
+    {
+      "id": "larry_ellison",
+      "file": "images/larry_ellison.jpg",
+      "tags": [
+        "larry ellison",
+        "oracle",
+        "billionaire",
+        "tech ceo"
+      ],
+      "person": "Larry Ellison",
+      "source": "wikipedia",
+      "license": "wikipedia_cc",
+      "quality": "good"
+    },
+    {
+      "id": "jensen_huang",
+      "file": "images/jensen_huang.jpg",
+      "tags": [
+        "jensen huang",
+        "nvidia",
+        "ai",
+        "gpu",
+        "billionaire",
+        "tech ceo"
+      ],
+      "person": "Jensen Huang",
+      "source": "wikipedia",
+      "license": "wikipedia_cc",
+      "quality": "good"
+    },
+    {
+      "id": "larry_page",
+      "file": "images/larry_page.jpg",
+      "tags": [
+        "larry page",
+        "google",
+        "alphabet",
+        "billionaire",
+        "tech ceo"
+      ],
+      "person": "Larry Page",
+      "source": "wikipedia",
+      "license": "wikipedia_cc",
+      "quality": "good"
+    },
+    {
+      "id": "bernard_arnault",
+      "file": "images/bernard_arnault.jpg",
+      "tags": [
+        "bernard arnault",
+        "lvmh",
+        "luxury",
+        "billionaire",
+        "fashion"
+      ],
+      "person": "Bernard Arnault",
+      "source": "wikipedia",
+      "license": "wikipedia_cc",
+      "quality": "good"
+    }
+  ],
+  "missing_needed": [
+    "scene_lab_science — laboratory, DNA, research, CRISPR",
+    "scene_stock_market — finance, economy, crash, trading",
+    "scene_nature — environment, climate, earth"
+  ]
+}

@@ -11,7 +11,7 @@ export const Root: React.FC = () => {
       <Composition
         id="ShortVideo"
         component={ShortVideo}
-        durationInFrames={60 * 60}
+        durationInFrames={3600}
         fps={60}
         width={1080}
         height={1920}
@@ -46,18 +46,18 @@ export const Root: React.FC = () => {
       <Composition
         id="LongVideo"
         component={LongVideo}
-        durationInFrames={30 * 600}
+        durationInFrames={10691}
         fps={30}
         width={1920}
         height={1080}
         schema={longVideoSchema}
         defaultProps={{
-          videoId: "L00000",
-          title: "Test Long Video",
+          videoId: "L00016",
+          title: "The Wealth Gap",
           sections: [],
           audioFile: null,
           backgroundVideoUrl: null,
-          colorTheme: "general",
+          colorTheme: "wealth",
         }}
       />
       {/* Wealth Ranking: 1920×1080, 30fps */}

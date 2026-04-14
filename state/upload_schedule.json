@@ -1,5 +1,9 @@
 {
-  "pending": [
+  "created_at": "2026-04-14T00:40:07.425522+00:00",
+  "total_videos": 24,
+  "first_publish": "2026-04-14T15:00:00+00:00",
+  "last_publish": "2026-04-25T23:00:00+00:00",
+  "schedule": [
     {
       "id": "L00100",
       "title": "Richest People on Earth — From Least to Most Wealthy (2026)",
@@ -7,11 +11,12 @@
       "metadata_file": "output/L00100/metadata.json",
       "subtitles_dir": "output/L00100/subtitles",
       "ready": true,
-      "blocked_reason": null,
+      "blocked_reason": "uploadLimitExceeded — verify phone at youtube.com/verify",
       "queued_at": "2026-04-12",
+      "publish_at": "2026-04-14T15:00:00+00:00",
+      "day": 0,
       "scheduled": true,
-      "youtube_id": "TAtFwScRlMg",
-      "publish_at": "2026-04-14T15:00:00+00:00"
+      "youtube_id": "TAtFwScRlMg"
     },
     {
       "id": "S01117",
@@ -20,11 +25,12 @@
       "metadata_file": "output/S01117/metadata.json",
       "subtitles_dir": "output/S01117/subtitles",
       "ready": true,
-      "blocked_reason": null,
+      "blocked_reason": "uploadLimitExceeded — verify phone at youtube.com/verify",
       "queued_at": "2026-04-12",
+      "publish_at": "2026-04-15T17:00:00+00:00",
+      "day": 1,
       "scheduled": true,
-      "youtube_id": "Wcqw_Qpy8_g",
-      "publish_at": "2026-04-15T17:00:00+00:00"
+      "youtube_id": "Wcqw_Qpy8_g"
     },
     {
       "id": "S01279",
@@ -33,11 +39,12 @@
       "metadata_file": "output/S01279/metadata.json",
       "subtitles_dir": "output/S01279/subtitles",
       "ready": true,
-      "blocked_reason": null,
+      "blocked_reason": "uploadLimitExceeded — verify phone at youtube.com/verify",
       "queued_at": "2026-04-12",
+      "publish_at": "2026-04-15T23:00:00+00:00",
+      "day": 1,
       "scheduled": true,
-      "youtube_id": "Tz0q5gw2PgE",
-      "publish_at": "2026-04-15T23:00:00+00:00"
+      "youtube_id": "Tz0q5gw2PgE"
     },
     {
       "id": "S01062",
@@ -47,7 +54,9 @@
       "subtitles_dir": "output/S01062/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-16T17:00:00+00:00",
+      "day": 2
     },
     {
       "id": "S01110",
@@ -57,7 +66,9 @@
       "subtitles_dir": "output/S01110/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-16T23:00:00+00:00",
+      "day": 2
     },
     {
       "id": "S01155",
@@ -67,7 +78,9 @@
       "subtitles_dir": "output/S01155/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-17T17:00:00+00:00",
+      "day": 3
     },
     {
       "id": "S01183",
@@ -77,7 +90,9 @@
       "subtitles_dir": "output/S01183/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-17T23:00:00+00:00",
+      "day": 3
     },
     {
       "id": "S01185",
@@ -87,7 +102,9 @@
       "subtitles_dir": "output/S01185/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-18T17:00:00+00:00",
+      "day": 4
     },
     {
       "id": "S01190",
@@ -97,7 +114,9 @@
       "subtitles_dir": "output/S01190/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-18T23:00:00+00:00",
+      "day": 4
     },
     {
       "id": "S01215",
@@ -107,7 +126,9 @@
       "subtitles_dir": "output/S01215/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-19T17:00:00+00:00",
+      "day": 5
     },
     {
       "id": "S01224",
@@ -117,7 +138,9 @@
       "subtitles_dir": "output/S01224/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-19T23:00:00+00:00",
+      "day": 5
     },
     {
       "id": "S01267",
@@ -127,7 +150,9 @@
       "subtitles_dir": "output/S01267/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-20T17:00:00+00:00",
+      "day": 6
     },
     {
       "id": "S01268",
@@ -137,7 +162,9 @@
       "subtitles_dir": "output/S01268/subtitles",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-13"
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-20T23:00:00+00:00",
+      "day": 6
     },
     {
       "id": "L00016",
@@ -147,7 +174,9 @@
       "thumbnail_file": "output/L00016/thumbnail.png",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-20T15:00:00+00:00",
+      "day": 6
     },
     {
       "id": "S00794",
@@ -156,7 +185,9 @@
       "metadata_file": "output/S00794/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-21T17:00:00+00:00",
+      "day": 7
     },
     {
       "id": "S00925",
@@ -165,7 +196,9 @@
       "metadata_file": "output/S00925/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-21T23:00:00+00:00",
+      "day": 7
     },
     {
       "id": "S01066",
@@ -174,7 +207,9 @@
       "metadata_file": "output/S01066/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-22T17:00:00+00:00",
+      "day": 8
     },
     {
       "id": "S01080",
@@ -183,7 +218,9 @@
       "metadata_file": "output/S01080/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-22T23:00:00+00:00",
+      "day": 8
     },
     {
       "id": "S01084",
@@ -192,7 +229,9 @@
       "metadata_file": "output/S01084/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-23T17:00:00+00:00",
+      "day": 9
     },
     {
       "id": "S01097",
@@ -201,7 +240,9 @@
       "metadata_file": "output/S01097/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-23T23:00:00+00:00",
+      "day": 9
     },
     {
       "id": "S01113",
@@ -210,7 +251,9 @@
       "metadata_file": "output/S01113/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-24T17:00:00+00:00",
+      "day": 10
     },
     {
       "id": "S01128",
@@ -219,7 +262,9 @@
       "metadata_file": "output/S01128/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-24T23:00:00+00:00",
+      "day": 10
     },
     {
       "id": "S01131",
@@ -228,7 +273,9 @@
       "metadata_file": "output/S01131/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-25T17:00:00+00:00",
+      "day": 11
     },
     {
       "id": "S01644",
@@ -237,7 +284,9 @@
       "metadata_file": "output/S01644/metadata.json",
       "ready": true,
       "blocked_reason": null,
-      "queued_at": "2026-04-14"
+      "queued_at": "2026-04-14",
+      "publish_at": "2026-04-25T23:00:00+00:00",
+      "day": 11
     }
   ]
 }

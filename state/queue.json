@@ -1,7 +1,7 @@
 {
   "created": "2026-04-11T12:50:15Z",
   "last_updated": "2026-04-11T12:50:15Z",
-  "total": 100,
+  "total": 91,
   "ideas": [
     {
       "id": "S01220",
@@ -24,36 +24,9 @@
         "Hong Kong Police Force Press Release February 2024",
         "Deloitte Financial Services Deepfake Risk Report 2023"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S00370",
-      "title": "Israel vs Palestine: What the Land Looked Like in 1917 vs 2024",
-      "angle": "geopolitical_comparison",
-      "format": "timeline",
-      "category": "military_geopolitics",
-      "hook": "A comparison of maps 100 years apart tells the story that 10,000 articles can't.",
-      "controversy_score": 98,
-      "trending_score": 95,
-      "evergreen_score": 85,
-      "priority_score": 93.1,
-      "estimated_duration_seconds": 62,
-      "key_facts": [
-        "Under the Ottoman Empire (pre-1917), the region of Palestine had a population approximately 87% Arab and 10% Jewish",
-        "Following the Balfour Declaration (1917), UN Partition Plan (1947), and subsequent wars, Israeli state control expanded from the 56% offered in the 1947 partition to approximately 78% after 1948 and 100% after 1967",
-        "Gaza (2.3 million people in 365 km²) is the world's most densely populated territory; the West Bank has over 700 Israeli settlements housing 700,000 Israeli settlers as of 2024"
-      ],
-      "sources": [
-        "UNOCHA Occupied Palestinian Territories 2024",
-        "B'Tselem Israeli Human Rights Organisation Settlement Data 2024"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
+      "youtube_id": "4Eal0yDUHXs",
       "views": null,
       "ctr": null
     },
@@ -112,117 +85,6 @@
       "ctr": null
     },
     {
-      "id": "S01293",
-      "title": "The Country That Quarantined an Entire Religion: China's Xinjiang Surveillance State",
-      "angle": "geopolitical_comparison",
-      "format": "hidden_truth",
-      "category": "crime_justice",
-      "hook": "China has built the world's most comprehensive surveillance state in Xinjiang — targeting 12 million Uyghur Muslims.",
-      "controversy_score": 97,
-      "trending_score": 92,
-      "evergreen_score": 90,
-      "priority_score": 93,
-      "estimated_duration_seconds": 58,
-      "key_facts": [
-        "China operates an estimated 1,400+ detention facilities in Xinjiang with 1.8 million estimated detainees at peak",
-        "The region has 1 police station per 500 residents — 3–10x the density of mainland China",
-        "Leaked CCP documents (the China Cables) show shoot-to-kill orders for escape attempts"
-      ],
-      "sources": [
-        "Australian Strategic Policy Institute Xinjiang Data Project",
-        "ICIJ China Cables 2019"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S01470",
-      "title": "US vs China: The Taiwan Question — What Happens Next?",
-      "angle": "geopolitical_comparison",
-      "format": "what_if",
-      "category": "us_vs_china",
-      "hook": "Taiwan makes 90% of the world's most advanced chips. If China takes it, the global economy collapses in 6 months.",
-      "controversy_score": 93,
-      "trending_score": 95,
-      "evergreen_score": 90,
-      "priority_score": 93,
-      "estimated_duration_seconds": 60,
-      "key_facts": [
-        "TSMC produces 90% of chips below 7nm — used in every advanced smartphone, AI system, and military weapon",
-        "US war games for a Taiwan conflict consistently show the US losing or suffering catastrophic losses",
-        "A conflict over Taiwan would cost the global economy $2.5 trillion — more than COVID-19's first year"
-      ],
-      "sources": [
-        "Bloomberg Taiwan Semiconductor Vulnerability Report",
-        "CSIS War Games Taiwan Analysis 2023",
-        "IMF Taiwan Conflict Economic Impact Study"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "L00045",
-      "title": "Israel-Palestine: The 100-Year Conflict Explained from Both Sides",
-      "angle": "geopolitical_comparison",
-      "format": "deep_dive",
-      "category": "military_geopolitics",
-      "hook": "The Israeli-Palestinian conflict is over 100 years old and involves two peoples with legitimate claims to the same land. Understanding it requires going back to 1917 — when Britain made two incompatible promises.",
-      "controversy_score": 95,
-      "trending_score": 95,
-      "evergreen_score": 88,
-      "priority_score": 93,
-      "estimated_duration_seconds": 900,
-      "key_facts": [
-        "The 1917 Balfour Declaration promised a Jewish homeland in Palestine while simultaneously promising not to harm Arab rights",
-        "In 1948 (the Nakba), 700,000 Palestinians fled or were expelled — creating a refugee crisis that continues today",
-        "Israel controls a nuclear arsenal of approximately 90 warheads but has never officially acknowledged it",
-        "The two-state solution has been discussed since 1937 but never implemented due to settlements now housing 700,000 Israelis in the West Bank"
-      ],
-      "sources": [
-        "The Israel-Palestine Conflict: A History by James Gelvin",
-        "The Ethnic Cleansing of Palestine by Ilan Pappe"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "L00071",
-      "title": "The Israel-Palestine Conflict: 100 Years of History Explained in 12 Minutes",
-      "angle": "geopolitical_comparison",
-      "format": "timeline",
-      "category": "military_geopolitics",
-      "hook": "The entire modern Israel-Palestine conflict can be traced to a single 67-word letter written in 1917 by a British foreign secretary who had never visited the Middle East.",
-      "controversy_score": 95,
-      "trending_score": 95,
-      "evergreen_score": 88,
-      "priority_score": 93,
-      "estimated_duration_seconds": 720,
-      "key_facts": [
-        "The 1917 Balfour Declaration promised a Jewish homeland in Palestine while 93% of the population was Arab",
-        "The 1948 Nakba displaced 700,000 Palestinians from 531 villages — 78% of historic Palestine became Israel",
-        "The West Bank has been under military occupation since 1967 — the longest military occupation in modern history",
-        "Gaza's 2.3 million people live in 365 sq km with an unemployment rate of 47% and 97% of water unfit to drink"
-      ],
-      "sources": [
-        "The Ethnic Cleansing of Palestine by Ilan Pappe",
-        "UN OCHA Humanitarian Reports 2023"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "S00893",
       "title": "What Al-Aqsa Mosque Represents to 1.8 Billion Muslims — A History",
       "angle": "islamic_history",
@@ -243,11 +105,12 @@
         "Oleg Grabar, The Dome of the Rock",
         "Karen Armstrong, Jerusalem: One City, Three Faiths"
       ],
-      "status": "pending",
+      "status": "skipped",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "skip_reason": "politically_sensitive — YouTube policy risk"
     },
     {
       "id": "S01062",
@@ -270,11 +133,12 @@
         "US Senate Finance Committee Report",
         "BMJ Drug Pricing Analysis"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01110",
@@ -297,11 +161,12 @@
         "College Board Trends in College Pricing 2024",
         "German Academic Exchange Service (DAAD)"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01155",
@@ -325,11 +190,12 @@
         "UN Security Council Nile Dispute Records",
         "World Bank Nile Basin Initiative"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01183",
@@ -352,11 +218,12 @@
         "US Senate Finance Committee Report on Sovaldi 2015",
         "MSF Access Campaign Report"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01185",
@@ -379,11 +246,12 @@
         "Kashmir Hill - NYT Clearview AI Investigation 2020",
         "CNIL France Clearview Fine 2022"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01190",
@@ -406,11 +274,12 @@
         "NYT v. Microsoft et al. Complaint, S.D.N.Y. 2023",
         "Authors Guild Copyright Alliance"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01215",
@@ -433,11 +302,12 @@
         "Washington Post - Operation Rubicon Investigation 2020",
         "BND (German Intelligence) Historical Commission"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01224",
@@ -460,11 +330,12 @@
         "UNICOR FPI Annual Report 2023",
         "ACLU Captive Labor Report 2022"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01267",
@@ -487,11 +358,12 @@
         "OpenAI Stargate Announcement January 2025",
         "SemiAnalysis AI Compute Cost Model 2024"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01268",
@@ -514,11 +386,12 @@
         "OpenAI Sora Technical Report 2024",
         "AMPTP Visual Effects AI Adoption Survey 2024"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-13"
     },
     {
       "id": "S01407",
@@ -570,11 +443,12 @@
         "Britannica",
         "Money Magazine"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01734",
@@ -658,60 +532,6 @@
       "ctr": null
     },
     {
-      "id": "S00221",
-      "title": "Iran's Nuclear Programme vs Israel's Undeclared Arsenal",
-      "angle": "geopolitical_comparison",
-      "format": "comparison",
-      "category": "military_geopolitics",
-      "hook": "One country is sanctioned for possibly seeking nuclear weapons; the other has had them for 50 years and admits nothing.",
-      "controversy_score": 95,
-      "trending_score": 92,
-      "evergreen_score": 85,
-      "priority_score": 91.3,
-      "estimated_duration_seconds": 58,
-      "key_facts": [
-        "Israel is widely believed to possess 80–400 nuclear warheads but has never confirmed or denied this, maintaining a policy of 'nuclear ambiguity'",
-        "Iran has enriched uranium to 60% purity as of 2024 — weapons grade is 90% — and the US has sanctioned its economy for a potential weapon it may not have",
-        "Israel is the only Middle Eastern nuclear power and the only country outside the NPT along with India and Pakistan"
-      ],
-      "sources": [
-        "SIPRI Nuclear Weapons Status 2024",
-        "Avner Cohen - The Worst-Kept Secret: Israel's Bargain with the Bomb"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S00312",
-      "title": "How Taiwan Became the Most Important Island on Earth in 2024",
-      "angle": "geopolitical_comparison",
-      "format": "hidden_truth",
-      "category": "us_vs_china",
-      "hook": "An island of 23 million people is single-handedly preventing China from becoming the world's dominant military power.",
-      "controversy_score": 90,
-      "trending_score": 96,
-      "evergreen_score": 85,
-      "priority_score": 91.3,
-      "estimated_duration_seconds": 58,
-      "key_facts": [
-        "Taiwan's TSMC produces over 90% of the world's chips below 5 nanometres — the processors in every advanced AI system, fighter jet, and nuclear submarine control system on Earth",
-        "If China took control of TSMC, it would gain leverage over every advanced military and economy on Earth simultaneously",
-        "The US has pledged to defend Taiwan under the Taiwan Relations Act (1979); China has pledged reunification by 2049 under Xi Jinping"
-      ],
-      "sources": [
-        "Chris Miller - Chip War",
-        "Brookings Institution Taiwan Strait Scenarios 2024"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "S00744",
       "title": "The Secret History of Who Funds Terrorism — And Where the Money Really Comes From",
       "angle": "geopolitical_comparison",
@@ -759,11 +579,12 @@
         "OpenAI CEO Senate Testimony 2024",
         "DeepMind Research Roadmap"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S00925",
@@ -786,11 +607,12 @@
         "InsideClimate News Exxon Investigation 2015",
         "Supran & Oreskes, Harvard Exxon Communications Study 2017"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01066",
@@ -814,11 +636,12 @@
         "Human Rights Watch 2023",
         "El Salvador National Police Statistics"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01080",
@@ -842,11 +665,12 @@
         "OpenAI Voice Engine Announcement",
         "MIT Technology Review"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01084",
@@ -869,11 +693,12 @@
         "TIME 'Bitter Pill' 2013",
         "CMS Hospital Price Transparency Rule"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01097",
@@ -896,11 +721,12 @@
         "NIST Post-Quantum Cryptography Standards 2024",
         "NSA Cybersecurity Advisory"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01113",
@@ -923,11 +749,12 @@
         "Michigan Civil Rights Commission Report",
         "EPA Flint Water Advisory Task Force"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01128",
@@ -950,11 +777,12 @@
         "Zetter, Kim - Countdown to Zero Day (2014)",
         "Snowden NSA Documents"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01131",
@@ -977,11 +805,12 @@
         "Wiley Publisher Statement 2024",
         "Science Magazine — Paper Mills Investigation"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
       "youtube_id": null,
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01141",
@@ -1965,33 +1794,6 @@
       "ctr": null
     },
     {
-      "id": "S00964",
-      "title": "The Real Reason China and the US Are in a Chip War — Semiconductors Explained",
-      "angle": "geopolitical_comparison",
-      "format": "hidden_truth",
-      "category": "us_vs_china",
-      "hook": "The world's most advanced semiconductors are made in one factory in Taiwan — and both the US and China know that whoever controls it controls the future",
-      "controversy_score": 88,
-      "trending_score": 93,
-      "evergreen_score": 88,
-      "priority_score": 90,
-      "estimated_duration_seconds": 53,
-      "key_facts": [
-        "TSMC (Taiwan) produces 90% of the world's most advanced semiconductors (below 7nm)",
-        "The US CHIPS Act ($52 billion) was explicitly designed to prevent Chinese semiconductor dominance",
-        "China's best domestically produced chip is 2 generations behind TSMC's current technology — and the gap is growing"
-      ],
-      "sources": [
-        "CSIS Semiconductor Supply Chain Analysis",
-        "SEMI World Fab Watch Database 2024"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "S00973",
       "title": "The True Cost of Social Media to Mental Health — The Most Comprehensive Study Yet",
       "angle": "shocking_stats",
@@ -2148,33 +1950,6 @@
         "Meta Q4 2023 Earnings Report",
         "Alphabet Annual Report 2023",
         "IAPP Privacy Report"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "S01112",
-      "title": "How Much Does War Cost? Ukraine Conflict at $1 Trillion and Counting",
-      "angle": "geopolitical_comparison",
-      "format": "price_reveal",
-      "category": "price_reveals",
-      "hook": "The Ukraine war has cost over $1 trillion in economic damage — enough to feed every hungry person on Earth for 20 years.",
-      "controversy_score": 92,
-      "trending_score": 95,
-      "evergreen_score": 82,
-      "priority_score": 90,
-      "estimated_duration_seconds": 58,
-      "key_facts": [
-        "World Bank estimates Ukraine's reconstruction needs at $486 billion as of 2024",
-        "Total war-related economic damage to Ukraine exceeds $1 trillion including GDP losses",
-        "The World Food Programme's annual budget to end hunger is $14 billion"
-      ],
-      "sources": [
-        "World Bank Ukraine Rapid Damage Assessment 2024",
-        "World Food Programme Annual Report"
       ],
       "status": "pending",
       "produced_date": null,

@@ -760,34 +760,6 @@
       "ctr": null
     },
     {
-      "id": "L00028",
-      "title": "Taiwan: The Island That Could Start World War III",
-      "angle": "geopolitical_comparison",
-      "format": "deep_dive",
-      "category": "us_vs_china",
-      "hook": "Taiwan produces 92% of the world's most advanced computer chips. If China took Taiwan, it would control the technology that runs every smartphone, car, weapon, and power grid on Earth.",
-      "controversy_score": 88,
-      "trending_score": 92,
-      "evergreen_score": 84,
-      "priority_score": 88,
-      "estimated_duration_seconds": 840,
-      "key_facts": [
-        "TSMC in Taiwan manufactures over 90% of chips below 10 nanometers — used in all advanced military and consumer tech",
-        "China has conducted multiple military exercises simulating an invasion of Taiwan since 2021",
-        "The US Taiwan Relations Act commits America to provide Taiwan defensive weapons but not direct military intervention",
-        "A war over Taiwan would cause $2.7 trillion in economic damage in the first year alone"
-      ],
-      "sources": [
-        "Chip War by Chris Miller",
-        "The Taiwan Temptation by Jacob Stokes"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "L00029",
       "title": "How the West Underdeveloped Africa: Colonialism's 500-Year Economic Legacy",
       "angle": "geopolitical_comparison",
@@ -836,34 +808,6 @@
       "sources": [
         "MITI and the Japanese Miracle by Chalmers Johnson",
         "The China Model by Daniel Bell"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "L00031",
-      "title": "NATO's Broken Promise: Did the West Lie to Russia About Expansion After 1991?",
-      "angle": "geopolitical_comparison",
-      "format": "hidden_truth",
-      "category": "military_geopolitics",
-      "hook": "Declassified documents from 1990 show Western leaders promised Gorbachev that NATO would not expand 'one inch eastward' after German reunification. Then NATO expanded 14 times. Was this the real cause of the Ukraine war?",
-      "controversy_score": 92,
-      "trending_score": 88,
-      "evergreen_score": 82,
-      "priority_score": 87,
-      "estimated_duration_seconds": 840,
-      "key_facts": [
-        "Secretary of State James Baker told Gorbachev in 1990 that NATO would expand 'not one inch eastward'",
-        "NATO has expanded from 16 to 32 members since 1991, including countries on Russia's border",
-        "George Kennan, the architect of Cold War containment, called NATO expansion 'a tragic mistake' in 1997",
-        "The US had 300 special forces troops training the Ukrainian military years before the 2022 invasion"
-      ],
-      "sources": [
-        "Not One Inch by Mary Sarotte",
-        "The Russia Trap by George Beebe"
       ],
       "status": "pending",
       "produced_date": null,
@@ -1236,34 +1180,6 @@
       "ctr": null
     },
     {
-      "id": "L00045",
-      "title": "Israel-Palestine: The 100-Year Conflict Explained from Both Sides",
-      "angle": "geopolitical_comparison",
-      "format": "deep_dive",
-      "category": "military_geopolitics",
-      "hook": "The Israeli-Palestinian conflict is over 100 years old and involves two peoples with legitimate claims to the same land. Understanding it requires going back to 1917 — when Britain made two incompatible promises.",
-      "controversy_score": 95,
-      "trending_score": 95,
-      "evergreen_score": 88,
-      "priority_score": 93,
-      "estimated_duration_seconds": 900,
-      "key_facts": [
-        "The 1917 Balfour Declaration promised a Jewish homeland in Palestine while simultaneously promising not to harm Arab rights",
-        "In 1948 (the Nakba), 700,000 Palestinians fled or were expelled — creating a refugee crisis that continues today",
-        "Israel controls a nuclear arsenal of approximately 90 warheads but has never officially acknowledged it",
-        "The two-state solution has been discussed since 1937 but never implemented due to settlements now housing 700,000 Israelis in the West Bank"
-      ],
-      "sources": [
-        "The Israel-Palestine Conflict: A History by James Gelvin",
-        "The Ethnic Cleansing of Palestine by Ilan Pappe"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "L00046",
       "title": "Iraq: How America Destroyed the Most Educated Country in the Arab World",
       "angle": "geopolitical_comparison",
@@ -1284,34 +1200,6 @@
       "sources": [
         "Imperial Life in the Emerald City by Rajiv Chandrasekaran",
         "The Looming Tower by Lawrence Wright"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "L00047",
-      "title": "How Russia Became the World's Most Sanctioned Country and Survived",
-      "angle": "geopolitical_comparison",
-      "format": "deep_dive",
-      "category": "military_geopolitics",
-      "hook": "The West imposed 13,000 sanctions on Russia after the Ukraine invasion — more than on any country in history. Russia's economy was supposed to collapse within months. Three years later, Russia's GDP has grown.",
-      "controversy_score": 88,
-      "trending_score": 90,
-      "evergreen_score": 80,
-      "priority_score": 86,
-      "estimated_duration_seconds": 780,
-      "key_facts": [
-        "Russia redirected 70% of its oil exports to China, India, and Turkey after Western sanctions",
-        "The ruble collapsed after sanctions but recovered within weeks — partly due to capital controls",
-        "Russia has the world's largest natural gas reserves and is now the top gas supplier to China",
-        "The sanctions have accelerated de-dollarization — BRICS nations now trade in local currencies"
-      ],
-      "sources": [
-        "Sanctions: What Everyone Needs to Know by Nicholas Mulder",
-        "War by Other Means by Edward Fishman"
       ],
       "status": "pending",
       "produced_date": null,
@@ -1824,34 +1712,6 @@
       "ctr": null
     },
     {
-      "id": "L00066",
-      "title": "The US Military Budget: Why America Spends More on War Than the Next 10 Countries Combined",
-      "angle": "geopolitical_comparison",
-      "format": "deep_dive",
-      "category": "military_geopolitics",
-      "hook": "The United States military budget of $886 billion is larger than the combined defense budgets of China, Russia, India, Saudi Arabia, UK, Germany, France, South Korea, Japan, and Ukraine.",
-      "controversy_score": 88,
-      "trending_score": 85,
-      "evergreen_score": 85,
-      "priority_score": 86,
-      "estimated_duration_seconds": 780,
-      "key_facts": [
-        "The U.S. maintains 750 military bases in 80 countries — more than any empire in history",
-        "The Pentagon cannot pass a financial audit; $21 trillion in adjustments were made between 1998 and 2015 with no accountability",
-        "The F-35 fighter jet program costs $1.7 trillion — enough to give every American a $5,000 check",
-        "The U.S. military-industrial complex employs 3.5 million people, making it the largest employer in the country"
-      ],
-      "sources": [
-        "The Pentagon Papers (National Archives)",
-        "Base Nation by David Vine"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "L00067",
       "title": "Nuclear Arsenals: The Terrifying Math of Mutually Assured Destruction",
       "angle": "shocking_stats",
@@ -1956,62 +1816,6 @@
       "sources": [
         "Legacy of Ashes: The History of the CIA by Tim Weiner",
         "Killing Hope by William Blum"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "L00071",
-      "title": "The Israel-Palestine Conflict: 100 Years of History Explained in 12 Minutes",
-      "angle": "geopolitical_comparison",
-      "format": "timeline",
-      "category": "military_geopolitics",
-      "hook": "The entire modern Israel-Palestine conflict can be traced to a single 67-word letter written in 1917 by a British foreign secretary who had never visited the Middle East.",
-      "controversy_score": 95,
-      "trending_score": 95,
-      "evergreen_score": 88,
-      "priority_score": 93,
-      "estimated_duration_seconds": 720,
-      "key_facts": [
-        "The 1917 Balfour Declaration promised a Jewish homeland in Palestine while 93% of the population was Arab",
-        "The 1948 Nakba displaced 700,000 Palestinians from 531 villages — 78% of historic Palestine became Israel",
-        "The West Bank has been under military occupation since 1967 — the longest military occupation in modern history",
-        "Gaza's 2.3 million people live in 365 sq km with an unemployment rate of 47% and 97% of water unfit to drink"
-      ],
-      "sources": [
-        "The Ethnic Cleansing of Palestine by Ilan Pappe",
-        "UN OCHA Humanitarian Reports 2023"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "L00072",
-      "title": "How Russia Uses Energy as a Weapon: The Gas Pipelines That Control European Politics",
-      "angle": "geopolitical_comparison",
-      "format": "hidden_truth",
-      "category": "military_geopolitics",
-      "hook": "Before the Ukraine war, Germany was 55% dependent on Russian gas. When Russia turned off the taps, Germany's entire industrial economy nearly collapsed in 3 months.",
-      "controversy_score": 85,
-      "trending_score": 90,
-      "evergreen_score": 80,
-      "priority_score": 86,
-      "estimated_duration_seconds": 720,
-      "key_facts": [
-        "Russia's Gazprom controlled 40% of Europe's total natural gas supply before the 2022 invasion of Ukraine",
-        "The Nord Stream pipelines — blown up in September 2022 — represented a $11 billion infrastructure investment",
-        "Germany paid €300 billion to replace Russian gas in a single year through LNG imports at three times the price",
-        "Russia's energy revenues funded 45% of its state budget in 2021, making energy both a weapon and a vulnerability"
-      ],
-      "sources": [
-        "The New Map by Daniel Yergin",
-        "Eurostat Energy Statistics 2022"
       ],
       "status": "pending",
       "produced_date": null,
@@ -2376,34 +2180,6 @@
       "sources": [
         "The End of History by Francis Fukuyama",
         "Freedom in the World 2023 Report, Freedom House"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "L00086",
-      "title": "East Asia vs. the West: Why Asian Countries Outperform in Education, Health, and Life Expectancy",
-      "angle": "geopolitical_comparison",
-      "format": "comparison",
-      "category": "east_vs_west",
-      "hook": "Japan, South Korea, Singapore, and Taiwan all have higher life expectancies, lower crime rates, and better educational outcomes than the United States — at a fraction of the healthcare cost.",
-      "controversy_score": 78,
-      "trending_score": 80,
-      "evergreen_score": 88,
-      "priority_score": 82,
-      "estimated_duration_seconds": 750,
-      "key_facts": [
-        "Japan's average life expectancy is 84.3 years — 4.8 years longer than the U.S. — despite spending 60% less per capita on healthcare",
-        "South Korea went from 50% illiteracy in 1950 to PISA top-5 rankings in math and science by 2000 in a single generation",
-        "Singapore's homicide rate is 0.2 per 100,000 — the U.S. rate is 7.8 — 39 times higher",
-        "Taiwan's national health insurance covers all 23 million citizens for a per-capita cost that is one-third of American healthcare spending"
-      ],
-      "sources": [
-        "The Asian Miracle by Joe Studwell",
-        "OECD Health Statistics 2023"
       ],
       "status": "pending",
       "produced_date": null,
@@ -3448,34 +3224,6 @@
       "ctr": null
     },
     {
-      "id": "L00124",
-      "title": "Taiwan: The Island at the Center of the World's Most Dangerous Flashpoint",
-      "angle": "geopolitical_comparison",
-      "format": "deep_dive",
-      "category": "military_geopolitics",
-      "hook": "Taiwan produces 92% of the world's most advanced semiconductor chips. A Chinese invasion would not just affect Taiwan — it would collapse the global economy within 6 months.",
-      "controversy_score": 88,
-      "trending_score": 95,
-      "evergreen_score": 85,
-      "priority_score": 90,
-      "estimated_duration_seconds": 750,
-      "key_facts": [
-        "TSMC (Taiwan Semiconductor) produces 92% of chips below 7nm — found in every iPhone, AI server, fighter jet, and electric car on Earth",
-        "China has declared reunification with Taiwan a core national interest; Xi Jinping has described it as the 'historical mission' of his generation",
-        "The U.S. Taiwan Relations Act (1979) commits America to providing Taiwan with defensive weapons but deliberately avoids guaranteeing military intervention",
-        "A RAND Corporation war game found a U.S.-China conflict over Taiwan would kill more people and destroy more wealth in 30 days than any conflict since WW2"
-      ],
-      "sources": [
-        "Chip War by Chris Miller",
-        "The Peril of Not Answering the Taiwan Question by Oriana Mastro, Foreign Affairs"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
       "id": "L00125",
       "title": "The Sanctions Weapon: How the U.S. Uses Finance to Wage War Without Firing a Shot",
       "angle": "geopolitical_comparison",
@@ -3608,34 +3356,6 @@
       "sources": [
         "Multipolarity and the Future of Global Order by Richard Haass, Foreign Affairs",
         "SIPRI Yearbook 2023"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "L00130",
-      "title": "The Yemen War: The World's Worst Humanitarian Catastrophe No One Talks About",
-      "angle": "geopolitical_comparison",
-      "format": "documentary_style",
-      "category": "military_geopolitics",
-      "hook": "The Yemen war has killed 377,000 people — more than the Ukraine war — and left 21 million facing starvation. Most victims are children under 5. Western media coverage is almost zero.",
-      "controversy_score": 90,
-      "trending_score": 80,
-      "evergreen_score": 88,
-      "priority_score": 85,
-      "estimated_duration_seconds": 750,
-      "key_facts": [
-        "The Saudi-led coalition, equipped with U.S. and UK weapons, has bombed Yemen since 2015 — destroying hospitals, water systems, and food infrastructure",
-        "The UN estimates 377,000 total deaths by end 2021, with 60% from indirect causes — disease and starvation created by the blockade",
-        "The U.S. sold $54 billion in weapons to Saudi Arabia between 2015 and 2020 while Yemen descended into famine",
-        "Houthi drone and missile attacks on Saudi infrastructure in 2019 destroyed 5% of global oil supply in a single day — briefly causing the largest oil price spike in history"
-      ],
-      "sources": [
-        "The Chaos of Yemen by Ginny Hill",
-        "UN OCHA Yemen Humanitarian Reports 2022"
       ],
       "status": "pending",
       "produced_date": null,
@@ -4112,34 +3832,6 @@
       "sources": [
         "A Fistful of Rice by Vikram Akula",
         "Poor Economics by Abhijit Banerjee and Esther Duflo"
-      ],
-      "status": "pending",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null
-    },
-    {
-      "id": "L00148",
-      "title": "OPEC: The Oil Cartel That Brought the Western World to Its Knees in 1973",
-      "angle": "geopolitical_comparison",
-      "format": "documentary_style",
-      "category": "wealth_economics",
-      "hook": "In October 1973, Arab oil producers cut off oil to the U.S. in retaliation for supporting Israel. Within 6 months, the American economy had collapsed, the Vietnam War had ended, and the world order had changed.",
-      "controversy_score": 82,
-      "trending_score": 75,
-      "evergreen_score": 90,
-      "priority_score": 82,
-      "estimated_duration_seconds": 750,
-      "key_facts": [
-        "The 1973 OPEC oil embargo quadrupled oil prices in 3 months, causing U.S. GDP to contract 2.5% and inflation to reach 12%",
-        "The embargo exposed that the U.S. — importing 35% of its oil — was economically vulnerable to Arab political decisions for the first time",
-        "Nixon's response included a 55 mph national speed limit, odd-even gas rationing, and the creation of the Strategic Petroleum Reserve",
-        "The crisis directly led to the 1974 US-Saudi petrodollar deal — reshaping the entire global financial architecture"
-      ],
-      "sources": [
-        "The Prize by Daniel Yergin",
-        "Oil Shock by Dag Harald Claes"
       ],
       "status": "pending",
       "produced_date": null,
