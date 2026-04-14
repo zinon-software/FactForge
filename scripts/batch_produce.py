@@ -4,9 +4,8 @@ Runs full pipeline: script → audio → timestamps → remotion_props
 Then prints a render shell script to execute.
 """
 
-import asyncio, json, os, shutil, subprocess, sys
+import json, os, shutil, subprocess, sys
 from pathlib import Path
-import edge_tts
 from faster_whisper import WhisperModel
 
 BASE = Path(__file__).parent.parent
@@ -245,9 +244,22 @@ Follow this channel.""",
 
 # ─────────────────────────── Pipeline ──────────────────────────────────────
 
-async def gen_audio(text, voice, rate, out_path):
-    comm = edge_tts.Communicate(text, voice=voice, rate=rate)
-    await comm.save(str(out_path))
+def gen_audio(text: str, out_path: Path) -> float:
+    """Generate audio using Kokoro TTS (am_echo). Returns duration in seconds."""
+    import soundfile as sf
+    from kokoro_onnx import Kokoro
+    BASE_DIR = Path(__file__).parent.parent
+    k = Kokoro(
+        str(BASE_DIR / "models/kokoro/kokoro-v1.0.onnx"),
+        str(BASE_DIR / "models/kokoro/voices-v1.0.bin")
+    )
+    samples, sr = k.create(text, voice="am_echo", speed=1.08, lang="en-us")
+    wav_path = out_path.with_suffix(".wav")
+    sf.write(str(wav_path), samples, sr)
+    subprocess.run(["ffmpeg", "-y", "-i", str(wav_path), "-b:a", "192k", str(out_path)],
+                   capture_output=True)
+    wav_path.unlink()
+    return len(samples) / sr
 
 def get_duration(path):
     r = subprocess.run(
@@ -309,8 +321,8 @@ def main():
         # 1. Save script.json
         script = {
             "video_id": vid_id,
-            "tts_voice": "en-US-AndrewNeural",
-            "tts_rate": "+8%",
+            "tts_voice": "am_echo",
+            "tts_speed": 1.08,
             "script_score": 88,
             "full_text": data["script"].strip(),
         }
@@ -321,8 +333,7 @@ def main():
         # 2. Generate audio
         audio_path = out_dir / "audio.mp3"
         print(f"  → Generating audio...")
-        asyncio.run(gen_audio(data["script"].strip(), "en-US-AndrewNeural", "+8%", audio_path))
-        duration = get_duration(audio_path)
+        duration = gen_audio(data["script"].strip(), audio_path)
         print(f"  ✓ audio.mp3 — {duration:.1f}s")
 
         # Duration gate: 35–60 seconds

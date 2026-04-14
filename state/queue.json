@@ -86,34 +86,6 @@
       "ctr": null
     },
     {
-      "id": "S00893",
-      "title": "What Al-Aqsa Mosque Represents to 1.8 Billion Muslims — A History",
-      "angle": "islamic_history",
-      "format": "timeline",
-      "category": "islamic_arab_history",
-      "hook": "Al-Aqsa is the 3rd holiest site in Islam — and was Islam's first qibla (direction of prayer) before the Kaaba",
-      "controversy_score": 93,
-      "trending_score": 88,
-      "evergreen_score": 95,
-      "priority_score": 92,
-      "estimated_duration_seconds": 55,
-      "key_facts": [
-        "Al-Aqsa was Islam's original qibla — Muslims prayed toward Jerusalem for the first 16 months before the Quran redirected prayer to Mecca",
-        "The Night Journey (Isra and Miraj) is believed to have started from the Al-Aqsa Mosque compound",
-        "Al-Aqsa has been controlled by Christians, Romans, Byzantines, Crusaders, Mamluks, Ottomans, and since 1967 — Israel"
-      ],
-      "sources": [
-        "Oleg Grabar, The Dome of the Rock",
-        "Karen Armstrong, Jerusalem: One City, Three Faiths"
-      ],
-      "status": "skipped",
-      "produced_date": null,
-      "youtube_id": null,
-      "views": null,
-      "ctr": null,
-      "skip_reason": "politically_sensitive — YouTube policy risk"
-    },
-    {
       "id": "S01062",
       "title": "How a $400 EpiPen Costs $7 to Manufacture: The Drug Pricing Scandal",
       "angle": "shocking_stats",

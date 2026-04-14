@@ -1,19 +1,26 @@
 """
-finalize_and_upload.py
-Merges audio + SFX into rendered video, then uploads to YouTube.
-Called automatically after render completes.
+finalize_and_upload.py — Merge audio into rendered video, then upload to YouTube.
+Uses utils/youtube_helper.py for all YouTube API calls.
+
+Usage: python3 scripts/finalize_and_upload.py <video_id>
 """
-import json, os, subprocess, sys, time
+import json, subprocess, sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(ROOT))
 
-def merge_audio(video_id: str, fps: int = 60) -> str:
-    """Merge voice audio + ambient music + SFX into final video."""
+from utils.youtube_helper import (
+    upload_video, set_thumbnail, upload_caption,
+    get_next_publish_date, update_state_after_upload
+)
+
+
+def merge_audio(video_id: str) -> Path | None:
+    """Merge voice audio into rendered video using FFmpeg (CRF 18, high quality)."""
     out_dir = ROOT / "output" / video_id
     noaudio = out_dir / "video_noaudio.mp4"
     audio   = out_dir / "audio.mp3"
-    music   = ROOT / "assets/music/dark_ambient_55s.mp3"
     output  = out_dir / "video.mp4"
 
     if not noaudio.exists():
@@ -21,189 +28,114 @@ def merge_audio(video_id: str, fps: int = 60) -> str:
     if not audio.exists():
         print(f"❌ {audio} not found"); return None
 
-    # Get durations
-    def get_dur(path):
-        r = subprocess.run(["ffprobe","-v","quiet","-show_entries","format=duration",
-                            "-of","default=noprint_wrappers=1", str(path)],
-                           capture_output=True, text=True)
-        return float(r.stdout.strip().split("=")[-1])
-
-    video_dur = get_dur(noaudio)
-    print(f"Video: {video_dur:.1f}s  Audio: {get_dur(audio):.1f}s")
-
-    if music.exists():
-        cmd = [
-            "ffmpeg", "-y",
-            "-i", str(noaudio),
-            "-i", str(audio),
-            "-i", str(music),
-            "-filter_complex",
-            "[1:a]volume=1.0[voice];"
-            "[2:a]volume=0.10,aloop=loop=-1:size=2e+09[music];"
-            "[voice][music]amix=inputs=2:normalize=0[audio_out]",
-            "-map", "0:v", "-map", "[audio_out]",
-            "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
-            "-shortest", str(output)
-        ]
-    else:
-        cmd = [
-            "ffmpeg", "-y",
-            "-i", str(noaudio), "-i", str(audio),
-            "-map", "0:v", "-map", "1:a",
-            "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
-            "-shortest", str(output)
-        ]
-
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", str(noaudio),
+        "-i", str(audio),
+        "-c:v", "libx264",
+        "-crf", "18",
+        "-preset", "slow",
+        "-pix_fmt", "yuv420p",
+        "-maxrate", "20M",
+        "-bufsize", "40M",
+        "-c:a", "aac",
+        "-b:a", "256k",
+        "-shortest",
+        str(output),
+    ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         print(f"❌ ffmpeg error:\n{result.stderr[-500:]}")
         return None
-    print(f"✅ Merged: {output} ({os.path.getsize(output)//1024//1024}MB)")
-    return str(output)
+    size_mb = output.stat().st_size // 1024 // 1024
+    print(f"✅ Merged: {output.name} ({size_mb}MB)")
+    return output
 
 
-def upload_youtube(video_id: str):
-    """Upload video to YouTube and return video ID."""
-    try:
-        from googleapiclient.discovery import build
-        from googleapiclient.http import MediaFileUpload
-        from google.oauth2.credentials import Credentials
-    except ImportError:
-        print("❌ google-api-python-client not installed"); return None
+def upload(video_id: str) -> str | None:
+    """Full upload pipeline: merge → YouTube upload → thumbnail → subtitles → state."""
+    out_dir  = ROOT / "output" / video_id
+    meta_file = out_dir / "metadata.json"
+    is_long  = video_id.startswith("L")
 
-    out_dir = ROOT / "output" / video_id
-    video_file = out_dir / "video.mp4"
-    meta_file  = out_dir / "metadata.json"
+    if not meta_file.exists():
+        print(f"❌ metadata.json not found for {video_id}"); return None
 
-    if not video_file.exists():
-        print(f"❌ {video_file} not found"); return None
+    meta = json.loads(meta_file.read_text())
+    title = meta.get("selected_title") or meta.get("title_selected") or meta.get("title", "")
+    desc  = meta.get("description", "")
+    tags  = meta.get("tags", [])
+    cat   = meta.get("category_id", "27")
 
-    with open(ROOT / "config/youtube_token.json") as f:
-        tok = json.load(f)
+    # Determine scheduled publish date
+    publish_at = get_next_publish_date("long" if is_long else "short")
+    print(f"Scheduled publish: {publish_at}")
 
-    creds = Credentials(
-        token=tok["token"], refresh_token=tok["refresh_token"],
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=tok["client_id"], client_secret=tok["client_secret"],
-        scopes=tok["scopes"]
+    # Upload video
+    video_path = out_dir / "video.mp4"
+    if not video_path.exists():
+        print(f"❌ video.mp4 not found — run render first"); return None
+
+    yt_id = upload_video(
+        video_path=video_path,
+        title=title,
+        description=desc,
+        tags=tags,
+        category_id=cat,
+        publish_at=publish_at,
+        privacy="private",
     )
+    if not yt_id:
+        print("❌ Upload failed"); return None
 
-    youtube = build("youtube", "v3", credentials=creds)
+    # Thumbnail
+    thumb = out_dir / "thumbnail.jpg"
+    if thumb.exists():
+        ok = set_thumbnail(yt_id, thumb)
+        if not ok:
+            print("⚠️  Thumbnail API blocked (expected for Shorts — set manually in Studio)")
+    else:
+        print("⚠️  No thumbnail.jpg found")
 
-    with open(meta_file) as f:
-        meta = json.load(f)
+    # Subtitles (7 languages if available)
+    srt_dir = out_dir / "subtitles"
+    if srt_dir.exists():
+        lang_names = {"en":"English","ar":"Arabic","es":"Spanish","fr":"French",
+                      "hi":"Hindi","pt":"Portuguese","tr":"Turkish"}
+        for srt_file in sorted(srt_dir.glob("*.srt")):
+            lang = srt_file.stem.split("_")[-1]
+            if lang in lang_names:
+                ok = upload_caption(yt_id, srt_file, lang, lang_names[lang])
+                print(f"  {'✅' if ok else '⚠️ '} Subtitles {lang}")
 
-    body = {
-        "snippet": {
-            "title": meta["title"],
-            "description": meta["description"],
-            "tags": meta.get("tags", []),
-            "categoryId": meta.get("categoryId", "28"),
-            "defaultLanguage": "en",
-        },
-        "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}
-    }
+    # Update state
+    video_type = "long" if is_long else "short"
+    update_state_after_upload(video_id, yt_id, publish_at, title, video_type)
 
-    media = MediaFileUpload(str(video_file), chunksize=1024*1024, resumable=True, mimetype="video/mp4")
-    req = youtube.videos().insert(part="snippet,status", body=body, media_body=media)
-
-    response = None
-    while response is None:
-        status, response = req.next_chunk()
-        if status:
-            print(f"Uploading {video_id}: {int(status.progress()*100)}%")
-
-    yt_id = response["id"]
-    print(f"✅ Uploaded {video_id} → https://youtu.be/{yt_id}")
-
-    # Save youtube_id
-    meta["youtube_video_id"] = yt_id
-    meta["youtube_url"] = f"https://youtu.be/{yt_id}"
-    with open(meta_file, "w") as f:
-        json.dump(meta, f, indent=2, ensure_ascii=False)
-
+    print(f"\n✅ {video_id} → https://youtu.be/{yt_id}  (publishes {publish_at})")
     return yt_id
 
 
-def upload_subtitles(video_id: str, yt_video_id: str):
-    """Upload SRT subtitles for 7 languages."""
-    from googleapiclient.discovery import build
-    from googleapiclient.http import MediaFileUpload
-    from google.oauth2.credentials import Credentials
-
-    srt_dir = ROOT / "output" / video_id / "subtitles"
-    if not srt_dir.exists():
-        print(f"⚠️ No subtitles dir for {video_id}"); return
-
-    with open(ROOT / "config/youtube_token.json") as f:
-        tok = json.load(f)
-    creds = Credentials(
-        token=tok["token"], refresh_token=tok["refresh_token"],
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=tok["client_id"], client_secret=tok["client_secret"],
-        scopes=tok["scopes"]
-    )
-    youtube = build("youtube", "v3", credentials=creds)
-
-    lang_map = {"en":"English","ar":"Arabic","es":"Spanish","fr":"French",
-                "hi":"Hindi","pt":"Portuguese","tr":"Turkish"}
-
-    for srt_file in srt_dir.glob("*.srt"):
-        lang = srt_file.stem.split("_")[-1]
-        if lang not in lang_map: continue
-        try:
-            body = {"snippet": {"videoId": yt_video_id, "language": lang,
-                                "name": lang_map[lang], "isDraft": False}}
-            media = MediaFileUpload(str(srt_file), mimetype="application/octet-stream")
-            youtube.captions().insert(part="snippet", body=body, media_body=media).execute()
-            print(f"  ✅ Subtitles {lang}")
-            time.sleep(1)
-        except Exception as e:
-            print(f"  ⚠️ Subtitles {lang}: {e}")
-
-
-def update_state(video_id: str, yt_id: str, is_long: bool = False):
-    """Update progress.json and published_videos.json."""
-    import datetime
-
-    # published_videos.json
-    pub_file = ROOT / "state/published_videos.json"
-    with open(pub_file) as f: pub = json.load(f)
-
-    with open(ROOT / f"output/{video_id}/metadata.json") as f:
-        meta = json.load(f)
-
-    pub["videos"].append({
-        "id": video_id,
-        "title": meta["title"],
-        "youtube_id": yt_id,
-        "youtube_url": f"https://youtu.be/{yt_id}",
-        "published_at": datetime.date.today().isoformat(),
-        "cleaned": False
-    })
-    with open(pub_file, "w") as f:
-        json.dump(pub, f, indent=2, ensure_ascii=False)
-    print(f"✅ State updated for {video_id}")
-
-
 if __name__ == "__main__":
-    video_id = sys.argv[1] if len(sys.argv) > 1 else "L00100"
+    video_id = sys.argv[1] if len(sys.argv) > 1 else None
+    if not video_id:
+        print("Usage: python3 scripts/finalize_and_upload.py <video_id>")
+        sys.exit(1)
+
     is_long = video_id.startswith("L")
 
     print(f"\n{'='*50}")
     print(f"Finalizing {video_id}")
     print(f"{'='*50}\n")
 
-    fps = 30 if is_long else 60
-    video_path = merge_audio(video_id, fps)
-    if not video_path:
-        print("❌ Merge failed"); sys.exit(1)
+    # Merge only if video_noaudio exists (render was done separately)
+    out_dir = ROOT / "output" / video_id
+    if (out_dir / "video_noaudio.mp4").exists() and not (out_dir / "video.mp4").exists():
+        print("[1/2] Merging audio...")
+        if not merge_audio(video_id):
+            sys.exit(1)
 
-    yt_id = upload_youtube(video_id)
+    print("[2/2] Uploading to YouTube...")
+    yt_id = upload(video_id)
     if not yt_id:
-        print("❌ Upload failed"); sys.exit(1)
-
-    upload_subtitles(video_id, yt_id)
-    update_state(video_id, yt_id, is_long)
-
-    print(f"\n✅ {video_id} complete → https://youtu.be/{yt_id}")
+        sys.exit(1)

@@ -266,8 +266,8 @@ function getShockedPose(phase: number): StickFigureProps {
     rightShoulder: interpolate(jolt, [0, 1], [30, 120]),
     leftElbow: interpolate(jolt, [0, 1], [0, 30]),
     rightElbow: interpolate(jolt, [0, 1], [0, -30]),
-    leftHip: interpolate(jolt, [0, 1], -20, -35),
-    rightHip: interpolate(jolt, [0, 1], 20, 35),
+    leftHip: interpolate(jolt, [0, 1], [-20, -35]),
+    rightHip: interpolate(jolt, [0, 1], [20, 35]),
     headTilt: Math.sin(phase * Math.PI * 8) * 8,
     lean: Math.sin(phase * Math.PI * 4) * 4,
   };

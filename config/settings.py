@@ -85,8 +85,8 @@ TRANSLATION_LANGUAGES = ["es", "fr", "de", "hi", "pt", "id", "ja", "ko", "tr", "
 
 # ─── TTS Settings ─────────────────────────────────────────────────────────────
 TTS_VOICE_PRIMARY = "kokoro"
-TTS_VOICE_FALLBACK = "en-US-AndrewNeural"
-TTS_SPEED = 1.05
+TTS_VOICE_FALLBACK = "am_echo"  # Kokoro only — no Edge TTS
+TTS_SPEED = 1.08  # am_echo optimal speed
 TTS_SILENCE_SHORT = 0.5
 TTS_SILENCE_LONG = 1.0
 

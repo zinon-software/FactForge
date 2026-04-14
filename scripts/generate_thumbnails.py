@@ -141,7 +141,8 @@ def make_thumbnail(vid_id, cfg):
     out = f"{BASE}/output/{vid_id}/thumbnail.jpg"
     os.makedirs(f"{BASE}/output/{vid_id}", exist_ok=True)
     img.save(out, "JPEG", quality=95)
-    print(f"  ✓ {vid_id} ({'Short 1080×1920' if is_short else 'Long 1280×720'}) — {cfg.get('line1','')[:35]}")
+    is_short = not vid_id.startswith("L")
+    print(f"  ✓ {vid_id} ({'Short' if is_short else 'Long'} → 1280×720 thumbnail) — {cfg.get('line1','')[:35]}")
     return out
 
 

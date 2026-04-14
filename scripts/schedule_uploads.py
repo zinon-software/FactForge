@@ -203,21 +203,11 @@ def mark_scheduled(vid_id: str, yt_id: str, pub_at: str):
 
 
 def get_youtube_client():
-    from googleapiclient.discovery import build
-    from google.oauth2.credentials import Credentials
-
-    token_path = ROOT / "config/youtube_token.json"
-    with open(token_path) as f:
-        tok = json.load(f)
-    creds = Credentials(
-        token=tok["token"],
-        refresh_token=tok["refresh_token"],
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=tok["client_id"],
-        client_secret=tok["client_secret"],
-        scopes=tok["scopes"],
-    )
-    return build("youtube", "v3", credentials=creds)
+    """Centralized YouTube client — delegates to utils/youtube_helper.py."""
+    import sys
+    sys.path.insert(0, str(ROOT))
+    from utils.youtube_helper import get_youtube_client as _get_client
+    return _get_client()
 
 
 def main():

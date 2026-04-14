@@ -45,19 +45,30 @@ def search_local(query: str, asset_type: str = "videos") -> list:
     return [r[1] for r in results]
 
 
-def search_pexels_videos(query: str, per_page: int = 5) -> list:
-    """Search Pexels for royalty-free commercial videos."""
+def search_pexels_videos(query: str, per_page: int = 5, is_short: bool = True) -> list:
+    """Search Pexels for royalty-free commercial videos.
+    is_short=True → portrait (1080×1920), is_short=False → landscape (1920×1080)
+    Falls back to no orientation filter if portrait returns 0 results.
+    """
     if not PEXELS_KEY:
         print("ERROR: PEXELS_API_KEY not set")
         return []
     url = "https://api.pexels.com/videos/search"
     headers = {"Authorization": PEXELS_KEY}
-    params = {"query": query, "per_page": per_page, "size": "medium", "orientation": "portrait"}
+    orientation = "portrait" if is_short else "landscape"
+    params = {"query": query, "per_page": per_page, "size": "medium", "orientation": orientation}
     r = requests.get(url, headers=headers, params=params, timeout=15)
     if r.status_code != 200:
         print(f"Pexels error: {r.status_code}")
         return []
-    return r.json().get("videos", [])
+    videos = r.json().get("videos", [])
+    # Fallback: retry without orientation filter if no results
+    if not videos:
+        params.pop("orientation")
+        r2 = requests.get(url, headers=headers, params=params, timeout=15)
+        if r2.status_code == 200:
+            videos = r2.json().get("videos", [])
+    return videos
 
 
 def download_pexels_video(pexels_video: dict, scene_id: str) -> str:

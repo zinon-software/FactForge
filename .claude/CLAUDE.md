@@ -78,10 +78,12 @@ Always suggest the next idea at the bottom — never wait to be asked.
 1. **Always read this file first** — then progress.json
 2. **Never restart completed work** — check progress.json before starting anything
 3. **Work one idea at a time** — never batch produce without explicit user command
-4. **Ask before producing** — show the idea, ask "shall I produce this?"
+4. **AUTONOMOUS OPERATION** — do NOT ask for permission at each step. When user says "produce", execute the full pipeline end-to-end without stopping to ask. Only stop if a quality gate fails (score below minimum) or a hard error occurs.
 5. **Save state after every major step** — script, audio, thumbnail, video, publish
 6. **Verify facts before writing any script** — minimum 2 official sources
 7. **If interrupted, resume from last saved checkpoint** — never start over
+8. **Auto-choose publish date** — use utils/youtube_helper.get_next_publish_date() — never ask user for dates
+9. **Auto-clean after upload** — delete video.mp4, audio.mp3, bg_videos/ automatically after successful upload
 
 ---
 
@@ -102,7 +104,7 @@ User command → main.py (Python)
                   ↓
         ┌─────────────────────────────────┐
         │  Python automation              │  ← Does non-AI work
-        │  - TTS audio (Kokoro/EdgeTTS)   │
+        │  - TTS audio (Kokoro am_echo)   │
         │  - Remotion video render        │
         │  - Pillow thumbnail             │
         │  - YouTube API upload           │
@@ -157,17 +159,20 @@ Script is written FROM verified facts — never verify after writing.
 ### Short Videos (Reels/Shorts)
 
 When user says "produce next video" (Short):
-1. Read queue.json → show next idea → ask for approval
+1. Read queue.json → pick next idea → announce it → proceed WITHOUT asking for permission
 2. Research: web search → verify facts → save to output/[id]/research.json + sources.json
 3. Accuracy gate: score research ≥ 18/20 (fact_verification.md) — stop if fails
 4. Script: write TTS-optimized script FROM verified facts → save to output/[id]/script.json
 5. Content gate: score script ≥ 80/100 (content_psychology.md) — revise if fails
-6. Voice: Edge TTS (en-US-AndrewNeural +8%) via `edge_tts.Communicate` async API → save to output/[id]/audio.mp3
+6. Voice: **Kokoro TTS** voice=`am_echo` speed=1.08 → save to output/[id]/audio.mp3
+   - Script: `python3 scripts/generate_audio.py [id]` — handles TTS + timestamps in one step
+   - Model: models/kokoro/kokoro-v1.0.onnx + voices-v1.0.bin (Apache 2.0, commercial safe ✅)
+   - NEVER use Edge TTS — Microsoft TOS prohibits commercial use on free tier
 7. Word timestamps: faster-whisper (base model, word_timestamps=True) → saved into remotion_props.json
 8. Background: fetch from Pexels by category → assign backgroundVideo per segment in remotion_props.json
 9. Video: Remotion render ShortVideo composition (no audio) → ffmpeg merge audio → output/[id]/video.mp4
-   - MANDATORY: totalDurationFrames must equal exact audio duration in frames (audio_seconds × 30)
-   - MANDATORY: segment frames must be aligned to word timestamps (use faster-whisper output)
+   - MANDATORY: totalDurationFrames = ceil(audio_seconds × 60) — Shorts run at 60fps (Root.tsx)
+   - MANDATORY: segment frames must be aligned to word timestamps × 60fps (ms × 60 / 1000)
    - Shorts duration: 35–60 seconds (target 45–58s sweet spot)
 10. Visual gate: score ≥ 14/16 (visual_design.md) — revise if fails
 11. Thumbnail: Pollinations.ai Flux AI background + Pillow overlay → output/[id]/thumbnail.jpg (JPEG, NOT PNG)
@@ -177,26 +182,25 @@ When user says "produce next video" (Short):
     - No API key needed — free & commercial use allowed
 12. Metadata: title × 5 variants + description + tags → output/[id]/metadata.json
 13. SEO gate: score metadata ≥ 18/22 (youtube_seo.md) — revise if fails
-14. Publish: YouTube API upload → save youtube_id → update state/pending_uploads.json + queue.json
-    - Schedule: privacyStatus: "private" + publishAt RFC3339 — auto-publishes at scheduled time
-15. Thumbnail for Shorts:
-    - API thumbnail upload does NOT work for Shorts — YouTube blocks it
-    - Workaround: embed thumbnail as first 0.2s freeze frame in video, user selects manually in YouTube Studio
-    - ALWAYS remind user to manually set thumbnail for Shorts after upload
+14. Publish: `python3 scripts/finalize_and_upload.py [id]` — handles upload + thumbnail + state in one step
+    - publish date: auto-calculated via utils/youtube_helper.get_next_publish_date() — never ask user
+    - Thumbnail upload via API (works for Long videos, may be blocked for Shorts)
+15. Auto-clean: delete video.mp4, audio.mp3, bg_videos/, public/[id]/ after successful upload
 16. Subtitles: generate SRT for 7 languages (EN/AR/ES/FR/HI/PT/TR) → upload via captions().insert()
 
 ### Long Videos (Documentary Format)
 
 When user says "produce next long video" or idea starts with L:
-1. Read queue.json / database/ideas_long.json → show idea → ask for approval
+1. Read queue.json / database/ideas_long.json → pick next idea → announce it → proceed WITHOUT asking
 2. Research: web search (min 2 official sources) → verify facts → save to output/[id]/research.json
 3. Accuracy gate: score ≥ 18/20 — stop if fails
 4. Script: write documentary script (10–15 min) with chapters → save to output/[id]/script.json
    - Each chapter has: id, type, chapter_num, title, tts_script, image_prompt
    - Types: hook, explainer, deep_dive, solution, cta
 5. Content gate: score ≥ 80/100 — revise if fails
-6. Voice: edge_tts.Communicate async API (en-US-AndrewNeural +8%) → output/[id]/audio.mp3
-   - For long scripts: always use async API directly, NOT subprocess (subprocess times out)
+6. Voice: **Kokoro TTS** voice=`am_echo` speed=1.08 → output/[id]/audio.mp3
+   - Script: `python3 scripts/generate_audio.py [id]` — handles TTS + timestamps in one step
+   - NEVER use Edge TTS — Microsoft TOS prohibits commercial use on free tier
 7. Word timestamps: faster-whisper (base model, word_timestamps=True) → output/[id]/word_timestamps.json
 8. AI Images: Pollinations Flux (1920×1080) — 2 images per chapter (A + B for crossfade)
    - URL: https://image.pollinations.ai/prompt/{prompt}?width=1920&height=1080&nologo=true&model=flux&seed={seed}
@@ -273,7 +277,7 @@ When user says "produce next long video" or idea starts with L:
 
 ### Audio/Video Sync (CRITICAL):
 - Always check actual audio duration: `ffprobe -v quiet -print_format json -show_format audio.mp3`
-- Set totalDurationFrames = ceil(audio_duration_seconds × fps)
+- Set totalDurationFrames = ceil(audio_duration_seconds × fps) — use 60 for Shorts, 30 for Long docs
 - Align segment startFrame/endFrame to word timestamps using keyword matching
 - Verify: last segment endFrame == totalDurationFrames
 
