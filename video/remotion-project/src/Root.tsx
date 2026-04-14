@@ -1,5 +1,6 @@
 import React from "react";
 import { Composition } from "remotion";
+import { DocumentaryVideo, documentaryVideoSchema } from "./compositions/DocumentaryVideo";
 import { LongVideo, longVideoSchema } from "./compositions/LongVideo";
 import { ShortVideo, shortVideoSchema } from "./compositions/ShortVideo";
 import { WealthRanking, wealthRankingSchema } from "./compositions/WealthRanking";
@@ -60,6 +61,26 @@ export const Root: React.FC = () => {
           colorTheme: "wealth",
         }}
       />
+      {/* Documentary Video: 1920×1080, 30fps — image-heavy cinematic docs */}
+      <Composition
+        id="DocumentaryVideo"
+        component={DocumentaryVideo}
+        durationInFrames={18603}
+        fps={30}
+        width={1920}
+        height={1080}
+        schema={documentaryVideoSchema}
+        defaultProps={{
+          videoId: "L00200",
+          title: "The Islamic Golden Age",
+          colorTheme: "islamic",
+          sections: [],
+          audioFile: null,
+          wordTimestamps: [],
+          totalDurationFrames: 18603,
+        }}
+      />
+
       {/* Wealth Ranking: 1920×1080, 30fps */}
       <Composition
         id="WealthRanking"

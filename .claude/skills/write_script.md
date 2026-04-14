@@ -32,7 +32,7 @@
 [55-58s] CTA           → rotate formula (never repeat last used)
 ```
 
-## LONG VIDEO PACING BLUEPRINT (10 minutes)
+## LONG VIDEO PACING BLUEPRINT (10–13 minutes)
 
 ```
 [0:00-0:08]  COLD OPEN    → Level 3 fact first, no context, [PAUSE2]
@@ -47,6 +47,26 @@
 [8:30-9:30]  IMPLICATION  → What this means for you/the world/the future
 [9:30-10:00] CTA          → Formula 5 (Continuation) preferred
 ```
+
+## DOCUMENTARY CHAPTER FORMAT (for DocumentaryVideo composition)
+
+Each chapter in script.json must have:
+```json
+{
+  "id": "ch_[name]",
+  "type": "hook|explainer|deep_dive|solution|cta",
+  "chapter_num": 0,
+  "title": "Chapter Title (shown on screen)",
+  "image_prompt": "ultra-cinematic photorealistic AI image prompt, specific scene, dramatic lighting, 8K",
+  "tts_script": "Full spoken text for this chapter. No script tags — pure spoken text."
+}
+```
+
+Image prompt quality rules:
+- Always include: cinematic, photorealistic, dramatic lighting, specific era/location
+- Never generic: "a scene" → specific: "interior of House of Wisdom Baghdad 830 AD, scholars studying manuscripts, golden lamplight, Islamic arches"
+- Add: "8K", "ultra-detailed", "volumetric light" for highest quality
+- Different mood per chapter: hook=epic, darkness=bleak, climax=tragic, legacy=hopeful
 
 ## TTS TAGS
 - `[SLOW]` → -20% speed: hooks, Level 3 facts

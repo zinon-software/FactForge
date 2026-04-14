@@ -1334,3 +1334,128 @@ TECHNICAL (4 points):
 VISUAL SCORE: __ / 16
 Minimum to render: 14/16
 ```
+
+---
+
+## 🎬 DOCUMENTARY VIDEO VISUAL RULES (DocumentaryVideo.tsx)
+
+### Composition Architecture
+- Full-screen AI images as backgrounds — NO solid color backgrounds
+- Ken Burns effect MANDATORY on every section (cycles: zoom_in → zoom_out → pan_left → pan_right → tilt_up)
+- Crossfade from imageA to imageB at 55% of section duration (18-frame fade, ~0.6s)
+- Dark vignette: radial gradient center-to-edges (rgba 0,0,0,0.55)
+- Bottom gradient: rgba(0,0,0,0.88) at 0% → transparent at 60% (for karaoke readability)
+- Top gradient: rgba(0,0,0,0.55) at 0% → transparent at 25% (for progress bar / chapter badge)
+
+### Chapter Badge (top-left)
+- Shows for first 3 seconds (90 frames) of each section then fades
+- Circle number badge (accent color) + chapter title in Bebas Neue
+- Slide-in from left with spring animation
+
+### Typography
+- Chapter badge title: Bebas Neue, 32px, accent color, uppercase, 0.1em letter-spacing
+- CTA: Bebas Neue, 100px, pulsing, glow shadow
+- Watermark: Bebas Neue, 24px, rgba(255,255,255,0.28), bottom-right
+
+### Color Themes (colorTheme field)
+- islamic: bg=#0a1628, accent=#d4af37 (gold)
+- science: bg=#0d0021, accent=#00e5ff (cyan)
+- wealth: bg=#080808, accent=#00e676 (green)
+- military: bg=#1a0000, accent=#ff3232 (red)
+- ancient: bg=#281400, accent=#ffa500 (orange)
+- general: bg=#0f0f1a, accent=#ff6b35 (amber)
+
+### AI Image Generation (Pollinations Flux)
+- Resolution: 1920×1080 ALWAYS
+- URL: https://image.pollinations.ai/prompt/{encoded}?width=1920&height=1080&nologo=true&model=flux&seed={seed}
+- 12s delay between requests (rate limit), 20s retry on 429
+- Copy to public/[id]/images/ before Remotion render
+
+### Video Encoding (NO PIXELATION — MANDATORY)
+- CRF: 18 (NOT default — default causes pixelation)
+- Preset: slow (better quality at same bitrate)
+- Profile: high, Level: 4.2
+- Maxrate: 20M, Bufsize: 40M
+- Pixel format: yuv420p
+- Audio: AAC 256k
+
+### Documentary Visual Checklist (add to 16-point score)
+[ ] Every section has imageA (non-null)
+[ ] At least 8 sections have imageB for crossfade
+[ ] Ken Burns mode varies across sections (not all zoom_in)
+[ ] CRF=18 used for final encode
+[ ] Chapter badges visible in first 3s of each chapter
+[ ] Progress bar visible throughout
+[ ] Karaoke captions visible and synced
+
+---
+
+## 🕴️ STICKMAN ANIMATION RULES
+
+### When to Use Stickman
+Use `StickmanScene` or `StickmanComparison` in segments where the script:
+- Explains a process step-by-step ("imagine a person who...")
+- Compares two things / before vs after / rich vs poor
+- Tells a mini story about a historical figure's action
+- Needs to show cause-and-effect in a simple visual way
+- Has trigger words: "imagine", "picture this", "a person", "step by step", "before and after"
+
+### Available Types
+| Type | Use Case |
+|------|----------|
+| `walk` | Merchant traveling, soldier marching, scholar moving |
+| `run` | Urgency, escape, excitement |
+| `think` | Scientist discovering, scholar pondering (shows thought bubble) |
+| `celebrate` | Victory, achievement, breakthrough |
+| `fall` | Collapse, failure, decline of empire |
+| `point_right` | Directing attention, "look at this" |
+| `point_up` | Discovery, eureka moment, looking at stars |
+| `read` | Scholar studying, historical document |
+| `write` | Writing a manuscript, inventing algebra |
+| `shocked` | Surprise reveal, shocking statistic |
+| `idle` | Background character, neutral presence |
+
+### Two-Character Comparison (StickmanComparison)
+- `leftType` / `rightType` — different animations for each character
+- `leftLabel` / `rightLabel` — names shown below characters
+- `centerText` — defaults to "vs", can be "→", "≠", "=" etc.
+- `accentLeft` / `accentRight` — different colors for contrast
+
+### Script JSON Integration
+In remotion_props.json sections, add optional stickman field:
+```json
+{
+  "id": "ch_khwarizmi",
+  "stickman": {
+    "type": "write",
+    "label": "Al-Khwarizmi",
+    "x": 75,
+    "y": 80
+  }
+}
+```
+Or for comparison:
+```json
+{
+  "stickman": {
+    "mode": "comparison",
+    "leftType": "fall",
+    "rightType": "celebrate",
+    "leftLabel": "Before",
+    "rightLabel": "After"
+  }
+}
+```
+
+### In DocumentaryVideo.tsx
+- Stickman renders on TOP of the background image (z-index above)
+- Positioned in lower-right or lower-left quadrant (never covers captions)
+- Scale 1.0–1.4 depending on prominence needed
+- Color always matches section accentColor
+- Fade in with 15-frame entrance delay after chapter badge appears
+
+### In ShortVideo.tsx
+- Stickman renders above background video (z-index above SegmentBackground)
+- Position: x=75%, y=72% (right side, above captions)
+- Scale: 0.85 (compact for Shorts format)
+- Only use for "explainer" and "comparison" segment types

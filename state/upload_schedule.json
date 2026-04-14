@@ -1,63 +1,9 @@
 {
-  "created_at": "2026-04-14T00:40:07.425522+00:00",
-  "total_videos": 24,
-  "first_publish": "2026-04-14T15:00:00+00:00",
-  "last_publish": "2026-04-25T23:00:00+00:00",
+  "created_at": "2026-04-14T07:33:33.594097+00:00",
+  "total_videos": 20,
+  "first_publish": "2026-04-14T14:00:00+00:00",
+  "last_publish": "2026-05-20T14:00:00+00:00",
   "schedule": [
-    {
-      "id": "L00100",
-      "title": "Richest People on Earth — From Least to Most Wealthy (2026)",
-      "video_file": "output/L00100/video.mp4",
-      "metadata_file": "output/L00100/metadata.json",
-      "subtitles_dir": "output/L00100/subtitles",
-      "ready": true,
-      "blocked_reason": "uploadLimitExceeded — verify phone at youtube.com/verify",
-      "queued_at": "2026-04-12",
-      "publish_at": "2026-04-14T15:00:00+00:00",
-      "day": 0,
-      "scheduled": true,
-      "youtube_id": "TAtFwScRlMg"
-    },
-    {
-      "id": "S01117",
-      "title": "36 Politicians Voted for a Law. None of Them Wrote It.",
-      "video_file": "output/S01117/video.mp4",
-      "metadata_file": "output/S01117/metadata.json",
-      "subtitles_dir": "output/S01117/subtitles",
-      "ready": true,
-      "blocked_reason": "uploadLimitExceeded — verify phone at youtube.com/verify",
-      "queued_at": "2026-04-12",
-      "publish_at": "2026-04-15T17:00:00+00:00",
-      "day": 1,
-      "scheduled": true,
-      "youtube_id": "Wcqw_Qpy8_g"
-    },
-    {
-      "id": "S01279",
-      "title": "A Scientist Edited Babies' DNA. The Edits Failed. They Can't Be Undone.",
-      "video_file": "output/S01279/video_4k.mp4",
-      "metadata_file": "output/S01279/metadata.json",
-      "subtitles_dir": "output/S01279/subtitles",
-      "ready": true,
-      "blocked_reason": "uploadLimitExceeded — verify phone at youtube.com/verify",
-      "queued_at": "2026-04-12",
-      "publish_at": "2026-04-15T23:00:00+00:00",
-      "day": 1,
-      "scheduled": true,
-      "youtube_id": "Tz0q5gw2PgE"
-    },
-    {
-      "id": "S01062",
-      "title": "EpiPen: $7 to Make. $608 to Buy.",
-      "video_file": "output/S01062/video.mp4",
-      "metadata_file": "output/S01062/metadata.json",
-      "subtitles_dir": "output/S01062/subtitles",
-      "ready": true,
-      "blocked_reason": null,
-      "queued_at": "2026-04-13",
-      "publish_at": "2026-04-16T17:00:00+00:00",
-      "day": 2
-    },
     {
       "id": "S01110",
       "title": "University Costs $300 in Germany. $108,000 in the US.",
@@ -67,8 +13,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-13",
-      "publish_at": "2026-04-16T23:00:00+00:00",
-      "day": 2
+      "publish_at": "2026-04-14T14:00:00+00:00",
+      "day": 0
     },
     {
       "id": "S01155",
@@ -79,8 +25,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-13",
-      "publish_at": "2026-04-17T17:00:00+00:00",
-      "day": 3
+      "publish_at": "2026-04-16T14:00:00+00:00",
+      "day": 2
     },
     {
       "id": "S01183",
@@ -91,8 +37,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-13",
-      "publish_at": "2026-04-17T23:00:00+00:00",
-      "day": 3
+      "publish_at": "2026-04-18T14:00:00+00:00",
+      "day": 4
     },
     {
       "id": "S01185",
@@ -103,67 +49,7 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-13",
-      "publish_at": "2026-04-18T17:00:00+00:00",
-      "day": 4
-    },
-    {
-      "id": "S01190",
-      "title": "OpenAI Is Being Sued for $9.9 Trillion",
-      "video_file": "output/S01190/video.mp4",
-      "metadata_file": "output/S01190/metadata.json",
-      "subtitles_dir": "output/S01190/subtitles",
-      "ready": true,
-      "blocked_reason": null,
-      "queued_at": "2026-04-13",
-      "publish_at": "2026-04-18T23:00:00+00:00",
-      "day": 4
-    },
-    {
-      "id": "S01215",
-      "title": "The CIA Spied on 120 Countries for 50 Years — Through a Swiss Company",
-      "video_file": "output/S01215/video.mp4",
-      "metadata_file": "output/S01215/metadata.json",
-      "subtitles_dir": "output/S01215/subtitles",
-      "ready": true,
-      "blocked_reason": null,
-      "queued_at": "2026-04-13",
-      "publish_at": "2026-04-19T17:00:00+00:00",
-      "day": 5
-    },
-    {
-      "id": "S01224",
-      "title": "American Prisoners Earn $0.23 an Hour — For the US Military",
-      "video_file": "output/S01224/video.mp4",
-      "metadata_file": "output/S01224/metadata.json",
-      "subtitles_dir": "output/S01224/subtitles",
-      "ready": true,
-      "blocked_reason": null,
-      "queued_at": "2026-04-13",
-      "publish_at": "2026-04-19T23:00:00+00:00",
-      "day": 5
-    },
-    {
-      "id": "S01267",
-      "title": "Building AGI Will Cost More Than the GDP of Most Countries",
-      "video_file": "output/S01267/video.mp4",
-      "metadata_file": "output/S01267/metadata.json",
-      "subtitles_dir": "output/S01267/subtitles",
-      "ready": true,
-      "blocked_reason": null,
-      "queued_at": "2026-04-13",
-      "publish_at": "2026-04-20T17:00:00+00:00",
-      "day": 6
-    },
-    {
-      "id": "S01268",
-      "title": "This Movie Was Made Entirely by AI — And It's Playing in 58 Cinemas",
-      "video_file": "output/S01268/video.mp4",
-      "metadata_file": "output/S01268/metadata.json",
-      "subtitles_dir": "output/S01268/subtitles",
-      "ready": true,
-      "blocked_reason": null,
-      "queued_at": "2026-04-13",
-      "publish_at": "2026-04-20T23:00:00+00:00",
+      "publish_at": "2026-04-20T14:00:00+00:00",
       "day": 6
     },
     {
@@ -175,8 +61,68 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-20T15:00:00+00:00",
-      "day": 6
+      "publish_at": "2026-04-21T14:00:00+00:00",
+      "day": 7
+    },
+    {
+      "id": "S01190",
+      "title": "OpenAI Is Being Sued for $9.9 Trillion",
+      "video_file": "output/S01190/video.mp4",
+      "metadata_file": "output/S01190/metadata.json",
+      "subtitles_dir": "output/S01190/subtitles",
+      "ready": true,
+      "blocked_reason": null,
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-22T14:00:00+00:00",
+      "day": 8
+    },
+    {
+      "id": "S01215",
+      "title": "The CIA Spied on 120 Countries for 50 Years — Through a Swiss Company",
+      "video_file": "output/S01215/video.mp4",
+      "metadata_file": "output/S01215/metadata.json",
+      "subtitles_dir": "output/S01215/subtitles",
+      "ready": true,
+      "blocked_reason": null,
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-24T14:00:00+00:00",
+      "day": 10
+    },
+    {
+      "id": "S01224",
+      "title": "American Prisoners Earn $0.23 an Hour — For the US Military",
+      "video_file": "output/S01224/video.mp4",
+      "metadata_file": "output/S01224/metadata.json",
+      "subtitles_dir": "output/S01224/subtitles",
+      "ready": true,
+      "blocked_reason": null,
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-26T14:00:00+00:00",
+      "day": 12
+    },
+    {
+      "id": "S01267",
+      "title": "Building AGI Will Cost More Than the GDP of Most Countries",
+      "video_file": "output/S01267/video.mp4",
+      "metadata_file": "output/S01267/metadata.json",
+      "subtitles_dir": "output/S01267/subtitles",
+      "ready": true,
+      "blocked_reason": null,
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-28T14:00:00+00:00",
+      "day": 14
+    },
+    {
+      "id": "S01268",
+      "title": "This Movie Was Made Entirely by AI — And It's Playing in 58 Cinemas",
+      "video_file": "output/S01268/video.mp4",
+      "metadata_file": "output/S01268/metadata.json",
+      "subtitles_dir": "output/S01268/subtitles",
+      "ready": true,
+      "blocked_reason": null,
+      "queued_at": "2026-04-13",
+      "publish_at": "2026-04-30T14:00:00+00:00",
+      "day": 16
     },
     {
       "id": "S00794",
@@ -186,8 +132,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-21T17:00:00+00:00",
-      "day": 7
+      "publish_at": "2026-05-02T14:00:00+00:00",
+      "day": 18
     },
     {
       "id": "S00925",
@@ -197,8 +143,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-21T23:00:00+00:00",
-      "day": 7
+      "publish_at": "2026-05-04T14:00:00+00:00",
+      "day": 20
     },
     {
       "id": "S01066",
@@ -208,8 +154,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-22T17:00:00+00:00",
-      "day": 8
+      "publish_at": "2026-05-06T14:00:00+00:00",
+      "day": 22
     },
     {
       "id": "S01080",
@@ -219,8 +165,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-22T23:00:00+00:00",
-      "day": 8
+      "publish_at": "2026-05-08T14:00:00+00:00",
+      "day": 24
     },
     {
       "id": "S01084",
@@ -230,8 +176,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-23T17:00:00+00:00",
-      "day": 9
+      "publish_at": "2026-05-10T14:00:00+00:00",
+      "day": 26
     },
     {
       "id": "S01097",
@@ -241,8 +187,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-23T23:00:00+00:00",
-      "day": 9
+      "publish_at": "2026-05-12T14:00:00+00:00",
+      "day": 28
     },
     {
       "id": "S01113",
@@ -252,8 +198,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-24T17:00:00+00:00",
-      "day": 10
+      "publish_at": "2026-05-14T14:00:00+00:00",
+      "day": 30
     },
     {
       "id": "S01128",
@@ -263,8 +209,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-24T23:00:00+00:00",
-      "day": 10
+      "publish_at": "2026-05-16T14:00:00+00:00",
+      "day": 32
     },
     {
       "id": "S01131",
@@ -274,8 +220,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-25T17:00:00+00:00",
-      "day": 11
+      "publish_at": "2026-05-18T14:00:00+00:00",
+      "day": 34
     },
     {
       "id": "S01644",
@@ -285,8 +231,8 @@
       "ready": true,
       "blocked_reason": null,
       "queued_at": "2026-04-14",
-      "publish_at": "2026-04-25T23:00:00+00:00",
-      "day": 11
+      "publish_at": "2026-05-20T14:00:00+00:00",
+      "day": 36
     }
   ]
 }

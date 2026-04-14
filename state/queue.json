@@ -51,11 +51,12 @@
         "Reuters November 2023",
         "Porto Alegre Municipal Chamber Records"
       ],
-      "status": "pending",
+      "status": "produced",
       "produced_date": null,
-      "youtube_id": null,
+      "youtube_id": "GxPgK6rnjb4",
       "views": null,
-      "ctr": null
+      "ctr": null,
+      "produced_at": "2026-04-14"
     },
     {
       "id": "S01279",

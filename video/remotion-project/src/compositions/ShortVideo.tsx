@@ -21,6 +21,7 @@ import { CountUpNumber } from "../components/CountUpNumber";
 import { ImpactFlash, ScalePunch } from "../components/ImpactFlash";
 import { KaraokeCaption, WordTimestamp } from "../components/KaraokeCaption";
 import { Particles } from "../components/Particles";
+import { StickmanScene, StickmanType } from "../components/StickmanScene";
 import { SegmentBackground } from "../components/SegmentBackground";
 import { TopProgressBar } from "../components/TopProgressBar";
 import { WordByWordReveal } from "../components/WordByWordReveal";
@@ -51,6 +52,14 @@ export const segmentSchema = z.object({
   numberLabel: z.string().optional(),
   // optional words to highlight in accent color
   highlightWords: z.array(z.string()).optional(),
+  // optional stickman character
+  stickman: z.object({
+    type: z.string(),
+    label: z.string().optional(),
+    x: z.number().optional(),
+    y: z.number().optional(),
+    flip: z.boolean().optional(),
+  }).optional().nullable(),
 });
 
 const wordTimestampSchema = z.object({
@@ -211,6 +220,19 @@ const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor, globalBgGra
         background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 35%)",
         pointerEvents: "none",
       }} />
+      {/* Stickman character — renders above background, below captions */}
+      {seg.stickman && (
+        <StickmanScene
+          type={(seg.stickman.type as StickmanType)}
+          accentColor={accentColor}
+          label={seg.stickman.label}
+          x={seg.stickman.x ?? 75}
+          y={seg.stickman.y ?? 72}
+          flip={seg.stickman.flip ?? false}
+          scale={0.85}
+          delayFrames={10}
+        />
+      )}
     </AbsoluteFill>
   );
 

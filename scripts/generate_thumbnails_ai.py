@@ -83,8 +83,9 @@ def make_gradient_bg(W, H, bg_rgb, acc_rgb):
 
 
 def make_thumbnail_ai(vid_id, cfg):
-    is_short = vid_id.startswith("S")
-    W, H = (1080, 1920) if is_short else (1280, 720)
+    # YouTube thumbnails are ALWAYS 1280×720 (16:9) — for both Shorts and Long videos
+    # Source: support.google.com/youtube/answer/72431
+    W, H = 1280, 720
 
     acc_rgb = hex_rgb(cfg["accent"])
     bg_rgb = hex_rgb(cfg["bg"])

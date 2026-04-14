@@ -18,10 +18,11 @@ SCHEDULE_FILE = ROOT / "state/upload_schedule.json"
 # ─── Optimal publish times (UTC) ────────────────────────────────────────────
 # Targets global English audience — peaks at 12pm EST, 6pm EST, 9pm EST
 # = 17:00, 23:00, 02:00 UTC (next day)
-DAILY_SLOTS_UTC = ["17:00", "23:00"]   # 2 slots/day for Shorts
-LONG_SLOT_UTC   = "15:00"             # Long videos: 3pm UTC (10am EST — morning discovery)
+PUBLISH_HOUR_UTC = "14:00"   # 5:00 PM Riyadh (UTC+3) = 14:00 UTC — fixed for all videos
+SHORT_EVERY_N_DAYS  = 2      # Shorts: every other day (يوم ويوم لا)
+LONG_EVERY_N_DAYS   = 7      # Long videos: once a week
 
-VIDEOS_PER_DAY  = 3
+VIDEOS_PER_DAY  = 1   # upload 1 video per session (each has its own scheduled day)
 
 
 def load_pending() -> list:
@@ -33,55 +34,50 @@ def load_pending() -> list:
 
 
 def build_schedule(pending: list, start_date: datetime) -> list:
-    """Assign a publish datetime to each video."""
+    """
+    Assign a publish datetime to each video.
+    Rules:
+    - Shorts  : 1 per publish day, every 2 days (يوم ويوم لا)
+    - Long    : 1 per week (every 7 days)
+    - All     : publish at 14:00 UTC (5 PM Riyadh)
+    - Long and Short never share the same day
+    """
     schedule = []
-    day = 0
-    slot_idx = 0
-    long_video_days = set()  # track days with a long video
+    pub_hour = int(PUBLISH_HOUR_UTC.split(":")[0])
 
-    for entry in pending:
-        vid_id = entry["id"]
-        is_long = vid_id.startswith("L")
+    # Separate shorts and longs
+    shorts = [e for e in pending if not e["id"].startswith("L")]
+    longs  = [e for e in pending if e["id"].startswith("L")]
 
-        # Long videos get their own day slot at LONG_SLOT_UTC
-        if is_long:
-            # Find next day not already used for a long video
-            while day in long_video_days:
-                day += 1
-            pub_date = start_date + timedelta(days=day)
-            pub_dt = pub_date.replace(
-                hour=int(LONG_SLOT_UTC.split(":")[0]),
-                minute=0, second=0, microsecond=0,
-                tzinfo=timezone.utc
-            )
-            long_video_days.add(day)
-            schedule.append({**entry, "publish_at": pub_dt.isoformat(), "day": day})
-            day += 1  # Long video takes its own day
-            slot_idx = 0
-            continue
+    # Build short days: day 0, 2, 4, 6, ...
+    short_days = [i * SHORT_EVERY_N_DAYS for i in range(len(shorts))]
 
-        # Short videos: 2 per day max (leaving room for potential long video)
-        slots_this_day = DAILY_SLOTS_UTC
-        if slot_idx >= len(slots_this_day):
-            day += 1
-            slot_idx = 0
+    # Build long days: first available week boundary not clashing with shorts
+    # Long videos go on day 6, 13, 20, ... (end of each week)
+    long_days = []
+    short_day_set = set(short_days)
+    candidate = LONG_EVERY_N_DAYS - 1  # day 6, 13, 20...
+    for _ in longs:
+        while candidate in short_day_set:
+            candidate += 1
+        long_days.append(candidate)
+        short_day_set.add(candidate)
+        candidate += LONG_EVERY_N_DAYS
 
-        # Skip days reserved for long videos
-        while day in long_video_days:
-            day += 1
-
-        pub_date = start_date + timedelta(days=day)
-        slot_time = slots_this_day[slot_idx]
-        pub_dt = pub_date.replace(
-            hour=int(slot_time.split(":")[0]),
-            minute=int(slot_time.split(":")[1]),
-            second=0, microsecond=0,
-            tzinfo=timezone.utc
+    def make_entry(entry, day):
+        pub_dt = (start_date + timedelta(days=day)).replace(
+            hour=pub_hour, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
         )
+        return {**entry, "publish_at": pub_dt.isoformat(), "day": day}
 
-        schedule.append({**entry, "publish_at": pub_dt.isoformat(), "day": day})
-        slot_idx += 1
+    for entry, day in zip(shorts, short_days):
+        schedule.append(make_entry(entry, day))
 
+    for entry, day in zip(longs, long_days):
+        schedule.append(make_entry(entry, day))
+
+    # Sort by publish date
+    schedule.sort(key=lambda x: x["publish_at"])
     return schedule
 
 

@@ -41,8 +41,9 @@ def shadow_text(draw, xy, text, font, fill, shadow=(0,0,0), dist=8):
     draw.text(xy, text, font=font, fill=fill, anchor="mm")
 
 def make_thumbnail(vid_id, cfg):
-    is_short = vid_id.startswith("S")
-    W, H = (1080, 1920) if is_short else (1280, 720)
+    # YouTube thumbnails are ALWAYS 1280×720 (16:9) — for both Shorts and Long videos
+    # The 1080×1920 format is for the VIDEO itself, NOT the thumbnail
+    W, H = 1280, 720
 
     img = Image.new("RGB", (W, H))
     draw = ImageDraw.Draw(img)
