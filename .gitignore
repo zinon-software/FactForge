@@ -32,3 +32,8 @@ video/remotion-project/node_modules/
 # ─── IDE ───────────────────────────────────
 .vscode/
 .idea/
+
+# Large model files
+models/
+*.onnx
+*.bin
