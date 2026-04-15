@@ -60,6 +60,9 @@ PEXELS_API_KEY: Optional[str] = None  # loaded lazily
 COVERR_APP_ID  = "87FCDE58BB778CC2E9FB"
 COVERR_API_KEY = "1a9501ffa55e7c45a86eed2b6c6bd34a"
 
+# ─── Pixabay config ───────────────────────────────────────────────────────────
+PIXABAY_API_KEY = "55448442-b529cb16ef94bcaa210308891"
+
 
 def _load_pexels_key() -> str:
     global PEXELS_API_KEY
@@ -440,6 +443,80 @@ _TYPE_FALLBACKS = {
 _GENERIC_FALLBACKS = ["city aerial", "nature landscape", "technology abstract", "ocean waves", "crowd people"]
 
 
+def _fetch_pixabay_video(
+    query: str,
+    out_path: Path,
+    used_pixabay_ids: set,
+    fallback_queries: list = None,
+) -> bool:
+    """
+    Download a unique video from Pixabay API.
+    Prefers medium quality (portrait if available).
+    Pixabay License allows commercial use with no attribution required.
+    """
+    all_queries = [query] + (fallback_queries or [])
+
+    for attempt_query in all_queries:
+        try:
+            r = requests.get(
+                "https://pixabay.com/api/videos/",
+                params={
+                    "key": PIXABAY_API_KEY,
+                    "q": attempt_query,
+                    "per_page": 15,
+                    "video_type": "film",
+                    "safesearch": "true",
+                },
+                timeout=20,
+            )
+            if r.status_code != 200:
+                print(f"    ⚠️  Pixabay {r.status_code} for '{attempt_query}'")
+                continue
+
+            videos = r.json().get("hits", [])
+            if not videos:
+                continue
+
+            for vid in videos:
+                vid_id = vid["id"]
+                if vid_id in used_pixabay_ids:
+                    continue
+
+                # Prefer medium → small → large
+                sizes = vid.get("videos", {})
+                clip = (
+                    sizes.get("medium")
+                    or sizes.get("small")
+                    or sizes.get("large")
+                    or sizes.get("tiny")
+                )
+                mp4_url = clip.get("url") if clip else None
+                if not mp4_url:
+                    continue
+
+                dl = requests.get(mp4_url, timeout=120, stream=True)
+                if dl.status_code != 200:
+                    continue
+
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(out_path, "wb") as fh:
+                    for chunk in dl.iter_content(chunk_size=1024 * 256):
+                        fh.write(chunk)
+
+                used_pixabay_ids.add(vid_id)
+                print(
+                    f"    ✓ {out_path.name} — pixabay#{vid_id} (query: '{attempt_query}')"
+                    f" ({out_path.stat().st_size // 1024}KB)"
+                )
+                return True
+
+        except Exception as e:
+            print(f"    ⚠️  Pixabay error for '{attempt_query}': {e}")
+        time.sleep(0.3)
+
+    return False
+
+
 def step_bg_videos(video_id: str, cp: dict) -> None:
     """
     Fetch unique background videos for every segment.
@@ -467,9 +544,10 @@ def step_bg_videos(video_id: str, cp: dict) -> None:
     bg_dir  = OUTPUT_DIR / video_id / "bg_videos"
     bg_dir.mkdir(parents=True, exist_ok=True)
 
-    used_pexels_ids: set = set()
-    used_coverr_ids: set = set()
-    print(f"  Fetching {len(segments)} unique background clips (Pexels → Coverr fallback)...")
+    used_pexels_ids:   set = set()
+    used_coverr_ids:   set = set()
+    used_pixabay_ids:  set = set()
+    print(f"  Fetching {len(segments)} unique background clips (Pexels → Coverr → Pixabay)...")
     failed = 0
 
     for i, seg in enumerate(segments):
@@ -493,13 +571,18 @@ def step_bg_videos(video_id: str, cp: dict) -> None:
         # 1️⃣ Try Pexels first
         ok = _fetch_pexels_video(primary_query, out_path, api_key, used_pexels_ids, fallbacks)
 
-        # 2️⃣ Fallback to Coverr if Pexels failed
+        # 2️⃣ Fallback to Coverr
         if not ok:
             print(f"    ↳ Pexels failed — trying Coverr...")
             ok = _fetch_coverr_video(primary_query, out_path, used_coverr_ids, fallbacks)
 
+        # 3️⃣ Fallback to Pixabay
         if not ok:
-            print(f"    ✗ Both Pexels and Coverr failed for '{primary_query}'")
+            print(f"    ↳ Coverr failed — trying Pixabay...")
+            ok = _fetch_pixabay_video(primary_query, out_path, used_pixabay_ids, fallbacks)
+
+        if not ok:
+            print(f"    ✗ All sources (Pexels, Coverr, Pixabay) failed for '{primary_query}'")
             failed += 1
 
         time.sleep(0.4)
