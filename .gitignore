@@ -1,7 +1,4 @@
 # ─── Secrets ───────────────────────────────
-.env
-config/youtube_credentials.json
-config/youtube_token.json
 
 # ─── Generated output ──────────────────────
 output/
