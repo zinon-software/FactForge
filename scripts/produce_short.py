@@ -56,12 +56,15 @@ SHORT_FPS = 60
 # ─── Pexels config ────────────────────────────────────────────────────────────
 PEXELS_API_KEY: Optional[str] = None  # loaded lazily
 
+# ─── Coverr config ────────────────────────────────────────────────────────────
+COVERR_APP_ID  = "87FCDE58BB778CC2E9FB"
+COVERR_API_KEY = "1a9501ffa55e7c45a86eed2b6c6bd34a"
+
 
 def _load_pexels_key() -> str:
     global PEXELS_API_KEY
     if PEXELS_API_KEY:
         return PEXELS_API_KEY
-    # Try environment first
     key = os.getenv("PEXELS_API_KEY")
     if not key:
         env_file = CONFIG_DIR / ".env"
@@ -76,6 +79,84 @@ def _load_pexels_key() -> str:
         )
     PEXELS_API_KEY = key
     return PEXELS_API_KEY
+
+
+def _fetch_coverr_video(
+    query: str,
+    out_path: Path,
+    used_coverr_ids: set,
+    fallback_queries: list = None,
+) -> bool:
+    """
+    Download a unique video from Coverr API.
+    CDN pattern: https://cdn.coverr.co/videos/{base_filename}/{base_filename}.mp4
+    Prefers non-premium, non-vertical videos. Falls back through fallback_queries.
+    """
+    all_queries = [query] + (fallback_queries or [])
+    headers = {"Authorization": f"Bearer {COVERR_API_KEY}"}
+
+    for attempt_query in all_queries:
+        try:
+            r = requests.get(
+                "https://api.coverr.co/videos",
+                headers=headers,
+                params={"query": attempt_query, "per_page": 15},
+                timeout=20,
+            )
+            if r.status_code != 200:
+                print(f"    ⚠️  Coverr {r.status_code} for '{attempt_query}'")
+                continue
+
+            videos = r.json().get("hits", [])
+            if not videos:
+                continue
+
+            # Prefer non-premium; skip premium
+            sorted_vids = sorted(videos, key=lambda v: v.get("is_premium", True))
+
+            for vid in sorted_vids:
+                vid_id = vid.get("slug") or str(vid.get("id", ""))
+                if vid_id in used_coverr_ids:
+                    continue
+                if vid.get("is_premium"):
+                    continue  # skip paid content
+
+                # Fetch single video to get direct mp4 URL
+                try:
+                    rv = requests.get(
+                        f"https://api.coverr.co/videos/{vid_id}",
+                        headers=headers, timeout=10,
+                    )
+                    if rv.status_code != 200:
+                        continue
+                    mp4_url = rv.json().get("urls", {}).get("mp4_preview") or \
+                              rv.json().get("urls", {}).get("mp4")
+                    if not mp4_url:
+                        continue
+                except Exception:
+                    continue
+
+                dl = requests.get(mp4_url, timeout=120, stream=True)
+                if dl.status_code != 200:
+                    continue
+
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(out_path, "wb") as fh:
+                    for chunk in dl.iter_content(chunk_size=1024 * 256):
+                        fh.write(chunk)
+
+                used_coverr_ids.add(vid_id)
+                print(
+                    f"    ✓ {out_path.name} — coverr/{vid_id} (query: '{attempt_query}')"
+                    f" ({out_path.stat().st_size // 1024}KB)"
+                )
+                return True
+
+        except Exception as e:
+            print(f"    ⚠️  Coverr error for '{attempt_query}': {e}")
+        time.sleep(0.3)
+
+    return False
 
 
 # ─── Files to keep after clean ───────────────────────────────────────────────
@@ -361,11 +442,11 @@ _GENERIC_FALLBACKS = ["city aerial", "nature landscape", "technology abstract", 
 
 def step_bg_videos(video_id: str, cp: dict) -> None:
     """
-    Fetch unique Pexels background videos for every segment.
-    Priority order for query:
-      1. seg['scene_query']  — direct semantic description from script writing
-      2. filename-derived    — fallback from backgroundVideo path
-    Deduplication: tracks used Pexels video IDs so no two segments share the same clip.
+    Fetch unique background videos for every segment.
+    Source priority:
+      1. Pexels (primary) — scene_query → type fallbacks → generic fallbacks
+      2. Coverr (secondary) — same query chain if Pexels fails
+    Deduplication: separate ID sets per provider so no segment reuses a clip.
     """
     props_path = OUTPUT_DIR / video_id / "remotion_props.json"
     if not props_path.exists():
@@ -387,7 +468,8 @@ def step_bg_videos(video_id: str, cp: dict) -> None:
     bg_dir.mkdir(parents=True, exist_ok=True)
 
     used_pexels_ids: set = set()
-    print(f"  Fetching {len(segments)} unique Pexels background clips...")
+    used_coverr_ids: set = set()
+    print(f"  Fetching {len(segments)} unique background clips (Pexels → Coverr fallback)...")
     failed = 0
 
     for i, seg in enumerate(segments):
@@ -395,30 +477,38 @@ def step_bg_videos(video_id: str, cp: dict) -> None:
         if not bg_path_str:
             continue
 
-        out_filename = Path(bg_path_str).name   # e.g. "mosque_dome.mp4"
+        out_filename = Path(bg_path_str).name
         out_path     = bg_dir / out_filename
 
         if out_path.exists() and out_path.stat().st_size > 10_000:
             print(f"    [SKIP] {out_filename} already downloaded")
             continue
 
-        # Prefer explicit scene_query written by Claude during script creation
         primary_query = seg.get("scene_query") or _query_from_filename(bg_path_str)
         seg_type      = seg.get("type", "fact")
         fallbacks     = _TYPE_FALLBACKS.get(seg_type, []) + _GENERIC_FALLBACKS
 
         print(f"    [{i+1}/{len(segments)}] '{primary_query}' → {out_filename}")
 
+        # 1️⃣ Try Pexels first
         ok = _fetch_pexels_video(primary_query, out_path, api_key, used_pexels_ids, fallbacks)
+
+        # 2️⃣ Fallback to Coverr if Pexels failed
         if not ok:
+            print(f"    ↳ Pexels failed — trying Coverr...")
+            ok = _fetch_coverr_video(primary_query, out_path, used_coverr_ids, fallbacks)
+
+        if not ok:
+            print(f"    ✗ Both Pexels and Coverr failed for '{primary_query}'")
             failed += 1
-        # Polite rate limit
-        time.sleep(0.5)
+
+        time.sleep(0.4)
 
     if failed > 0:
-        print(f"  ⚠️  {failed}/{len(segments)} clips failed to download")
+        print(f"  ⚠️  {failed}/{len(segments)} clips failed (both sources exhausted)")
 
-    print(f"  bg_videos ready in {bg_dir} ({len(segments) - failed} unique clips)")
+    total_ok = len(list(bg_dir.glob("*.mp4")))
+    print(f"  bg_videos ready in {bg_dir} ({total_ok} unique clips)")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
