@@ -46,9 +46,9 @@ At the START of every session (or when user says "resume", "status", or opens a 
 4. Output EXACTLY this dashboard format — nothing else, no preamble:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📺  FactForge — لوحة التحكم
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔴 قيد الإنتاج
    [id] — [title]
@@ -60,16 +60,58 @@ At the START of every session (or when user says "resume", "status", or opens a 
 ✅ مرفوعة على يوتيوب  ([count] مقاطع)
    • [id] — [youtube_id]  |  رُفع: [published_at]  |  [إذا cleaned: "🧹 منظّف" وإلا: "📁 يمكن تنظيفه ← clean [id]"]
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔄  Workflow — دورة الإنتاج الكاملة
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  [User: produce]
+       │
+       ▼
+  ① PROPOSE ── Claude يقترح 3 مواضيع من 6 مجالات آمنة
+       │             (يتحقق من used_ideas.json تلقائياً)
+       ▼
+  [User: يختار رقم]
+       │
+       ▼
+  ② RESEARCH ── بحث ويب + تحقق من الحقائق (≥2 مصادر رسمية)
+       │             🚦 Gate: دقة ≥ 18/20  ← يوقف إذا فشل
+       ▼
+  ③ SCRIPT ── كتابة السكريبت من الحقائق المتحقق منها
+       │            🚦 Gate: محتوى ≥ 80/100 ← يعيد كتابة إذا فشل
+       ▼
+  ④ AUDIO ── Kokoro TTS (am_echo) + SFX + timestamps
+       │            python3 scripts/generate_audio.py [id]
+       ▼
+  ⑤ VIDEO ── تحميل bg_videos (Pexels→Coverr→Pixabay)
+       │            Remotion render → ffmpeg merge
+       │            🚦 Gate: بصري ≥ 14/16 ← يعيد إذا فشل
+       ▼
+  ⑥ THUMBNAIL ── Pollinations Flux AI + Pillow overlay (1280×720 JPEG)
+       ▼
+  ⑦ METADATA ── عنوان×5 + وصف + tags
+       │             🚦 Gate: SEO ≥ 18/22 ← يعيد إذا فشل
+       ▼
+  ⑧ UPLOAD ── python3 scripts/finalize_and_upload.py [id]
+       │            (يولّد SRT 7 لغات تلقائياً قبل الرفع)
+       │            publish_at: تلقائي via get_next_publish_date()
+       ▼
+  ⑨ CLEAN ── حذف video.mp4 + audio.mp3 + bg_videos/ تلقائياً
+       │
+       ▼
+  ✅ DONE — مجدول على يوتيوب
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 الأوامر:
   produce        → اقترح 3 مواضيع جديدة واختر للإنتاج
-  produce short  → نفسه — مقطع قصير
-  produce long   → نفسه — مقطع طويل
+  produce short  → نفسه — مقطع قصير (35–60 ث، 60fps)
+  produce long   → نفسه — مقطع طويل (10–15 د، 30fps)
   upload         → ارفع مقاطع اليوم المجدولة
   schedule       → اعرض جدول النشر الكامل
+  analytics      → تقرير أداء القناة
+  trending       → حدّث الأفكار من Google Trends
   clean [id]     → نظّف ملفات المقطع المرفوع
   status         → حدّث هذه اللوحة
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 Translate pending_tasks to Arabic:
@@ -133,28 +175,49 @@ When user says "produce" (short or long):
 ## System Architecture
 
 ```
-User command → main.py (Python)
-                  ↓
-        ┌─────────────────────────────────┐
-        │  Claude Code (THIS SESSION)     │  ← Does ALL AI work
-        │  - Verifies facts               │
-        │  - Writes scripts               │
-        │  - Generates titles             │
-        │  - Translates metadata          │
-        │  - Generates video ideas        │
-        │  - Analyzes performance         │
-        └─────────────────────────────────┘
-                  ↓
-        ┌─────────────────────────────────┐
-        │  Python automation              │  ← Does non-AI work
-        │  - TTS audio (Kokoro am_echo)   │
-        │  - Remotion video render        │
-        │  - Pillow thumbnail             │
-        │  - YouTube API upload           │
-        │  - Web search (Serper)          │
-        └─────────────────────────────────┘
-                  ↓
-          output/[id]/ → YouTube API
+┌─────────────────────────────────────────────────────────┐
+│                     USER COMMAND                        │
+│           produce / upload / clean / status             │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+           ┌────────────▼────────────┐
+           │    Claude Code (AI)     │  ← كل الذكاء الاصطناعي
+           │  • يقترح المواضيع       │
+           │  • يتحقق من الحقائق    │
+           │  • يكتب السكريبت        │
+           │  • يولّد البيانات       │
+           │  • يقيّم الجودة (Gates) │
+           └────────────┬────────────┘
+                        │
+        ┌───────────────┼───────────────┐
+        ▼               ▼               ▼
+  generate_audio   render_short    finalize_and_upload
+  (Kokoro TTS)   (Remotion+ffmpeg)  (YouTube API)
+        │               │               │
+        ▼               ▼               ▼
+  audio.mp3 +    video.mp4 (60fps)  scheduled private
+  timestamps     1080×1920           + SRT 7 langs
+        │               │               │
+        └───────────────┴───────────────┘
+                        │
+                 output/[id]/
+                        │
+                        ▼
+              ✅ YouTube (auto-publish)
+
+─── Video Sources (3-tier fallback) ───────────────────
+  Pexels API → Coverr API → Pixabay API
+  (fail-safe: always downloads 18/18 segments)
+
+─── Quality Gates (MUST ALL PASS) ─────────────────────
+  🚦 Fact accuracy   ≥ 18/20  (fact_verification.md)
+  🚦 Script quality  ≥ 80/100 (content_psychology.md)
+  🚦 Visual design   ≥ 14/16  (visual_design.md)
+  🚦 SEO score       ≥ 18/22  (youtube_seo.md)
+
+─── Publish Schedule ───────────────────────────────────
+  Shorts : كل يومين    @ 14:00 UTC (5 PM Riyadh)
+  Long   : كل أسبوع   @ 14:00 UTC (5 PM Riyadh)
 ```
 
 ### How Claude Code gets tasks
