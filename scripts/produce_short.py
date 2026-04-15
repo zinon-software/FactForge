@@ -368,7 +368,7 @@ def _fetch_pexels_video(
             "query": attempt_query,
             "per_page": 15,
             "size": "medium",
-            "orientation": "portrait",
+            "orientation": "portrait",  # portrait = vertical — required for Shorts
         }
         r = requests.get(
             "https://api.pexels.com/videos/search",
@@ -466,6 +466,7 @@ def _fetch_pixabay_video(
                     "per_page": 15,
                     "video_type": "film",
                     "safesearch": "true",
+                    "orientation": "vertical",  # vertical = portrait — required for Shorts
                 },
                 timeout=20,
             )
@@ -656,13 +657,28 @@ def step_render(video_id: str, cp: dict) -> None:
     render_script = SCRIPTS_DIR / "render_short.py"
     print(f"  Rendering {video_id} via render_short.py...")
 
-    result = subprocess.run(
-        [sys.executable, str(render_script), video_id],
-        capture_output=False,
-        timeout=3600,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(f"render_short.py failed with exit code {result.returncode}")
+    max_retries = 2
+    last_error: Optional[Exception] = None
+    for attempt in range(1, max_retries + 1):
+        result = subprocess.run(
+            [sys.executable, str(render_script), video_id],
+            capture_output=False,
+            timeout=3600,
+        )
+        if result.returncode == 0:
+            break
+        last_error = RuntimeError(
+            f"render_short.py failed with exit code {result.returncode} (attempt {attempt}/{max_retries})"
+        )
+        print(f"  ⚠️  Render failed (attempt {attempt}/{max_retries}) — clearing cache and retrying...")
+        cache_dir = ROOT / "video/remotion-project/.cache"
+        if cache_dir.exists():
+            shutil.rmtree(cache_dir)
+            print(f"  Cleared {cache_dir}")
+        if attempt < max_retries:
+            time.sleep(5)
+    else:
+        raise last_error  # type: ignore[misc]
 
     if not video_path.exists():
         raise RuntimeError(f"Render completed but video.mp4 not found at {video_path}")
@@ -690,7 +706,7 @@ def _build_thumbnail_prompt(script: dict, video_id: str) -> str:
 
 
 def step_thumbnail(video_id: str, script: dict) -> None:
-    """Generate thumbnail.jpg if it doesn't exist."""
+    """Generate thumbnail.jpg (+ B/C variants) if they don't exist."""
     thumb_path = OUTPUT_DIR / video_id / "thumbnail.jpg"
 
     if thumb_path.exists() and thumb_path.stat().st_size > 5_000:
@@ -711,43 +727,28 @@ def step_thumbnail(video_id: str, script: dict) -> None:
 
     print(f"  Generating Pollinations thumbnail: {prompt[:60]}...")
 
-    # Fetch AI background
+    # Fetch AI background (shared across all 3 variants)
     url = (
         f"https://image.pollinations.ai/prompt/{quote(prompt)}"
         f"?width={W}&height={H}&nologo=true&model=flux&seed=42"
     )
-    bg_img = None
+    bg_raw = None
     for attempt in range(3):
         try:
             r = requests.get(url, timeout=90)
             if r.status_code == 200 and len(r.content) > 5000:
-                bg_img = Image.open(BytesIO(r.content)).convert("RGB")
-                bg_img = bg_img.resize((W, H), Image.Resampling.LANCZOS)
+                bg_raw = Image.open(BytesIO(r.content)).convert("RGB")
+                bg_raw = bg_raw.resize((W, H), Image.Resampling.LANCZOS)
                 break
             print(f"    Retry {attempt+1} (status {r.status_code})")
         except Exception as exc:
             print(f"    Retry {attempt+1} ({exc})")
         time.sleep(5)
 
-    if bg_img is None:
+    if bg_raw is None:
         # Fallback: dark gradient
-        bg_img = Image.new("RGB", (W, H), (20, 20, 30))
+        bg_raw = Image.new("RGB", (W, H), (20, 20, 30))
 
-    draw = ImageDraw.Draw(bg_img)
-
-    # Dark gradient overlay on bottom half
-    overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ov_draw = ImageDraw.Draw(overlay)
-    for y in range(H // 2, H):
-        alpha = int(200 * (y - H // 2) / (H // 2))
-        ov_draw.line([(0, y), (W, y)], fill=(0, 0, 0, alpha))
-    bg_img = Image.alpha_composite(bg_img.convert("RGBA"), overlay).convert("RGB")
-    draw = ImageDraw.Draw(bg_img)
-
-    # Top accent bar
-    draw.rectangle([(0, 0), (W, 10)], fill=(255, 200, 0))
-
-    # Stat (hero number)
     def get_font(size: int) -> ImageFont.FreeTypeFont:
         for p in [
             "/System/Library/Fonts/Supplemental/Impact.ttf",
@@ -777,21 +778,50 @@ def step_thumbnail(video_id: str, script: dict) -> None:
                     d.text((x + dx, y + dy), text, font=font, fill=outline, anchor="mm")
         d.text(xy, text, font=font, fill=fill, anchor="mm")
 
-    if stat:
-        outline_text(draw, (W // 2, H // 2 - 40), stat, get_font(120), (255, 230, 50), (0, 0, 0))
+    def _render_variant(accent_rgb: tuple, stat_rgb: tuple) -> Image.Image:
+        """Render one thumbnail variant with the given accent/stat colors."""
+        bg_img = bg_raw.copy()
 
-    # Title lines (max 2, all caps)
-    title_upper = title.upper()[:60]
-    font_title  = get_font(62)
-    outline_text(draw, (W // 2, H - 120), title_upper, font_title, (255, 255, 255), (0, 0, 0))
+        # Dark gradient overlay on bottom half
+        overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ov_draw = ImageDraw.Draw(overlay)
+        for y in range(H // 2, H):
+            alpha = int(200 * (y - H // 2) / (H // 2))
+            ov_draw.line([(0, y), (W, y)], fill=(0, 0, 0, alpha))
+        bg_img = Image.alpha_composite(bg_img.convert("RGBA"), overlay).convert("RGB")
+        draw = ImageDraw.Draw(bg_img)
 
-    # Watermark
-    wm_font = get_font(28)
-    draw.text((W // 2, H - 30), "FACTFORGE", font=wm_font, fill=(200, 200, 200), anchor="mm")
+        # Top accent bar
+        draw.rectangle([(0, 0), (W, 10)], fill=accent_rgb)
 
-    bg_img.save(str(thumb_path), "JPEG", quality=95)
-    size_kb = thumb_path.stat().st_size // 1024
-    print(f"  ✅ thumbnail.jpg saved ({size_kb} KB)")
+        # Stat (hero number)
+        if stat:
+            outline_text(draw, (W // 2, H // 2 - 40), stat, get_font(120), stat_rgb, (0, 0, 0))
+
+        # Title lines (max 2, all caps)
+        title_upper = title.upper()[:60]
+        font_title  = get_font(62)
+        outline_text(draw, (W // 2, H - 120), title_upper, font_title, (255, 255, 255), (0, 0, 0))
+
+        # Watermark
+        wm_font = get_font(28)
+        draw.text((W // 2, H - 30), "FACTFORGE", font=wm_font, fill=(200, 200, 200), anchor="mm")
+
+        return bg_img
+
+    # A/B/C variant definitions: (filename, accent_rgb, stat_rgb)
+    variants = [
+        ("thumbnail.jpg",   (255, 200,  0), (255, 230,  50)),   # A — gold/yellow (original)
+        ("thumbnail_b.jpg", (  0,  85, 255), (100, 180, 255)),  # B — blue accent
+        ("thumbnail_c.jpg", (  0, 170,  68), ( 80, 230, 120)),  # C — green accent
+    ]
+
+    for filename, accent_rgb, stat_rgb in variants:
+        variant_path = OUTPUT_DIR / video_id / filename
+        img = _render_variant(accent_rgb, stat_rgb)
+        img.save(str(variant_path), "JPEG", quality=95)
+        size_kb = variant_path.stat().st_size // 1024
+        print(f"  ✅ {filename} saved ({size_kb} KB)")
 
 
 def _extract_hero_stat(script: dict) -> str:
@@ -1023,6 +1053,55 @@ def _update_state_after_upload(
     print(f"  State updated in pending_uploads.json + queue.json + published_videos.json")
 
 
+def _append_score(video_id: str, script: dict, yt_id: str) -> None:
+    """Append scoring data to state/scores.json after a successful upload."""
+    scores_path = ROOT / "state/scores.json"
+    if scores_path.exists():
+        scores = json.loads(scores_path.read_text())
+    else:
+        scores = []
+
+    # Skip if already recorded
+    if any(s.get("id") == video_id for s in scores):
+        return
+
+    meta_path = OUTPUT_DIR / video_id / "metadata.json"
+    meta = json.loads(meta_path.read_text()) if meta_path.exists() else {}
+
+    entry = {
+        "id": video_id,
+        "script_score": script.get("script_score") or script.get("content_score") or 0,
+        "seo_score": meta.get("seo_score") or script.get("seo_score") or 0,
+        "thumbnail_score": script.get("thumbnail_score") or meta.get("thumbnail_score") or 0,
+        "published_at": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "title": meta.get("title") or script.get("title") or script.get("video_title") or video_id,
+        "youtube_id": yt_id,
+    }
+    scores.append(entry)
+    scores_path.write_text(json.dumps(scores, indent=2, ensure_ascii=False))
+    print(f"  Scores recorded → state/scores.json")
+
+
+def print_scores_summary() -> None:
+    """Print average scores if scores.json has >= 3 entries."""
+    scores_path = ROOT / "state/scores.json"
+    if not scores_path.exists():
+        return
+    scores = json.loads(scores_path.read_text())
+    if len(scores) < 3:
+        return
+
+    avg_script = sum(s.get("script_score", 0) for s in scores) / len(scores)
+    avg_seo    = sum(s.get("seo_score", 0) for s in scores) / len(scores)
+    avg_thumb  = sum(s.get("thumbnail_score", 0) for s in scores) / len(scores)
+    print(f"\n{'─'*45}")
+    print(f"  📊 Scores summary ({len(scores)} videos)")
+    print(f"     Avg script score    : {avg_script:.1f}/100")
+    print(f"     Avg SEO score       : {avg_seo:.1f}/22")
+    print(f"     Avg thumbnail score : {avg_thumb:.1f}/16")
+    print(f"{'─'*45}")
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # STEP 10 — CLEAN
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1148,6 +1227,7 @@ def produce_short(video_id: str) -> None:
     yt_id = step_upload(video_id, script, cp)
     cp["upload"] = True
     save_checkpoint(video_id, cp)
+    _append_score(video_id, script, yt_id)
 
     # ── Step 10: Clean ────────────────────────────────────────────────────────
     print("\n[10/10] Cleaning production files...")
@@ -1190,6 +1270,7 @@ def main() -> None:
         pass
 
     produce_short(video_id)
+    print_scores_summary()
 
 
 if __name__ == "__main__":

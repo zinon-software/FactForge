@@ -18,6 +18,7 @@ import json, sys, shutil, argparse
 from pathlib import Path
 import soundfile as sf
 import numpy as np
+import requests
 
 BASE = Path(__file__).parent.parent
 
@@ -218,7 +219,101 @@ def _mix_sfx_into_audio(audio_path: Path, props_path: Path, sr_target: int = 441
     print(f"  SFX mixed: whoosh×{len([s for s in segments[1:]])} + tick×{len([s for s in segments if s.get('type')=='number'])} + hb×{len([s for s in segments if s.get('type')=='impact'])}")
 
 
-def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED, sfx: bool = True) -> dict:
+def mix_background_music(video_id: str, volume: float = 0.10) -> None:
+    """
+    Download a CC0 instrumental track from Pixabay Music and mix it into
+    audio.mp3 at `volume` (default 10%).  Saves audio_clean.mp3 as backup.
+    The final file is audio.mp3 with vocals loud, music soft in the background.
+    """
+    import subprocess
+    output_dir = BASE / "output" / video_id
+    audio_path = output_dir / "audio.mp3"
+    if not audio_path.exists():
+        print(f"  [music] audio.mp3 not found for {video_id} — skipping")
+        return
+
+    PIXABAY_MUSIC_KEY = "55448442-b529cb16ef94bcaa210308891"
+    music_path = output_dir / "bg_music.mp3"
+
+    # ── Download background track ─────────────────────────────────────────────
+    if not music_path.exists():
+        try:
+            r = requests.get(
+                "https://pixabay.com/api/",
+                params={
+                    "key": PIXABAY_MUSIC_KEY,
+                    "q": "background music instrumental",
+                    "media_type": "music",
+                    "per_page": 10,
+                    "category": "music",
+                },
+                timeout=20,
+            )
+            r.raise_for_status()
+            data = r.json()
+            hits = data.get("hits", [])
+            if not hits:
+                print(f"  [music] No tracks found from Pixabay Music — skipping")
+                return
+            # Try each hit until we get a downloadable URL
+            track_url = None
+            for hit in hits:
+                # Pixabay music API returns audio field or previewURL
+                track_url = (
+                    hit.get("audio")
+                    or hit.get("previewURL")
+                    or hit.get("url")
+                )
+                if track_url:
+                    break
+            if not track_url:
+                print(f"  [music] No downloadable audio URL found — skipping")
+                return
+
+            print(f"  Downloading bg music: {track_url[:60]}...")
+            dl = requests.get(track_url, timeout=60, stream=True)
+            dl.raise_for_status()
+            with open(music_path, "wb") as fh:
+                for chunk in dl.iter_content(chunk_size=1024 * 256):
+                    fh.write(chunk)
+            print(f"  bg_music.mp3 saved ({music_path.stat().st_size // 1024} KB)")
+        except Exception as exc:
+            print(f"  [music] Download failed: {exc} — skipping")
+            return
+
+    # ── Backup clean audio ────────────────────────────────────────────────────
+    clean_backup = output_dir / "audio_clean.mp3"
+    if not clean_backup.exists():
+        import shutil as _shutil
+        _shutil.copy(audio_path, clean_backup)
+
+    # ── Mix with ffmpeg ───────────────────────────────────────────────────────
+    mixed_path = output_dir / "audio_with_music.mp3"
+    result = subprocess.run(
+        [
+            "ffmpeg", "-y",
+            "-i", str(audio_path),
+            "-stream_loop", "-1", "-i", str(music_path),
+            "-filter_complex",
+            f"[1:a]volume={volume}[bg];[0:a][bg]amix=inputs=2:duration=first:dropout_transition=2[out]",
+            "-map", "[out]",
+            "-codec:a", "libmp3lame", "-q:a", "2",
+            str(mixed_path),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        print(f"  [music] ffmpeg mix failed: {result.stderr[-300:]}")
+        return
+
+    # Replace audio.mp3 with mixed version
+    import os as _os
+    _os.replace(str(mixed_path), str(audio_path))
+    print(f"  Background music mixed at {int(volume*100)}% — audio.mp3 updated")
+
+
+def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED, sfx: bool = True, music: bool = False) -> dict:
     """
     Full pipeline: text → Kokoro audio → whisper timestamps.
     Returns {"audio_path": Path, "words": [...], "duration_seconds": float}
@@ -256,6 +351,11 @@ def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED, 
             _mix_sfx_into_audio(audio_path, props_path)
         else:
             print(f"  [SFX] No remotion_props.json yet — SFX will be applied after props are built")
+
+        # Mix background music after SFX (bundled with SFX pass)
+        if music:
+            print(f"  Mixing background music (10%)...")
+            mix_background_music(video_id)
 
     # Copy to Remotion public
     public_dir = BASE / "video/remotion-project/public" / video_id
@@ -299,9 +399,13 @@ if __name__ == "__main__":
     parser.add_argument("video_id", help="Video ID e.g. S01220")
     parser.add_argument("--no-sfx", action="store_true", help="Skip SFX mixing")
     parser.add_argument("--sfx-only", action="store_true", help="Apply SFX to existing audio (after props are built)")
+    parser.add_argument("--music", action="store_true", help="Mix CC0 background music at 10% (bundled with SFX pass)")
+    parser.add_argument("--no-music", action="store_true", help="Disable background music mixing (default)")
     args = parser.parse_args()
+
+    use_music = args.music and not args.no_music
 
     if args.sfx_only:
         apply_sfx(args.video_id)
     else:
-        produce_audio(args.video_id, sfx=not args.no_sfx)
+        produce_audio(args.video_id, sfx=not args.no_sfx, music=use_music)

@@ -14,6 +14,7 @@ from utils.youtube_helper import (
     upload_video, set_thumbnail, upload_caption,
     get_next_publish_date, update_state_after_upload
 )
+from scripts.generate_subtitles import generate_subtitles
 
 
 def merge_audio(video_id: str) -> Path | None:
@@ -99,8 +100,14 @@ def upload(video_id: str) -> str | None:
     else:
         print("⚠️  No thumbnail.jpg found")
 
-    # Subtitles (7 languages if available)
+    # Subtitles — generate if not yet done (needs word_timestamps.json)
     srt_dir = out_dir / "subtitles"
+    ts_path = out_dir / "word_timestamps.json"
+    if ts_path.exists() and (not srt_dir.exists() or not any(srt_dir.glob("*.srt"))):
+        print("Generating subtitles (7 languages)...")
+        generate_subtitles(video_id)
+
+    # Subtitles (7 languages if available)
     if srt_dir.exists():
         lang_names = {"en":"English","ar":"Arabic","es":"Spanish","fr":"French",
                       "hi":"Hindi","pt":"Portuguese","tr":"Turkish"}

@@ -17,6 +17,12 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
+# ─── Quota constants ─────────────────────────────────────────────────────────
+DAILY_QUOTA_LIMIT = 10_000
+UPLOAD_COST       = 1_600
+THUMBNAIL_COST    = 50
+CAPTION_COST      = 400
+
 # ─── A/B Testing constants ────────────────────────────────────────────────────
 AB_CTR_THRESHOLD    = 3.5   # % — rotate title if CTR below this after 48h
 AB_MIN_IMPRESSIONS  = 200   # minimum impressions before judging CTR
@@ -38,6 +44,50 @@ SCOPES             = ["https://www.googleapis.com/auth/youtube"]
 SHORT_EVERY_N_DAYS = 2
 LONG_EVERY_N_DAYS  = 7
 PUBLISH_TIME       = "14:00:00Z"   # 14:00 UTC = 17:00 Riyadh
+
+
+# ─── Quota helpers ────────────────────────────────────────────────────────────
+
+def _read_quota() -> dict:
+    """Read state/quota_usage.json; reset if date changed."""
+    quota_path = STATE_DIR / "quota_usage.json"
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    if quota_path.exists():
+        data = json.loads(quota_path.read_text())
+        if data.get("date") == today:
+            return data
+    # Missing or stale — start fresh
+    return {"date": today, "used": 0}
+
+
+def _write_quota(data: dict) -> None:
+    quota_path = STATE_DIR / "quota_usage.json"
+    quota_path.write_text(json.dumps(data, indent=2))
+
+
+def check_quota_before_upload(n_captions: int = 7) -> bool:
+    """
+    Return True if there is enough quota left for one full upload operation.
+    Prints a warning and returns False if the 90% safety threshold would be exceeded.
+    """
+    data = _read_quota()
+    cost = UPLOAD_COST + THUMBNAIL_COST + (n_captions * CAPTION_COST)
+    if data["used"] + cost > DAILY_QUOTA_LIMIT * 0.90:
+        print(
+            f"  [quota] ⚠️  Quota warning: {data['used']} used + {cost} needed "
+            f"> {int(DAILY_QUOTA_LIMIT * 0.90)} (90% of {DAILY_QUOTA_LIMIT}). "
+            "Skipping upload to protect daily quota."
+        )
+        return False
+    return True
+
+
+def record_quota_usage(cost: int) -> None:
+    """Add `cost` units to today's quota tally in state/quota_usage.json."""
+    data = _read_quota()
+    data["used"] += cost
+    _write_quota(data)
+    print(f"  [quota] Used {cost} units → {data['used']}/{DAILY_QUOTA_LIMIT} today")
 
 
 # ─── Auth ─────────────────────────────────────────────────────────────────────
@@ -146,6 +196,7 @@ def upload_video(
     print()  # newline after progress line
     youtube_id: str = response["id"]
     print(f"  Uploaded: https://youtu.be/{youtube_id}")
+    record_quota_usage(UPLOAD_COST)
     return youtube_id
 
 
@@ -181,6 +232,7 @@ def set_thumbnail(youtube_id: str, thumb_path: Path) -> bool:
             media_body=MediaFileUpload(str(thumb_path), mimetype=mimetype),
         ).execute()
         print(f"  Thumbnail uploaded for {youtube_id}")
+        record_quota_usage(THUMBNAIL_COST)
         return True
     except Exception as exc:
         print(f"  [thumbnail] Upload failed for {youtube_id}: {exc}")
@@ -225,6 +277,7 @@ def upload_caption(
         media = MediaFileUpload(str(srt_path), mimetype="application/octet-stream")
         youtube.captions().insert(part="snippet", body=body, media_body=media).execute()
         print(f"  Caption uploaded: {language} ({name})")
+        record_quota_usage(CAPTION_COST)
         return True
     except Exception as exc:
         print(f"  [caption] Upload failed for {language}: {exc}")
@@ -380,6 +433,90 @@ def update_state_after_upload(
                 break
 
 
+# ─── A/B Thumbnail Testing ───────────────────────────────────────────────────
+
+AB_THUMBNAILS_PATH = STATE_DIR / "ab_thumbnails.json"
+
+
+def upload_ab_thumbnails(youtube_id: str, thumb_paths: list) -> dict:
+    """
+    Upload the first thumbnail variant as the primary, then save all variants
+    to state/ab_thumbnails.json for later rotation.
+
+    Args:
+        youtube_id:  YouTube video ID.
+        thumb_paths: List of Path objects [thumbnail.jpg, thumbnail_b.jpg, thumbnail_c.jpg].
+
+    Returns:
+        dict with "status" key ("ok" or "error") and "current" index (0).
+    """
+    thumb_paths = [Path(p) for p in thumb_paths]
+
+    # Upload variant A as the active thumbnail
+    ok = set_thumbnail(youtube_id, thumb_paths[0])
+    if not ok:
+        return {"status": "error", "message": "Primary thumbnail upload failed"}
+
+    # Persist variant list for rotation
+    records: list = []
+    if AB_THUMBNAILS_PATH.exists():
+        try:
+            records = json.loads(AB_THUMBNAILS_PATH.read_text())
+        except Exception:
+            records = []
+
+    # Remove stale entry for this video if present
+    records = [r for r in records if r.get("youtube_id") != youtube_id]
+
+    records.append({
+        "youtube_id":  youtube_id,
+        "variants":    [str(p) for p in thumb_paths],
+        "uploaded_at": datetime.now(timezone.utc).isoformat(),
+        "current":     0,
+    })
+
+    AB_THUMBNAILS_PATH.write_text(json.dumps(records, indent=2))
+    print(f"  [A/B thumb] {len(thumb_paths)} variants saved for {youtube_id}")
+    return {"status": "ok", "current": 0, "variants": len(thumb_paths)}
+
+
+def rotate_ab_thumbnail(youtube_id: str) -> bool:
+    """
+    Rotate to the next thumbnail variant for the given video (A→B→C→A).
+
+    Reads state/ab_thumbnails.json, uploads the next variant via set_thumbnail,
+    and updates the current index.
+
+    Returns True on success, False if no record found or upload fails.
+    """
+    if not AB_THUMBNAILS_PATH.exists():
+        print(f"  [A/B thumb] No ab_thumbnails.json found")
+        return False
+
+    records: list = json.loads(AB_THUMBNAILS_PATH.read_text())
+    entry = next((r for r in records if r.get("youtube_id") == youtube_id), None)
+    if not entry:
+        print(f"  [A/B thumb] No record for {youtube_id}")
+        return False
+
+    variants = entry.get("variants", [])
+    if len(variants) < 2:
+        print(f"  [A/B thumb] Only {len(variants)} variant(s) — nothing to rotate")
+        return False
+
+    next_index = (entry["current"] + 1) % len(variants)
+    next_path  = Path(variants[next_index])
+
+    ok = set_thumbnail(youtube_id, next_path)
+    if not ok:
+        return False
+
+    entry["current"] = next_index
+    AB_THUMBNAILS_PATH.write_text(json.dumps(records, indent=2))
+    print(f"  [A/B thumb] Rotated to variant {next_index} ({next_path.name}) for {youtube_id}")
+    return True
+
+
 # ─── A/B Title Testing ────────────────────────────────────────────────────────
 
 def update_video_title(youtube_id: str, new_title: str) -> bool:
@@ -409,6 +546,98 @@ def update_video_title(youtube_id: str, new_title: str) -> bool:
         return True
     except Exception as exc:
         print(f"  [A/B] Title update failed for {youtube_id}: {exc}")
+        return False
+
+
+# ─── Chapters ─────────────────────────────────────────────────────────────────
+
+def generate_chapters_description(sections: list, fps: int = 30) -> str:
+    """
+    Convert a remotion_props.json sections list into a YouTube chapters string.
+
+    Each section must have:
+        startFrame  (int)   — frame number from the start of the video
+        title       (str)   — chapter display name
+
+    The first chapter is always forced to 00:00 as required by YouTube.
+
+    Args:
+        sections:  List of section dicts from remotion_props.json.
+        fps:       Frames per second used when rendering. Default 30 (Long videos).
+
+    Returns:
+        Multi-line string ready to be inserted into a video description, e.g.:
+            00:00 Introduction
+            01:23 The Rise of Baghdad
+            ...
+    """
+    if not sections:
+        return ""
+
+    lines = []
+    for i, section in enumerate(sections):
+        frame = int(section.get("startFrame", 0))
+        title = section.get("title", f"Chapter {i + 1}").strip()
+
+        total_seconds = frame // fps
+        # First chapter must be 00:00 per YouTube requirements
+        if i == 0:
+            total_seconds = 0
+
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        timestamp = f"{minutes:02d}:{seconds:02d}"
+        lines.append(f"{timestamp} {title}")
+
+    return "\n".join(lines)
+
+
+def append_chapters_to_video(youtube_id: str, chapters_text: str) -> bool:
+    """
+    Append a chapters block to an existing YouTube video description.
+
+    Fetches the current description, appends two newlines + chapters_text,
+    then updates the video via videos().update().
+
+    Args:
+        youtube_id:    The YouTube video ID.
+        chapters_text: Formatted chapters string from generate_chapters_description().
+
+    Returns:
+        True on success, False on any API failure.
+    """
+    if not chapters_text.strip():
+        print("  [chapters] No chapters text provided — skipping.")
+        return False
+
+    try:
+        youtube = get_youtube_client()
+
+        # Fetch current snippet (required for partial update)
+        resp = youtube.videos().list(part="snippet", id=youtube_id).execute()
+        items = resp.get("items", [])
+        if not items:
+            print(f"  [chapters] Video {youtube_id} not found")
+            return False
+
+        snippet = items[0]["snippet"]
+        existing_desc = snippet.get("description", "")
+
+        # Avoid duplicating chapters if already present
+        if "00:00" in existing_desc:
+            print(f"  [chapters] Description already contains timestamps — skipping append")
+            return False
+
+        snippet["description"] = existing_desc.rstrip() + "\n\n" + chapters_text
+
+        youtube.videos().update(
+            part="snippet",
+            body={"id": youtube_id, "snippet": snippet},
+        ).execute()
+        print(f"  ✅ Chapters appended to {youtube_id}")
+        return True
+    except Exception as exc:
+        print(f"  [chapters] Update failed for {youtube_id}: {exc}")
         return False
 
 

@@ -238,6 +238,75 @@ const SegmentView: React.FC<SegmentViewProps> = ({ seg, accentColor, globalBgGra
 
 };
 
+// ─────────────────────────── Intro Overlay ────────────────────────────────
+
+const IntroOverlay: React.FC<{ frame: number }> = ({ frame }) => {
+  const opacity = interpolate(frame, [0, 17], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  return (
+    <AbsoluteFill
+      style={{
+        backgroundColor: "black",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        opacity,
+      }}
+    >
+      <span
+        style={{
+          color: "white",
+          fontFamily: "Impact, sans-serif",
+          fontSize: 72,
+          letterSpacing: 8,
+          textTransform: "uppercase",
+        }}
+      >
+        FACTFORGE
+      </span>
+    </AbsoluteFill>
+  );
+};
+
+// ─────────────────────────── Outro Overlay ────────────────────────────────
+
+const OutroOverlay: React.FC<{ frame: number; totalFrames: number }> = ({
+  frame,
+  totalFrames,
+}) => {
+  const outroStart = totalFrames - 24;
+  const localFrame = frame - outroStart;
+  const opacity = interpolate(localFrame, [0, 23], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  return (
+    <AbsoluteFill
+      style={{
+        backgroundColor: `rgba(0,0,0,${opacity * 0.65})`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <span
+        style={{
+          color: "white",
+          fontFamily: "Impact, sans-serif",
+          fontSize: 48,
+          letterSpacing: 6,
+          textTransform: "uppercase",
+          opacity,
+        }}
+      >
+        FOLLOW FOR MORE
+      </span>
+    </AbsoluteFill>
+  );
+};
+
 // ─────────────────────────── Main Composition ──────────────────────────────
 
 export const ShortVideo: React.FC<ShortVideoProps> = ({
@@ -248,8 +317,10 @@ export const ShortVideo: React.FC<ShortVideoProps> = ({
   audioFile,
   backgroundVideoUrl,
   wordTimestamps,
+  totalDurationFrames,
   scale = 1,
 }) => {
+  const frame = useCurrentFrame();
   const accentColor = getAccentColor(colorTheme as ColorTheme);
   const bgGradient = BG_GRADIENTS[colorTheme as ColorTheme] ?? BG_GRADIENTS.shocking;
   const S = scale; // multiply all pixel values by this
@@ -294,6 +365,14 @@ export const ShortVideo: React.FC<ShortVideoProps> = ({
 
       {/* ── Layer 7: Watermark ───────────────────────────────────────────── */}
       <Watermark text="FactForge" />
+
+      {/* ── Layer 8: Intro overlay (first 18 frames = 0.3s) ─────────────── */}
+      {frame < 18 && <IntroOverlay frame={frame} />}
+
+      {/* ── Layer 9: Outro overlay (last 24 frames = 0.4s) ──────────────── */}
+      {frame > totalDurationFrames - 24 && (
+        <OutroOverlay frame={frame} totalFrames={totalDurationFrames} />
+      )}
 
       {/* ── Audio ────────────────────────────────────────────────────────── */}
       {audioFile && <Audio src={staticFile(audioFile)} />}
