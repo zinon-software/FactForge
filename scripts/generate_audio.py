@@ -14,11 +14,13 @@ Voice: am_echo (American male, Kokoro v1.0)
 Model files: models/kokoro/kokoro-v1.0.onnx + voices-v1.0.bin
 """
 
-import json, sys, shutil, argparse
+import json, sys, shutil, argparse, logging
 from pathlib import Path
 import soundfile as sf
 import numpy as np
 import requests
+
+logger = logging.getLogger(__name__)
 
 BASE = Path(__file__).parent.parent
 
@@ -39,7 +41,7 @@ def get_kokoro():
     global _kokoro
     if _kokoro is None:
         from kokoro_onnx import Kokoro
-        print("  Loading Kokoro model...")
+        logger.info("Loading Kokoro model...")
         _kokoro = Kokoro(str(KOKORO_MODEL), str(KOKORO_VOICES))
     return _kokoro
 
@@ -48,7 +50,7 @@ def get_whisper():
     global _whisper
     if _whisper is None:
         from faster_whisper import WhisperModel
-        print("  Loading Whisper base model...")
+        logger.info("Loading Whisper base model...")
         _whisper = WhisperModel(WHISPER_MODEL, device="cpu", compute_type="int8")
     return _whisper
 
@@ -70,7 +72,7 @@ def generate_tts(text: str, out_path: Path, voice: str = KOKORO_VOICE, speed: fl
     wav_path.unlink()
 
     duration = len(samples) / sr
-    print(f"  Audio: {out_path.name} ({duration:.1f}s, voice={voice})")
+    logger.info("Audio: %s (%.1fs, voice=%s)", out_path.name, duration, voice)
     return duration
 
 
@@ -94,7 +96,7 @@ def get_word_timestamps(audio_path: Path) -> list:
                 "start_ms": round(w.start * 1000),
                 "end_ms":   round(w.end   * 1000),
             })
-    print(f"  Word timestamps: {len(words)} words, last at {words[-1]['end_ms']/1000:.1f}s")
+    logger.info("Word timestamps: %d words, last at %.1fs", len(words), words[-1]['end_ms'] / 1000)
     return words
 
 
@@ -216,7 +218,10 @@ def _mix_sfx_into_audio(audio_path: Path, props_path: Path, sr_target: int = 441
         "-b:a", "192k", str(audio_path)
     ], capture_output=True)
     tmp_wav.unlink(missing_ok=True)
-    print(f"  SFX mixed: whoosh×{len([s for s in segments[1:]])} + tick×{len([s for s in segments if s.get('type')=='number'])} + hb×{len([s for s in segments if s.get('type')=='impact'])}")
+    logger.info("SFX mixed: whoosh×%d + tick×%d + hb×%d",
+                len(segments[1:]),
+                len([s for s in segments if s.get('type') == 'number']),
+                len([s for s in segments if s.get('type') == 'impact']))
 
 
 def mix_background_music(video_id: str, volume: float = 0.10) -> None:
@@ -229,7 +234,7 @@ def mix_background_music(video_id: str, volume: float = 0.10) -> None:
     output_dir = BASE / "output" / video_id
     audio_path = output_dir / "audio.mp3"
     if not audio_path.exists():
-        print(f"  [music] audio.mp3 not found for {video_id} — skipping")
+        logger.warning("[music] audio.mp3 not found for %s — skipping", video_id)
         return
 
     PIXABAY_MUSIC_KEY = "55448442-b529cb16ef94bcaa210308891"
@@ -253,7 +258,7 @@ def mix_background_music(video_id: str, volume: float = 0.10) -> None:
             data = r.json()
             hits = data.get("hits", [])
             if not hits:
-                print(f"  [music] No tracks found from Pixabay Music — skipping")
+                logger.warning("[music] No tracks found from Pixabay Music — skipping")
                 return
             # Try each hit until we get a downloadable URL
             track_url = None
@@ -267,18 +272,18 @@ def mix_background_music(video_id: str, volume: float = 0.10) -> None:
                 if track_url:
                     break
             if not track_url:
-                print(f"  [music] No downloadable audio URL found — skipping")
+                logger.warning("[music] No downloadable audio URL found — skipping")
                 return
 
-            print(f"  Downloading bg music: {track_url[:60]}...")
+            logger.info("Downloading bg music: %s...", track_url[:60])
             dl = requests.get(track_url, timeout=60, stream=True)
             dl.raise_for_status()
             with open(music_path, "wb") as fh:
                 for chunk in dl.iter_content(chunk_size=1024 * 256):
                     fh.write(chunk)
-            print(f"  bg_music.mp3 saved ({music_path.stat().st_size // 1024} KB)")
+            logger.info("bg_music.mp3 saved (%d KB)", music_path.stat().st_size // 1024)
         except Exception as exc:
-            print(f"  [music] Download failed: {exc} — skipping")
+            logger.error("[music] Download failed: %s — skipping", exc)
             return
 
     # ── Backup clean audio ────────────────────────────────────────────────────
@@ -304,13 +309,13 @@ def mix_background_music(video_id: str, volume: float = 0.10) -> None:
         text=True,
     )
     if result.returncode != 0:
-        print(f"  [music] ffmpeg mix failed: {result.stderr[-300:]}")
+        logger.error("[music] ffmpeg mix failed: %s", result.stderr[-300:])
         return
 
     # Replace audio.mp3 with mixed version
     import os as _os
     _os.replace(str(mixed_path), str(audio_path))
-    print(f"  Background music mixed at {int(volume*100)}% — audio.mp3 updated")
+    logger.info("Background music mixed at %d%% — audio.mp3 updated", int(volume * 100))
 
 
 def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED, sfx: bool = True, music: bool = False) -> dict:
@@ -325,7 +330,7 @@ def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED, 
     if text is None:
         script_path = output_dir / "script.json"
         if not script_path.exists():
-            print(f"ERROR: {script_path} not found")
+            logger.error("%s not found", script_path)
             sys.exit(1)
         with open(script_path) as f:
             script = json.load(f)
@@ -333,10 +338,10 @@ def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED, 
 
     audio_path = output_dir / "audio.mp3"
 
-    print(f"[1/3] Kokoro TTS ({KOKORO_VOICE}) for {video_id}...")
+    logger.info("[1/3] Kokoro TTS (%s) for %s...", KOKORO_VOICE, video_id)
     duration = generate_tts(text, audio_path, voice=KOKORO_VOICE, speed=speed)
 
-    print(f"[2/3] Word timestamps (Whisper base)...")
+    logger.info("[2/3] Word timestamps (Whisper base)...")
     words = get_word_timestamps(audio_path)
 
     ts_path = output_dir / "word_timestamps.json"
@@ -347,23 +352,23 @@ def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED, 
     if sfx:
         props_path = output_dir / "remotion_props.json"
         if props_path.exists():
-            print(f"  Mixing SFX...")
+            logger.info("Mixing SFX...")
             _mix_sfx_into_audio(audio_path, props_path)
         else:
-            print(f"  [SFX] No remotion_props.json yet — SFX will be applied after props are built")
+            logger.info("[SFX] No remotion_props.json yet — SFX will be applied after props are built")
 
         # Mix background music after SFX (bundled with SFX pass)
         if music:
-            print(f"  Mixing background music (10%)...")
+            logger.info("Mixing background music (10%)...")
             mix_background_music(video_id)
 
     # Copy to Remotion public
     public_dir = BASE / "video/remotion-project/public" / video_id
     public_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy(audio_path, public_dir / "audio.mp3")
-    print(f"  Copied to public/{video_id}/audio.mp3")
+    logger.info("Copied to public/%s/audio.mp3", video_id)
 
-    print(f"[3/3] Done — {duration:.1f}s, {len(words)} words")
+    logger.info("[3/3] Done — %.1fs, %d words", duration, len(words))
     return {"audio_path": audio_path, "words": words, "duration_seconds": duration}
 
 
@@ -375,23 +380,23 @@ def apply_sfx(video_id: str) -> None:
     clean_path = output_dir / "audio_clean.mp3"
 
     if not audio_path.exists():
-        print(f"  [SFX] audio.mp3 not found for {video_id}")
+        logger.warning("[SFX] audio.mp3 not found for %s", video_id)
         return
     if not props_path.exists():
-        print(f"  [SFX] remotion_props.json not found for {video_id}")
+        logger.warning("[SFX] remotion_props.json not found for %s", video_id)
         return
     if clean_path.exists():
-        print(f"  [SFX] Already applied (audio_clean.mp3 exists) — skipping")
+        logger.info("[SFX] Already applied (audio_clean.mp3 exists) — skipping")
         return
 
-    print(f"  Mixing SFX into {video_id}/audio.mp3...")
+    logger.info("Mixing SFX into %s/audio.mp3...", video_id)
     _mix_sfx_into_audio(audio_path, props_path)
 
     # Re-copy to Remotion public
     public_dir = BASE / "video/remotion-project/public" / video_id
     public_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy(audio_path, public_dir / "audio.mp3")
-    print(f"  Updated public/{video_id}/audio.mp3 with SFX")
+    logger.info("Updated public/%s/audio.mp3 with SFX", video_id)
 
 
 if __name__ == "__main__":

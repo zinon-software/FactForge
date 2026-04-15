@@ -1,7 +1,5 @@
 """
-produce_short.py — Unified Short Video Production Pipeline for FactForge
-Runs the full pipeline from script → audio → render → upload in one command.
-
+produce_short.py — Short Video Production Pipeline
 Usage:
     python3 scripts/produce_short.py <video_id>
     python3 scripts/produce_short.py --next      # picks next unproduced Short from queue
@@ -10,178 +8,46 @@ Pipeline steps (resumable via checkpoint):
     1. LOAD        — read script.json for tts_text_final
     2. AUDIO       — Kokoro am_echo TTS → audio.mp3
     3. TIMESTAMPS  — faster-whisper word timestamps → word_timestamps.json
-    4. BG_VIDEOS   — fetch Pexels clips from segment queries → bg_videos/
+    4. BG_VIDEOS   — fetch Pexels/Coverr/Pixabay clips → bg_videos/
     5. PROPS       — verify remotion_props.json exists
     6. COPY_PUBLIC — copy audio + bg_videos to remotion public/
     7. RENDER      — render_short.py → video.mp4
-    8. THUMBNAIL   — Pollinations Flux + Pillow → thumbnail.jpg (if missing)
+    8. THUMBNAIL   — Pollinations Flux + Pillow → thumbnail.jpg
     9. UPLOAD      — YouTube API upload (scheduled private)
     10. CLEAN      — delete large files, keep metadata/script/thumbnail
 """
 
+import logging
 import json
-import os
 import re
 import shutil
 import subprocess
 import sys
 import time
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
-from urllib.parse import quote
 
-import requests
+# ── Logging ───────────────────────────────────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger(__name__)
 
-# ─── Paths ────────────────────────────────────────────────────────────────────
-ROOT         = Path(__file__).parent.parent
-SCRIPTS_DIR  = ROOT / "scripts"
-OUTPUT_DIR   = ROOT / "output"
-PUBLIC_DIR   = ROOT / "video/remotion-project/public"
-CONFIG_DIR   = ROOT / "config"
-MODELS_DIR   = ROOT / "models/kokoro"
+ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(ROOT))
 
-# ─── Kokoro config ────────────────────────────────────────────────────────────
-KOKORO_MODEL  = MODELS_DIR / "kokoro-v1.0.onnx"
-KOKORO_VOICES = MODELS_DIR / "voices-v1.0.bin"
-KOKORO_VOICE  = "am_echo"
-KOKORO_SPEED  = 1.08
-
-# ─── Whisper config ───────────────────────────────────────────────────────────
-WHISPER_MODEL = "base"
-
-# ─── Video config ─────────────────────────────────────────────────────────────
-SHORT_FPS = 60
-
-# ─── Pexels config ────────────────────────────────────────────────────────────
-PEXELS_API_KEY: Optional[str] = None  # loaded lazily
-
-# ─── Coverr config ────────────────────────────────────────────────────────────
-COVERR_APP_ID  = "87FCDE58BB778CC2E9FB"
-COVERR_API_KEY = "1a9501ffa55e7c45a86eed2b6c6bd34a"
-
-# ─── Pixabay config ───────────────────────────────────────────────────────────
-PIXABAY_API_KEY = "55448442-b529cb16ef94bcaa210308891"
-
-
-def _load_pexels_key() -> str:
-    global PEXELS_API_KEY
-    if PEXELS_API_KEY:
-        return PEXELS_API_KEY
-    key = os.getenv("PEXELS_API_KEY")
-    if not key:
-        env_file = CONFIG_DIR / ".env"
-        if env_file.exists():
-            for line in env_file.read_text().splitlines():
-                if line.startswith("PEXELS_API_KEY="):
-                    key = line.split("=", 1)[1].strip().strip('"').strip("'")
-                    break
-    if not key:
-        raise RuntimeError(
-            "PEXELS_API_KEY not found in environment or config/.env"
-        )
-    PEXELS_API_KEY = key
-    return PEXELS_API_KEY
-
-
-def _fetch_coverr_video(
-    query: str,
-    out_path: Path,
-    used_coverr_ids: set,
-    fallback_queries: list = None,
-) -> bool:
-    """
-    Download a unique video from Coverr API.
-    CDN pattern: https://cdn.coverr.co/videos/{base_filename}/{base_filename}.mp4
-    Prefers non-premium, non-vertical videos. Falls back through fallback_queries.
-    """
-    all_queries = [query] + (fallback_queries or [])
-    headers = {"Authorization": f"Bearer {COVERR_API_KEY}"}
-
-    for attempt_query in all_queries:
-        try:
-            r = requests.get(
-                "https://api.coverr.co/videos",
-                headers=headers,
-                params={"query": attempt_query, "per_page": 15},
-                timeout=20,
-            )
-            if r.status_code != 200:
-                print(f"    ⚠️  Coverr {r.status_code} for '{attempt_query}'")
-                continue
-
-            videos = r.json().get("hits", [])
-            if not videos:
-                continue
-
-            # Prefer non-premium; skip premium
-            sorted_vids = sorted(videos, key=lambda v: v.get("is_premium", True))
-
-            for vid in sorted_vids:
-                vid_id = vid.get("slug") or str(vid.get("id", ""))
-                if vid_id in used_coverr_ids:
-                    continue
-                if vid.get("is_premium"):
-                    continue  # skip paid content
-
-                # Fetch single video to get direct mp4 URL
-                try:
-                    rv = requests.get(
-                        f"https://api.coverr.co/videos/{vid_id}",
-                        headers=headers, timeout=10,
-                    )
-                    if rv.status_code != 200:
-                        continue
-                    mp4_url = rv.json().get("urls", {}).get("mp4_preview") or \
-                              rv.json().get("urls", {}).get("mp4")
-                    if not mp4_url:
-                        continue
-                except Exception:
-                    continue
-
-                dl = requests.get(mp4_url, timeout=120, stream=True)
-                if dl.status_code != 200:
-                    continue
-
-                out_path.parent.mkdir(parents=True, exist_ok=True)
-                with open(out_path, "wb") as fh:
-                    for chunk in dl.iter_content(chunk_size=1024 * 256):
-                        fh.write(chunk)
-
-                used_coverr_ids.add(vid_id)
-                print(
-                    f"    ✓ {out_path.name} — coverr/{vid_id} (query: '{attempt_query}')"
-                    f" ({out_path.stat().st_size // 1024}KB)"
-                )
-                return True
-
-        except Exception as e:
-            print(f"    ⚠️  Coverr error for '{attempt_query}': {e}")
-        time.sleep(0.3)
-
-    return False
-
-
-# ─── Files to keep after clean ───────────────────────────────────────────────
-KEEP_FILES = {
-    "metadata.json",
-    "script.json",
-    "research.json",
-    "sources.json",
-    "thumbnail.jpg",
-    "remotion_props.json",
-    "word_timestamps.json",
-    "produce_checkpoint.json",
-}
-
-CLEAN_PATTERNS = [
-    "video.mp4",
-    "video_noaudio.mp4",
-    "audio.mp3",
-    "*.wav",
-]
-
-CLEAN_DIRS = ["bg_videos"]
+from utils.config import cfg
+from utils.video_sources import VideoSources
+from utils.thumbnail_gen import ThumbnailGenerator
+from utils.youtube_helper import (
+    upload_video,
+    set_thumbnail,
+    upload_caption,
+    get_next_publish_date,
+    update_state_after_upload,
+)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -189,24 +55,24 @@ CLEAN_DIRS = ["bg_videos"]
 # ══════════════════════════════════════════════════════════════════════════════
 
 DEFAULT_CHECKPOINT = {
-    "audio": False,
+    "audio":      False,
     "timestamps": False,
-    "bg_videos": False,
-    "render": False,
-    "upload": False,
-    "clean": False,
+    "bg_videos":  False,
+    "render":     False,
+    "upload":     False,
+    "clean":      False,
 }
 
 
 def load_checkpoint(video_id: str) -> dict:
-    cp_path = OUTPUT_DIR / video_id / "produce_checkpoint.json"
+    cp_path = cfg.OUTPUT_DIR / video_id / "produce_checkpoint.json"
     if cp_path.exists():
         return json.loads(cp_path.read_text())
     return dict(DEFAULT_CHECKPOINT)
 
 
 def save_checkpoint(video_id: str, cp: dict) -> None:
-    cp_path = OUTPUT_DIR / video_id / "produce_checkpoint.json"
+    cp_path = cfg.OUTPUT_DIR / video_id / "produce_checkpoint.json"
     cp_path.write_text(json.dumps(cp, indent=2))
 
 
@@ -216,7 +82,7 @@ def save_checkpoint(video_id: str, cp: dict) -> None:
 
 def step_load(video_id: str) -> dict:
     """Read script.json and return the script dict."""
-    script_path = OUTPUT_DIR / video_id / "script.json"
+    script_path = cfg.OUTPUT_DIR / video_id / "script.json"
     if not script_path.exists():
         raise FileNotFoundError(f"script.json not found: {script_path}")
     script = json.loads(script_path.read_text())
@@ -230,7 +96,7 @@ def step_load(video_id: str) -> dict:
         raise ValueError(
             f"script.json for {video_id} has no tts_text_final / full_text / tts_script"
         )
-    print(f"  Script loaded ({len(tts_text)} chars)")
+    logger.info("Script loaded (%d chars)", len(tts_text))
     return script
 
 
@@ -240,21 +106,24 @@ def step_load(video_id: str) -> dict:
 
 def step_audio(video_id: str, tts_text: str, cp: dict) -> float:
     """Generate audio.mp3 with Kokoro. Returns duration in seconds."""
-    audio_path = OUTPUT_DIR / video_id / "audio.mp3"
+    audio_path = cfg.OUTPUT_DIR / video_id / "audio.mp3"
 
     if cp["audio"] and audio_path.exists():
-        print("  [SKIP] audio.mp3 already exists")
+        logger.info("[SKIP] audio.mp3 already exists")
         return _get_audio_duration(audio_path)
 
-    print(f"  Generating Kokoro TTS ({KOKORO_VOICE}, speed={KOKORO_SPEED})...")
+    if not cfg.KOKORO_MODEL.exists():
+        raise FileNotFoundError(f"Kokoro model not found: {cfg.KOKORO_MODEL}")
+
+    logger.info("Generating Kokoro TTS (voice=%s, speed=%s)...", cfg.KOKORO_VOICE, cfg.KOKORO_SPEED)
 
     import soundfile as sf
     from kokoro_onnx import Kokoro
 
-    kokoro = Kokoro(str(KOKORO_MODEL), str(KOKORO_VOICES))
-    samples, sr = kokoro.create(tts_text, voice=KOKORO_VOICE, speed=KOKORO_SPEED, lang="en-us")
+    kokoro = Kokoro(str(cfg.KOKORO_MODEL), str(cfg.KOKORO_VOICES))
+    samples, sr = kokoro.create(tts_text, voice=cfg.KOKORO_VOICE, speed=cfg.KOKORO_SPEED, lang="en-us")
 
-    wav_path = OUTPUT_DIR / video_id / "audio.wav"
+    wav_path = cfg.OUTPUT_DIR / video_id / "audio.wav"
     sf.write(str(wav_path), samples, sr)
 
     result = subprocess.run(
@@ -268,20 +137,14 @@ def step_audio(video_id: str, tts_text: str, cp: dict) -> float:
         raise RuntimeError(f"ffmpeg WAV→MP3 failed:\n{result.stderr[-500:]}")
 
     duration = len(samples) / sr
-    print(f"  Audio: {audio_path.name} ({duration:.1f}s)")
+    logger.info("Audio ready: %s (%.1fs)", audio_path.name, duration)
     return duration
 
 
 def _get_audio_duration(audio_path: Path) -> float:
     r = subprocess.run(
-        [
-            "ffprobe", "-v", "quiet",
-            "-print_format", "json",
-            "-show_format",
-            str(audio_path),
-        ],
-        capture_output=True,
-        text=True,
+        ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", str(audio_path)],
+        capture_output=True, text=True,
     )
     info = json.loads(r.stdout)
     return float(info["format"]["duration"])
@@ -293,18 +156,21 @@ def _get_audio_duration(audio_path: Path) -> float:
 
 def step_timestamps(video_id: str, cp: dict) -> list:
     """Extract word-level timestamps. Returns list of {word, start_ms, end_ms}."""
-    ts_path    = OUTPUT_DIR / video_id / "word_timestamps.json"
-    audio_path = OUTPUT_DIR / video_id / "audio.mp3"
+    ts_path    = cfg.OUTPUT_DIR / video_id / "word_timestamps.json"
+    audio_path = cfg.OUTPUT_DIR / video_id / "audio.mp3"
 
     if cp["timestamps"] and ts_path.exists():
-        print("  [SKIP] word_timestamps.json already exists")
+        logger.info("[SKIP] word_timestamps.json already exists")
         return json.loads(ts_path.read_text())
 
-    print("  Extracting word timestamps (faster-whisper base)...")
+    if not audio_path.exists():
+        raise FileNotFoundError(f"audio.mp3 not found: {audio_path}")
+
+    logger.info("Extracting word timestamps (faster-whisper %s)...", cfg.WHISPER_MODEL)
 
     from faster_whisper import WhisperModel
 
-    model = WhisperModel(WHISPER_MODEL, device="cpu", compute_type="int8")
+    model = WhisperModel(cfg.WHISPER_MODEL, device="cpu", compute_type="int8")
     segments, _ = model.transcribe(
         str(audio_path),
         word_timestamps=True,
@@ -318,237 +184,40 @@ def step_timestamps(video_id: str, cp: dict) -> list:
             word = w.word.strip()
             if not word:
                 continue
-            words.append(
-                {
-                    "word": word,
-                    "start_ms": round(w.start * 1000),
-                    "end_ms": round(w.end * 1000),
-                }
-            )
+            words.append({"word": word, "start_ms": round(w.start * 1000), "end_ms": round(w.end * 1000)})
 
     ts_path.write_text(json.dumps(words, indent=2))
-    last_ms = words[-1]["end_ms"] / 1000 if words else 0
-    print(f"  Timestamps: {len(words)} words, last at {last_ms:.1f}s")
+    last_s = words[-1]["end_ms"] / 1000 if words else 0
+    logger.info("Timestamps: %d words, last at %.1fs", len(words), last_s)
     return words
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# STEP 4 — BG_VIDEOS (Pexels)
+# STEP 4 — BG_VIDEOS
 # ══════════════════════════════════════════════════════════════════════════════
 
-def _query_from_filename(bg_video_path: str) -> str:
-    """
-    Extract a human-readable Pexels search query from a segment backgroundVideo path.
-    e.g. "S00893/bg_videos/mosque_dome.mp4" → "mosque dome"
-    """
-    name = Path(bg_video_path).stem          # "mosque_dome"
-    query = re.sub(r"[_\-]+", " ", name)     # "mosque dome"
-    query = re.sub(r"\s+", " ", query).strip()
-    return query
-
-
-def _fetch_pexels_video(
-    query: str,
-    out_path: Path,
-    api_key: str,
-    used_pexels_ids: set,
-    fallback_queries: list = None,
-) -> bool:
-    """
-    Download a unique HD Pexels video matching query.
-    - Fetches per_page=15 results and skips already-used Pexels video IDs.
-    - If no unused result found, tries each fallback_queries in order.
-    - Returns True on success.
-    """
-    headers = {"Authorization": api_key}
-    all_queries = [query] + (fallback_queries or [])
-
-    for attempt_query in all_queries:
-        params = {
-            "query": attempt_query,
-            "per_page": 15,
-            "size": "medium",
-            "orientation": "portrait",  # portrait = vertical — required for Shorts
-        }
-        r = requests.get(
-            "https://api.pexels.com/videos/search",
-            headers=headers,
-            params=params,
-            timeout=30,
-        )
-        if r.status_code != 200:
-            print(f"    ⚠️  Pexels API error {r.status_code} for '{attempt_query}'")
-            continue
-
-        videos = r.json().get("videos", [])
-        if not videos:
-            print(f"    ⚠️  No Pexels results for '{attempt_query}'")
-            continue
-
-        # Pick first video NOT already used
-        for vid in videos:
-            pexels_id = vid["id"]
-            if pexels_id in used_pexels_ids:
-                continue  # skip — already used in this video
-
-            # Find best MP4 file (prefer hd over sd)
-            files = sorted(
-                vid.get("video_files", []),
-                key=lambda f: 1 if f.get("quality") == "hd" else 0,
-                reverse=True,
-            )
-            video_file_url = next(
-                (
-                    f["link"]
-                    for f in files
-                    if f.get("quality") in ("hd", "sd")
-                    and f.get("file_type") == "video/mp4"
-                ),
-                None,
-            )
-            if not video_file_url:
-                continue
-
-            dl = requests.get(video_file_url, timeout=120, stream=True)
-            dl.raise_for_status()
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(out_path, "wb") as fh:
-                for chunk in dl.iter_content(chunk_size=1024 * 256):
-                    fh.write(chunk)
-
-            used_pexels_ids.add(pexels_id)
-            source_label = f"(query: '{attempt_query}')" if attempt_query != query else ""
-            print(
-                f"    ✓ {out_path.name} — pexels#{pexels_id} {source_label}"
-                f" ({out_path.stat().st_size // 1024}KB)"
-            )
-            return True
-
-        print(f"    ⚠️  All {len(videos)} results for '{attempt_query}' already used — trying next query")
-
-    print(f"    ✗ Could not find unique video for '{query}' after all fallbacks")
-    return False
-
-
-# ─── Fallback query chains per segment type ──────────────────────────────────
-# When the primary scene_query fails or produces a duplicate, these generic
-# queries ensure every segment gets a visually distinct clip.
-_TYPE_FALLBACKS = {
-    "hook":   ["dramatic reveal", "cinematic landscape", "aerial city"],
-    "fact":   ["documentary footage", "world map", "research data"],
-    "impact": ["explosion effect", "shock wave", "dramatic moment"],
-    "number": ["financial data", "statistics screen", "stock market"],
-    "cta":    ["subscribe notification", "social media phone", "modern city"],
-}
-_GENERIC_FALLBACKS = ["city aerial", "nature landscape", "technology abstract", "ocean waves", "crowd people"]
-
-
-def _fetch_pixabay_video(
-    query: str,
-    out_path: Path,
-    used_pixabay_ids: set,
-    fallback_queries: list = None,
-) -> bool:
-    """
-    Download a unique video from Pixabay API.
-    Prefers medium quality (portrait if available).
-    Pixabay License allows commercial use with no attribution required.
-    """
-    all_queries = [query] + (fallback_queries or [])
-
-    for attempt_query in all_queries:
-        try:
-            r = requests.get(
-                "https://pixabay.com/api/videos/",
-                params={
-                    "key": PIXABAY_API_KEY,
-                    "q": attempt_query,
-                    "per_page": 15,
-                    "video_type": "film",
-                    "safesearch": "true",
-                    "orientation": "vertical",  # vertical = portrait — required for Shorts
-                },
-                timeout=20,
-            )
-            if r.status_code != 200:
-                print(f"    ⚠️  Pixabay {r.status_code} for '{attempt_query}'")
-                continue
-
-            videos = r.json().get("hits", [])
-            if not videos:
-                continue
-
-            for vid in videos:
-                vid_id = vid["id"]
-                if vid_id in used_pixabay_ids:
-                    continue
-
-                # Prefer medium → small → large
-                sizes = vid.get("videos", {})
-                clip = (
-                    sizes.get("medium")
-                    or sizes.get("small")
-                    or sizes.get("large")
-                    or sizes.get("tiny")
-                )
-                mp4_url = clip.get("url") if clip else None
-                if not mp4_url:
-                    continue
-
-                dl = requests.get(mp4_url, timeout=120, stream=True)
-                if dl.status_code != 200:
-                    continue
-
-                out_path.parent.mkdir(parents=True, exist_ok=True)
-                with open(out_path, "wb") as fh:
-                    for chunk in dl.iter_content(chunk_size=1024 * 256):
-                        fh.write(chunk)
-
-                used_pixabay_ids.add(vid_id)
-                print(
-                    f"    ✓ {out_path.name} — pixabay#{vid_id} (query: '{attempt_query}')"
-                    f" ({out_path.stat().st_size // 1024}KB)"
-                )
-                return True
-
-        except Exception as e:
-            print(f"    ⚠️  Pixabay error for '{attempt_query}': {e}")
-        time.sleep(0.3)
-
-    return False
-
-
 def step_bg_videos(video_id: str, cp: dict) -> None:
-    """
-    Fetch unique background videos for every segment.
-    Source priority:
-      1. Pexels (primary) — scene_query → type fallbacks → generic fallbacks
-      2. Coverr (secondary) — same query chain if Pexels fails
-    Deduplication: separate ID sets per provider so no segment reuses a clip.
-    """
-    props_path = OUTPUT_DIR / video_id / "remotion_props.json"
+    """Fetch unique background videos for every segment via VideoSources."""
+    props_path = cfg.OUTPUT_DIR / video_id / "remotion_props.json"
     if not props_path.exists():
         raise FileNotFoundError(f"remotion_props.json not found for {video_id}")
 
-    props = json.loads(props_path.read_text())
+    props    = json.loads(props_path.read_text())
     segments = props.get("segments", [])
 
     if not segments:
-        print("  No segments in remotion_props.json — skipping bg_videos")
+        logger.info("No segments in remotion_props.json — skipping bg_videos")
         return
 
     if cp["bg_videos"]:
-        print("  [SKIP] bg_videos already fetched")
+        logger.info("[SKIP] bg_videos already fetched")
         return
 
-    api_key = _load_pexels_key()
-    bg_dir  = OUTPUT_DIR / video_id / "bg_videos"
+    bg_dir = cfg.OUTPUT_DIR / video_id / "bg_videos"
     bg_dir.mkdir(parents=True, exist_ok=True)
 
-    used_pexels_ids:   set = set()
-    used_coverr_ids:   set = set()
-    used_pixabay_ids:  set = set()
-    print(f"  Fetching {len(segments)} unique background clips (Pexels → Coverr → Pixabay)...")
+    vs = VideoSources()
+    logger.info("Fetching %d unique background clips (Pexels → Coverr → Pixabay)...", len(segments))
     failed = 0
 
     for i, seg in enumerate(segments):
@@ -560,39 +229,33 @@ def step_bg_videos(video_id: str, cp: dict) -> None:
         out_path     = bg_dir / out_filename
 
         if out_path.exists() and out_path.stat().st_size > 10_000:
-            print(f"    [SKIP] {out_filename} already downloaded")
+            logger.info("  [SKIP] %s already downloaded", out_filename)
             continue
 
-        primary_query = seg.get("scene_query") or _query_from_filename(bg_path_str)
+        primary_query = seg.get("scene_query") or re.sub(r"[_\-]+", " ", Path(bg_path_str).stem).strip()
         seg_type      = seg.get("type", "fact")
-        fallbacks     = _TYPE_FALLBACKS.get(seg_type, []) + _GENERIC_FALLBACKS
+        fallbacks     = vs._TYPE_FALLBACKS.get(seg_type, []) + vs._GENERIC_FALLBACKS
 
-        print(f"    [{i+1}/{len(segments)}] '{primary_query}' → {out_filename}")
+        logger.info("  [%d/%d] '%s' → %s", i + 1, len(segments), primary_query, out_filename)
 
-        # 1️⃣ Try Pexels first
-        ok = _fetch_pexels_video(primary_query, out_path, api_key, used_pexels_ids, fallbacks)
-
-        # 2️⃣ Fallback to Coverr
+        ok = vs.fetch_pexels(primary_query, out_path, fallbacks)
         if not ok:
-            print(f"    ↳ Pexels failed — trying Coverr...")
-            ok = _fetch_coverr_video(primary_query, out_path, used_coverr_ids, fallbacks)
-
-        # 3️⃣ Fallback to Pixabay
+            logger.info("  Pexels failed — trying Coverr...")
+            ok = vs.fetch_coverr(primary_query, out_path, fallbacks)
         if not ok:
-            print(f"    ↳ Coverr failed — trying Pixabay...")
-            ok = _fetch_pixabay_video(primary_query, out_path, used_pixabay_ids, fallbacks)
-
+            logger.info("  Coverr failed — trying Pixabay...")
+            ok = vs.fetch_pixabay(primary_query, out_path, fallbacks)
         if not ok:
-            print(f"    ✗ All sources (Pexels, Coverr, Pixabay) failed for '{primary_query}'")
+            logger.warning("  All sources failed for '%s'", primary_query)
             failed += 1
 
         time.sleep(0.4)
 
-    if failed > 0:
-        print(f"  ⚠️  {failed}/{len(segments)} clips failed (both sources exhausted)")
+    if failed:
+        logger.warning("%d/%d clips failed (all sources exhausted)", failed, len(segments))
 
     total_ok = len(list(bg_dir.glob("*.mp4")))
-    print(f"  bg_videos ready in {bg_dir} ({total_ok} unique clips)")
+    logger.info("bg_videos ready: %d unique clips in %s", total_ok, bg_dir)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -601,7 +264,7 @@ def step_bg_videos(video_id: str, cp: dict) -> None:
 
 def step_verify_props(video_id: str) -> dict:
     """Verify remotion_props.json exists and is valid."""
-    props_path = OUTPUT_DIR / video_id / "remotion_props.json"
+    props_path = cfg.OUTPUT_DIR / video_id / "remotion_props.json"
     if not props_path.exists():
         raise FileNotFoundError(
             f"remotion_props.json not found for {video_id}. "
@@ -610,7 +273,7 @@ def step_verify_props(video_id: str) -> dict:
     props = json.loads(props_path.read_text())
     total = props.get("totalDurationFrames", 0)
     segs  = len(props.get("segments", []))
-    print(f"  Props verified: {total} frames ({total / SHORT_FPS:.1f}s), {segs} segments")
+    logger.info("Props verified: %d frames (%.1fs), %d segments", total, total / cfg.SHORT_FPS, segs)
     return props
 
 
@@ -620,26 +283,24 @@ def step_verify_props(video_id: str) -> dict:
 
 def step_copy_public(video_id: str) -> None:
     """Copy audio.mp3 and bg_videos/ to remotion public/<id>/."""
-    pub_dir = PUBLIC_DIR / video_id
+    pub_dir = cfg.PUBLIC_DIR / video_id
     pub_dir.mkdir(parents=True, exist_ok=True)
 
-    # Audio
-    audio_src = OUTPUT_DIR / video_id / "audio.mp3"
+    audio_src = cfg.OUTPUT_DIR / video_id / "audio.mp3"
     audio_dst = pub_dir / "audio.mp3"
     if not audio_src.exists():
         raise FileNotFoundError(f"audio.mp3 not found at {audio_src}")
     shutil.copy2(audio_src, audio_dst)
-    print(f"  Copied audio → public/{video_id}/audio.mp3")
+    logger.info("Copied audio → public/%s/audio.mp3", video_id)
 
-    # bg_videos
-    bg_src = OUTPUT_DIR / video_id / "bg_videos"
+    bg_src = cfg.OUTPUT_DIR / video_id / "bg_videos"
     bg_dst = pub_dir / "bg_videos"
     if bg_src.exists() and any(bg_src.iterdir()):
         if bg_dst.exists():
             shutil.rmtree(bg_dst)
         shutil.copytree(bg_src, bg_dst)
         count = len(list(bg_dst.glob("*.mp4")))
-        print(f"  Copied {count} bg_videos → public/{video_id}/bg_videos/")
+        logger.info("Copied %d bg_videos → public/%s/bg_videos/", count, video_id)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -648,14 +309,14 @@ def step_copy_public(video_id: str) -> None:
 
 def step_render(video_id: str, cp: dict) -> None:
     """Run render_short.py to produce video.mp4."""
-    video_path = OUTPUT_DIR / video_id / "video.mp4"
+    video_path = cfg.OUTPUT_DIR / video_id / "video.mp4"
 
     if cp["render"] and video_path.exists():
-        print("  [SKIP] video.mp4 already rendered")
+        logger.info("[SKIP] video.mp4 already rendered")
         return
 
-    render_script = SCRIPTS_DIR / "render_short.py"
-    print(f"  Rendering {video_id} via render_short.py...")
+    render_script = cfg.SCRIPTS_DIR / "render_short.py"
+    logger.info("Rendering %s via render_short.py...", video_id)
 
     max_retries = 2
     last_error: Optional[Exception] = None
@@ -670,11 +331,11 @@ def step_render(video_id: str, cp: dict) -> None:
         last_error = RuntimeError(
             f"render_short.py failed with exit code {result.returncode} (attempt {attempt}/{max_retries})"
         )
-        print(f"  ⚠️  Render failed (attempt {attempt}/{max_retries}) — clearing cache and retrying...")
+        logger.warning("Render failed (attempt %d/%d) — clearing cache and retrying...", attempt, max_retries)
         cache_dir = ROOT / "video/remotion-project/.cache"
         if cache_dir.exists():
             shutil.rmtree(cache_dir)
-            print(f"  Cleared {cache_dir}")
+            logger.info("Cleared %s", cache_dir)
         if attempt < max_retries:
             time.sleep(5)
     else:
@@ -684,153 +345,49 @@ def step_render(video_id: str, cp: dict) -> None:
         raise RuntimeError(f"Render completed but video.mp4 not found at {video_path}")
 
     size_mb = video_path.stat().st_size // (1024 * 1024)
-    print(f"  ✅ video.mp4 ready ({size_mb} MB)")
+    logger.info("video.mp4 ready (%d MB)", size_mb)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # STEP 8 — THUMBNAIL
 # ══════════════════════════════════════════════════════════════════════════════
 
-def _build_thumbnail_prompt(script: dict, video_id: str) -> str:
-    """Derive a Pollinations prompt from script metadata."""
-    title = script.get("title", "") or script.get("video_title", "")
+def step_thumbnail(video_id: str, script: dict) -> None:
+    """Generate thumbnail.jpg (A/B/C variants) using ThumbnailGenerator."""
+    thumb_path = cfg.OUTPUT_DIR / video_id / "thumbnail.jpg"
+
+    if thumb_path.exists() and thumb_path.stat().st_size > 5_000:
+        logger.info("[SKIP] thumbnail.jpg already exists")
+        return
+
+    gen = ThumbnailGenerator()
+    title  = script.get("title") or script.get("video_title") or video_id
+    stat   = _extract_hero_stat(script)
     category = script.get("category", "")
-    hook = script.get("hook", "") or script.get("opening_hook", "")
-    base = title or hook or f"FactForge {video_id}"
+    hook   = script.get("hook") or script.get("opening_hook") or ""
+    base   = title or hook or f"FactForge {video_id}"
+
     prompt = (
         f"Cinematic 4K background for YouTube thumbnail, vivid dramatic lighting, "
         f"topic: {base[:80]}, category: {category}, "
         "no text, no watermarks, high contrast, stunning visual impact"
     )
-    return prompt
+    logger.info("Generating Pollinations thumbnail: %s...", prompt[:60])
 
-
-def step_thumbnail(video_id: str, script: dict) -> None:
-    """Generate thumbnail.jpg (+ B/C variants) if they don't exist."""
-    thumb_path = OUTPUT_DIR / video_id / "thumbnail.jpg"
-
-    if thumb_path.exists() and thumb_path.stat().st_size > 5_000:
-        print("  [SKIP] thumbnail.jpg already exists")
-        return
-
-    try:
-        from PIL import Image, ImageDraw, ImageFont
-        from io import BytesIO
-    except ImportError:
-        print("  ⚠️  Pillow not installed — skipping thumbnail generation")
-        return
-
-    W, H = 1280, 720
-    prompt = _build_thumbnail_prompt(script, video_id)
-    title  = script.get("title") or script.get("video_title") or video_id
-    stat   = _extract_hero_stat(script)
-
-    print(f"  Generating Pollinations thumbnail: {prompt[:60]}...")
-
-    # Fetch AI background (shared across all 3 variants)
-    url = (
-        f"https://image.pollinations.ai/prompt/{quote(prompt)}"
-        f"?width={W}&height={H}&nologo=true&model=flux&seed=42"
+    out_dir = cfg.OUTPUT_DIR / video_id
+    gen.generate(
+        out_dir=out_dir,
+        prompt=prompt,
+        title=title,
+        hero_stat=stat,
     )
-    bg_raw = None
-    for attempt in range(3):
-        try:
-            r = requests.get(url, timeout=90)
-            if r.status_code == 200 and len(r.content) > 5000:
-                bg_raw = Image.open(BytesIO(r.content)).convert("RGB")
-                bg_raw = bg_raw.resize((W, H), Image.Resampling.LANCZOS)
-                break
-            print(f"    Retry {attempt+1} (status {r.status_code})")
-        except Exception as exc:
-            print(f"    Retry {attempt+1} ({exc})")
-        time.sleep(5)
-
-    if bg_raw is None:
-        # Fallback: dark gradient
-        bg_raw = Image.new("RGB", (W, H), (20, 20, 30))
-
-    def get_font(size: int) -> ImageFont.FreeTypeFont:
-        for p in [
-            "/System/Library/Fonts/Supplemental/Impact.ttf",
-            "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-            "/System/Library/Fonts/Helvetica.ttc",
-        ]:
-            if os.path.exists(p):
-                try:
-                    return ImageFont.truetype(p, size)
-                except Exception:
-                    pass
-        return ImageFont.load_default()
-
-    def outline_text(
-        d: ImageDraw.ImageDraw,
-        xy: tuple,
-        text: str,
-        font: ImageFont.FreeTypeFont,
-        fill: tuple,
-        outline: tuple,
-        width: int = 7,
-    ) -> None:
-        x, y = xy
-        for dx in range(-width, width + 1, 2):
-            for dy in range(-width, width + 1, 2):
-                if dx or dy:
-                    d.text((x + dx, y + dy), text, font=font, fill=outline, anchor="mm")
-        d.text(xy, text, font=font, fill=fill, anchor="mm")
-
-    def _render_variant(accent_rgb: tuple, stat_rgb: tuple) -> Image.Image:
-        """Render one thumbnail variant with the given accent/stat colors."""
-        bg_img = bg_raw.copy()
-
-        # Dark gradient overlay on bottom half
-        overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        ov_draw = ImageDraw.Draw(overlay)
-        for y in range(H // 2, H):
-            alpha = int(200 * (y - H // 2) / (H // 2))
-            ov_draw.line([(0, y), (W, y)], fill=(0, 0, 0, alpha))
-        bg_img = Image.alpha_composite(bg_img.convert("RGBA"), overlay).convert("RGB")
-        draw = ImageDraw.Draw(bg_img)
-
-        # Top accent bar
-        draw.rectangle([(0, 0), (W, 10)], fill=accent_rgb)
-
-        # Stat (hero number)
-        if stat:
-            outline_text(draw, (W // 2, H // 2 - 40), stat, get_font(120), stat_rgb, (0, 0, 0))
-
-        # Title lines (max 2, all caps)
-        title_upper = title.upper()[:60]
-        font_title  = get_font(62)
-        outline_text(draw, (W // 2, H - 120), title_upper, font_title, (255, 255, 255), (0, 0, 0))
-
-        # Watermark
-        wm_font = get_font(28)
-        draw.text((W // 2, H - 30), "FACTFORGE", font=wm_font, fill=(200, 200, 200), anchor="mm")
-
-        return bg_img
-
-    # A/B/C variant definitions: (filename, accent_rgb, stat_rgb)
-    variants = [
-        ("thumbnail.jpg",   (255, 200,  0), (255, 230,  50)),   # A — gold/yellow (original)
-        ("thumbnail_b.jpg", (  0,  85, 255), (100, 180, 255)),  # B — blue accent
-        ("thumbnail_c.jpg", (  0, 170,  68), ( 80, 230, 120)),  # C — green accent
-    ]
-
-    for filename, accent_rgb, stat_rgb in variants:
-        variant_path = OUTPUT_DIR / video_id / filename
-        img = _render_variant(accent_rgb, stat_rgb)
-        img.save(str(variant_path), "JPEG", quality=95)
-        size_kb = variant_path.stat().st_size // 1024
-        print(f"  ✅ {filename} saved ({size_kb} KB)")
 
 
 def _extract_hero_stat(script: dict) -> str:
-    """Try to pull a short numeric stat from the script for thumbnail hero text."""
     for field in ("hero_stat", "key_stat", "main_stat"):
         val = script.get(field)
         if val:
             return str(val)[:20]
-    # Try scanning key_facts
     for fact in script.get("key_facts", []):
         m = re.search(r"[\$£€]?\d[\d,\.]+[MBKTmbt%]*", str(fact))
         if m:
@@ -842,306 +399,124 @@ def _extract_hero_stat(script: dict) -> str:
 # STEP 9 — UPLOAD TO YOUTUBE
 # ══════════════════════════════════════════════════════════════════════════════
 
-def _build_youtube_client():
-    """Build YouTube API client from token file."""
-    from googleapiclient.discovery import build
-    from google.oauth2.credentials import Credentials
-
-    token_file = CONFIG_DIR / "youtube_token.json"
-    if not token_file.exists():
-        raise FileNotFoundError(f"YouTube token not found: {token_file}")
-
-    tok = json.loads(token_file.read_text())
-    creds = Credentials(
-        token=tok["token"],
-        refresh_token=tok["refresh_token"],
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=tok["client_id"],
-        client_secret=tok["client_secret"],
-        scopes=tok["scopes"],
-    )
-    return build("youtube", "v3", credentials=creds)
-
-
-def _next_publish_time() -> str:
-    """Return next available RFC3339 publish time (14:00 UTC, every 2 days)."""
-    from datetime import timedelta
-
-    # Read existing schedule to find last Short publish date
-    schedule_file = ROOT / "state/upload_schedule.json"
-    last_date: Optional[datetime] = None
-
-    if schedule_file.exists():
-        try:
-            sched = json.loads(schedule_file.read_text())
-            for entry in reversed(sched.get("schedule", [])):
-                if not entry.get("id", "").startswith("L"):
-                    dt_str = entry.get("publish_at", "")
-                    if dt_str:
-                        last_date = datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
-                        break
-        except Exception:
-            pass
-
-    now = datetime.now(timezone.utc)
-    if last_date and last_date > now:
-        candidate = last_date + timedelta(days=2)
-    else:
-        # Next occurrence of 14:00 UTC, at least 1 day from now
-        candidate = now.replace(hour=14, minute=0, second=0, microsecond=0)
-        if candidate <= now + timedelta(hours=2):
-            candidate += timedelta(days=1)
-
-    return candidate.strftime("%Y-%m-%dT%H:%M:%S+00:00")
-
-
 def step_upload(video_id: str, script: dict, cp: dict) -> str:
     """Upload video to YouTube as scheduled private. Returns youtube_id."""
     if cp["upload"]:
-        # Check if youtube_id already saved
-        meta_path = OUTPUT_DIR / video_id / "metadata.json"
+        meta_path = cfg.OUTPUT_DIR / video_id / "metadata.json"
         if meta_path.exists():
-            meta = json.loads(meta_path.read_text())
-            yt_id = meta.get("youtube_video_id")
+            yt_id = json.loads(meta_path.read_text()).get("youtube_video_id")
             if yt_id:
-                print(f"  [SKIP] Already uploaded → https://youtu.be/{yt_id}")
+                logger.info("[SKIP] Already uploaded → https://youtu.be/%s", yt_id)
                 return yt_id
 
-    from googleapiclient.http import MediaFileUpload
-
-    video_path = OUTPUT_DIR / video_id / "video.mp4"
-    meta_path  = OUTPUT_DIR / video_id / "metadata.json"
-    thumb_path = OUTPUT_DIR / video_id / "thumbnail.jpg"
+    video_path = cfg.OUTPUT_DIR / video_id / "video.mp4"
+    meta_path  = cfg.OUTPUT_DIR / video_id / "metadata.json"
 
     if not video_path.exists():
         raise FileNotFoundError(f"video.mp4 not found: {video_path}")
 
-    # Load or build metadata
-    if meta_path.exists():
-        meta = json.loads(meta_path.read_text())
-    else:
-        meta = {}
+    meta  = json.loads(meta_path.read_text()) if meta_path.exists() else {}
+    title = meta.get("title") or script.get("title") or script.get("video_title") or video_id
+    desc  = meta.get("description") or script.get("description") or ""
+    tags  = meta.get("tags") or []
+    cat   = meta.get("categoryId", "28")
 
-    title       = meta.get("title") or script.get("title") or script.get("video_title") or video_id
-    description = meta.get("description") or script.get("description") or ""
-    tags        = meta.get("tags") or []
+    publish_at = get_next_publish_date("short")
+    logger.info("Uploading %s to YouTube (scheduled: %s)...", video_id, publish_at)
 
-    publish_at = _next_publish_time()
-    print(f"  Uploading {video_id} to YouTube (scheduled: {publish_at})...")
-
-    youtube = _build_youtube_client()
-
-    body = {
-        "snippet": {
-            "title": title,
-            "description": description,
-            "tags": tags,
-            "categoryId": meta.get("categoryId", "28"),
-            "defaultLanguage": "en",
-        },
-        "status": {
-            "privacyStatus": "private",
-            "publishAt": publish_at,
-            "selfDeclaredMadeForKids": False,
-        },
-    }
-
-    media = MediaFileUpload(
-        str(video_path),
-        chunksize=1024 * 1024,
-        resumable=True,
-        mimetype="video/mp4",
+    yt_id = upload_video(
+        video_path=video_path,
+        title=title,
+        description=desc,
+        tags=tags,
+        category_id=cat,
+        publish_at=publish_at,
+        privacy="private",
     )
-    req = youtube.videos().insert(part="snippet,status", body=body, media_body=media)
+    if not yt_id:
+        raise RuntimeError("YouTube upload failed — check credentials and quota")
 
-    response = None
-    while response is None:
-        status, response = req.next_chunk()
-        if status:
-            pct = int(status.progress() * 100)
-            print(f"    Uploading {video_id}: {pct}%", end="\r")
+    logger.info("Uploaded → https://youtu.be/%s  (publishes %s)", yt_id, publish_at)
+    logger.warning("REMINDER: Set thumbnail manually in YouTube Studio for this Short.")
+    logger.info("  Local thumbnail: output/%s/thumbnail.jpg", video_id)
 
-    yt_id: str = response["id"]
-    print(f"\n  ✅ Uploaded → https://youtu.be/{yt_id}  (publishes {publish_at})")
-
-    # NOTE: YouTube blocks thumbnail uploads for Shorts via API.
-    # Remind user to set manually in YouTube Studio.
-    print("  ⚠️  REMINDER: Set thumbnail manually in YouTube Studio for this Short.")
-    print(f"     Local thumbnail: output/{video_id}/thumbnail.jpg")
-
-    # Save youtube_id to metadata.json
+    # Persist youtube_id to metadata.json
     meta["youtube_video_id"] = yt_id
     meta["youtube_url"]      = f"https://youtu.be/{yt_id}"
     meta["scheduled_at"]     = publish_at
     meta_path.write_text(json.dumps(meta, indent=2, ensure_ascii=False))
 
-    _update_state_after_upload(video_id, yt_id, title, publish_at)
+    update_state_after_upload(video_id, yt_id, publish_at, title, "short")
+    _append_score(video_id, script, yt_id)
     return yt_id
-
-
-def _update_state_after_upload(
-    video_id: str, yt_id: str, title: str, publish_at: str
-) -> None:
-    """Update pending_uploads.json, queue.json, and published_videos.json."""
-    # — pending_uploads.json —
-    pu_file = ROOT / "state/pending_uploads.json"
-    if pu_file.exists():
-        pu = json.loads(pu_file.read_text())
-    else:
-        pu = {"pending": []}
-
-    # Update existing entry or append
-    existing = next((e for e in pu["pending"] if e["id"] == video_id), None)
-    if existing:
-        existing.update(
-            {
-                "scheduled": True,
-                "youtube_id": yt_id,
-                "publish_at": publish_at,
-                "status": "uploaded",
-                "published_at": datetime.now(timezone.utc).isoformat(),
-            }
-        )
-    else:
-        pu["pending"].append(
-            {
-                "id": video_id,
-                "title": title,
-                "video_file": f"output/{video_id}/video.mp4",
-                "metadata_file": f"output/{video_id}/metadata.json",
-                "ready": True,
-                "scheduled": True,
-                "youtube_id": yt_id,
-                "publish_at": publish_at,
-                "status": "uploaded",
-                "published_at": datetime.now(timezone.utc).isoformat(),
-            }
-        )
-    pu_file.write_text(json.dumps(pu, indent=2, ensure_ascii=False))
-
-    # — queue.json — mark idea as produced
-    q_file = ROOT / "state/queue.json"
-    if q_file.exists():
-        q = json.loads(q_file.read_text())
-        for idea in q.get("ideas", []):
-            if idea["id"] == video_id:
-                idea["status"] = "produced"
-                idea["youtube_id"] = yt_id
-                break
-        q_file.write_text(json.dumps(q, indent=2, ensure_ascii=False))
-
-    # — published_videos.json —
-    pub_file = ROOT / "state/published_videos.json"
-    if pub_file.exists():
-        pub = json.loads(pub_file.read_text())
-    else:
-        pub = {"videos": []}
-
-    if not any(v["id"] == video_id for v in pub.get("videos", [])):
-        pub.setdefault("videos", []).append(
-            {
-                "id": video_id,
-                "title": title,
-                "youtube_id": yt_id,
-                "youtube_url": f"https://youtu.be/{yt_id}",
-                "published_at": publish_at,
-                "cleaned": False,
-            }
-        )
-        pub_file.write_text(json.dumps(pub, indent=2, ensure_ascii=False))
-
-    print(f"  State updated in pending_uploads.json + queue.json + published_videos.json")
 
 
 def _append_score(video_id: str, script: dict, yt_id: str) -> None:
     """Append scoring data to state/scores.json after a successful upload."""
-    scores_path = ROOT / "state/scores.json"
-    if scores_path.exists():
-        scores = json.loads(scores_path.read_text())
-    else:
-        scores = []
+    from datetime import datetime, timezone
 
-    # Skip if already recorded
+    scores_path = cfg.STATE_DIR / "scores.json"
+    scores = json.loads(scores_path.read_text()) if scores_path.exists() else []
+
     if any(s.get("id") == video_id for s in scores):
         return
 
-    meta_path = OUTPUT_DIR / video_id / "metadata.json"
+    meta_path = cfg.OUTPUT_DIR / video_id / "metadata.json"
     meta = json.loads(meta_path.read_text()) if meta_path.exists() else {}
 
-    entry = {
-        "id": video_id,
-        "script_score": script.get("script_score") or script.get("content_score") or 0,
-        "seo_score": meta.get("seo_score") or script.get("seo_score") or 0,
-        "thumbnail_score": script.get("thumbnail_score") or meta.get("thumbnail_score") or 0,
-        "published_at": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-        "title": meta.get("title") or script.get("title") or script.get("video_title") or video_id,
-        "youtube_id": yt_id,
-    }
-    scores.append(entry)
+    scores.append({
+        "id":               video_id,
+        "script_score":     script.get("script_score") or script.get("content_score") or 0,
+        "seo_score":        meta.get("seo_score") or script.get("seo_score") or 0,
+        "thumbnail_score":  script.get("thumbnail_score") or meta.get("thumbnail_score") or 0,
+        "published_at":     datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "title":            meta.get("title") or script.get("title") or video_id,
+        "youtube_id":       yt_id,
+    })
     scores_path.write_text(json.dumps(scores, indent=2, ensure_ascii=False))
-    print(f"  Scores recorded → state/scores.json")
-
-
-def print_scores_summary() -> None:
-    """Print average scores if scores.json has >= 3 entries."""
-    scores_path = ROOT / "state/scores.json"
-    if not scores_path.exists():
-        return
-    scores = json.loads(scores_path.read_text())
-    if len(scores) < 3:
-        return
-
-    avg_script = sum(s.get("script_score", 0) for s in scores) / len(scores)
-    avg_seo    = sum(s.get("seo_score", 0) for s in scores) / len(scores)
-    avg_thumb  = sum(s.get("thumbnail_score", 0) for s in scores) / len(scores)
-    print(f"\n{'─'*45}")
-    print(f"  📊 Scores summary ({len(scores)} videos)")
-    print(f"     Avg script score    : {avg_script:.1f}/100")
-    print(f"     Avg SEO score       : {avg_seo:.1f}/22")
-    print(f"     Avg thumbnail score : {avg_thumb:.1f}/16")
-    print(f"{'─'*45}")
+    logger.info("Scores recorded → state/scores.json")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
 # STEP 10 — CLEAN
 # ══════════════════════════════════════════════════════════════════════════════
 
+_CLEAN_PATTERNS = ["video.mp4", "video_noaudio.mp4", "audio.mp3", "*.wav"]
+_CLEAN_DIRS     = ["bg_videos"]
+
+
 def step_clean(video_id: str, cp: dict) -> None:
     """Delete large production files, keep only essential files."""
     if cp["clean"]:
-        print("  [SKIP] Already cleaned")
+        logger.info("[SKIP] Already cleaned")
         return
 
-    out_dir = OUTPUT_DIR / video_id
+    out_dir       = cfg.OUTPUT_DIR / video_id
     deleted_bytes = 0
 
-    # Delete specific files
-    for pattern in CLEAN_PATTERNS:
+    for pattern in _CLEAN_PATTERNS:
         for f in out_dir.glob(pattern):
             size = f.stat().st_size
             f.unlink()
             deleted_bytes += size
-            print(f"  🗑  Deleted {f.name} ({size // 1024} KB)")
+            logger.info("Deleted %s (%d KB)", f.name, size // 1024)
 
-    # Delete directories
-    for dir_name in CLEAN_DIRS:
+    for dir_name in _CLEAN_DIRS:
         d = out_dir / dir_name
         if d.exists():
             size = sum(f.stat().st_size for f in d.rglob("*") if f.is_file())
             shutil.rmtree(d)
             deleted_bytes += size
-            print(f"  🗑  Deleted {dir_name}/ ({size // (1024*1024)} MB)")
+            logger.info("Deleted %s/ (%d MB)", dir_name, size // (1024 * 1024))
 
-    # Clean remotion public/<id>/
-    pub_dir = PUBLIC_DIR / video_id
+    pub_dir = cfg.PUBLIC_DIR / video_id
     if pub_dir.exists():
         size = sum(f.stat().st_size for f in pub_dir.rglob("*") if f.is_file())
         shutil.rmtree(pub_dir)
         deleted_bytes += size
-        print(f"  🗑  Deleted public/{video_id}/ ({size // (1024*1024)} MB)")
+        logger.info("Deleted public/%s/ (%d MB)", video_id, size // (1024 * 1024))
 
-    freed_mb = deleted_bytes // (1024 * 1024)
-    print(f"  ✅ Cleaned {video_id}: freed {freed_mb} MB")
+    logger.info("Cleaned %s: freed %d MB", video_id, deleted_bytes // (1024 * 1024))
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1150,7 +525,7 @@ def step_clean(video_id: str, cp: dict) -> None:
 
 def get_next_short_id() -> str:
     """Return the first unproduced Short idea ID from queue.json."""
-    q_file = ROOT / "state/queue.json"
+    q_file = cfg.STATE_DIR / "queue.json"
     if not q_file.exists():
         raise FileNotFoundError(f"queue.json not found: {q_file}")
     q = json.loads(q_file.read_text())
@@ -1162,22 +537,36 @@ def get_next_short_id() -> str:
     raise RuntimeError("No unproduced Short ideas found in queue.json")
 
 
+def print_scores_summary() -> None:
+    """Print average scores if scores.json has >= 3 entries."""
+    scores_path = cfg.STATE_DIR / "scores.json"
+    if not scores_path.exists():
+        return
+    scores = json.loads(scores_path.read_text())
+    if len(scores) < 3:
+        return
+    avg_script = sum(s.get("script_score", 0) for s in scores) / len(scores)
+    avg_seo    = sum(s.get("seo_score", 0) for s in scores) / len(scores)
+    avg_thumb  = sum(s.get("thumbnail_score", 0) for s in scores) / len(scores)
+    logger.info("Scores summary (%d videos): script=%.1f/100  SEO=%.1f/22  thumb=%.1f/16",
+                len(scores), avg_script, avg_seo, avg_thumb)
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # MAIN PIPELINE
 # ══════════════════════════════════════════════════════════════════════════════
 
 def produce_short(video_id: str) -> None:
-    print(f"\n{'='*60}")
-    print(f"FactForge Short Pipeline — {video_id}")
-    print(f"{'='*60}\n")
+    logger.info("=" * 60)
+    logger.info("FactForge Short Pipeline — %s", video_id)
+    logger.info("=" * 60)
 
-    out_dir = OUTPUT_DIR / video_id
+    out_dir = cfg.OUTPUT_DIR / video_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
     cp = load_checkpoint(video_id)
 
-    # ── Step 1: Load script ───────────────────────────────────────────────────
-    print("[1/10] Loading script...")
+    logger.info("[1/10] Loading script...")
     script = step_load(video_id)
     tts_text: str = (
         script.get("tts_text_final")
@@ -1186,60 +575,49 @@ def produce_short(video_id: str) -> None:
         or ""
     )
 
-    # ── Step 2: Audio ─────────────────────────────────────────────────────────
-    print("\n[2/10] Generating audio (Kokoro TTS)...")
-    _duration = step_audio(video_id, tts_text, cp)
+    logger.info("[2/10] Generating audio (Kokoro TTS)...")
+    step_audio(video_id, tts_text, cp)
     cp["audio"] = True
     save_checkpoint(video_id, cp)
 
-    # ── Step 3: Word timestamps ───────────────────────────────────────────────
-    print("\n[3/10] Extracting word timestamps (faster-whisper)...")
-    _words = step_timestamps(video_id, cp)
+    logger.info("[3/10] Extracting word timestamps (faster-whisper)...")
+    step_timestamps(video_id, cp)
     cp["timestamps"] = True
     save_checkpoint(video_id, cp)
 
-    # ── Step 4: Fetch bg_videos from Pexels ──────────────────────────────────
-    print("\n[4/10] Fetching Pexels background videos...")
+    logger.info("[4/10] Fetching background videos...")
     step_bg_videos(video_id, cp)
     cp["bg_videos"] = True
     save_checkpoint(video_id, cp)
 
-    # ── Step 5: Verify remotion props ─────────────────────────────────────────
-    print("\n[5/10] Verifying remotion_props.json...")
-    _props = step_verify_props(video_id)
+    logger.info("[5/10] Verifying remotion_props.json...")
+    step_verify_props(video_id)
 
-    # ── Step 6: Copy to remotion public ───────────────────────────────────────
-    print("\n[6/10] Copying assets to remotion public/...")
+    logger.info("[6/10] Copying assets to remotion public/...")
     step_copy_public(video_id)
 
-    # ── Step 7: Render ────────────────────────────────────────────────────────
-    print("\n[7/10] Rendering video...")
+    logger.info("[7/10] Rendering video...")
     step_render(video_id, cp)
     cp["render"] = True
     save_checkpoint(video_id, cp)
 
-    # ── Step 8: Thumbnail ─────────────────────────────────────────────────────
-    print("\n[8/10] Generating thumbnail...")
+    logger.info("[8/10] Generating thumbnail...")
     step_thumbnail(video_id, script)
 
-    # ── Step 9: Upload ────────────────────────────────────────────────────────
-    print("\n[9/10] Uploading to YouTube...")
+    logger.info("[9/10] Uploading to YouTube...")
     yt_id = step_upload(video_id, script, cp)
     cp["upload"] = True
     save_checkpoint(video_id, cp)
-    _append_score(video_id, script, yt_id)
 
-    # ── Step 10: Clean ────────────────────────────────────────────────────────
-    print("\n[10/10] Cleaning production files...")
+    logger.info("[10/10] Cleaning production files...")
     step_clean(video_id, cp)
     cp["clean"] = True
     save_checkpoint(video_id, cp)
 
-    print(f"\n{'='*60}")
-    print(f"✅ {video_id} complete!")
-    print(f"   YouTube: https://youtu.be/{yt_id}")
-    print(f"   Set thumbnail manually in YouTube Studio.")
-    print(f"{'='*60}\n")
+    logger.info("=" * 60)
+    logger.info("%s complete! YouTube: https://youtu.be/%s", video_id, yt_id)
+    logger.info("Set thumbnail manually in YouTube Studio.")
+    logger.info("=" * 60)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1255,17 +633,16 @@ def main() -> None:
 
     if arg == "--next":
         video_id = get_next_short_id()
-        print(f"Next Short from queue: {video_id}")
-    elif arg.startswith("S") or arg.startswith("s"):
+        logger.info("Next Short from queue: %s", video_id)
+    elif arg.upper().startswith("S"):
         video_id = arg.upper()
     else:
-        print(f"ERROR: Invalid video ID '{arg}'. Must start with 'S' or use --next.")
+        logger.error("Invalid video ID '%s'. Must start with 'S' or use --next.", arg)
         sys.exit(1)
 
-    # Load .env if dotenv is available
     try:
         from dotenv import load_dotenv
-        load_dotenv(CONFIG_DIR / ".env")
+        load_dotenv(cfg.CONFIG_DIR / ".env")
     except ImportError:
         pass
 

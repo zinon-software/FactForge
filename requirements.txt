@@ -1,34 +1,34 @@
-# YouTube Automation System — Python Dependencies
-# AI engine: Claude Code (no anthropic SDK needed)
-# Install with: pip install -r requirements.txt
+# FactForge — Python dependencies
+# Install: pip install -r requirements.txt
 
-# ─── YouTube / Google APIs ─────────────────────────────────────────────────────
-google-api-python-client>=2.150.0
-google-auth-oauthlib>=1.2.1
-google-auth-httplib2>=0.2.0
+# Core
+requests>=2.31.0
+python-dotenv>=1.0.0
 
-# ─── Web Search & Scraping ─────────────────────────────────────────────────────
-requests>=2.32.0
+# TTS
+kokoro-onnx>=0.4.0
+
+# Audio processing
+soundfile>=0.12.1
+numpy>=1.24.0
+faster-whisper>=1.0.0
+
+# Video/Image
+Pillow>=10.0.0
+
+# YouTube API
+google-api-python-client>=2.100.0
+google-auth-httplib2>=0.1.1
+google-auth-oauthlib>=1.1.0
+
+# Web search / scraping
 beautifulsoup4>=4.12.0
 aiohttp>=3.10.0
 pytrends>=4.9.2
 
-# ─── TTS / Audio ───────────────────────────────────────────────────────────────
-edge-tts>=7.0.0
-soundfile>=0.12.1
-numpy>=1.26.0
-pydub>=0.25.1
-num2words>=0.5.13
-
-# ─── Image Generation ──────────────────────────────────────────────────────────
-Pillow>=10.4.0
-
-# ─── Scheduling & Async ────────────────────────────────────────────────────────
-APScheduler>=3.10.4
-
-# ─── Config & Display ──────────────────────────────────────────────────────────
-python-dotenv>=1.0.1
+# CLI / display
+tqdm>=4.65.0
 rich>=13.8.0
 
-# ─── Optional: Kokoro TTS (best quality, local) ────────────────────────────────
-# pip install kokoro-onnx
+# Scheduling
+APScheduler>=3.10.4

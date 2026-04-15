@@ -4,8 +4,10 @@ Uses utils/youtube_helper.py for all YouTube API calls.
 
 Usage: python3 scripts/finalize_and_upload.py <video_id>
 """
-import json, subprocess, sys
+import json, subprocess, sys, logging
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
@@ -25,9 +27,9 @@ def merge_audio(video_id: str) -> Path | None:
     output  = out_dir / "video.mp4"
 
     if not noaudio.exists():
-        print(f"❌ {noaudio} not found"); return None
+        logger.error("%s not found", noaudio); return None
     if not audio.exists():
-        print(f"❌ {audio} not found"); return None
+        logger.error("%s not found", audio); return None
 
     cmd = [
         "ffmpeg", "-y",
@@ -48,10 +50,10 @@ def merge_audio(video_id: str) -> Path | None:
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        print(f"❌ ffmpeg error:\n{result.stderr[-500:]}")
+        logger.error("ffmpeg error:\n%s", result.stderr[-500:])
         return None
     size_mb = output.stat().st_size // 1024 // 1024
-    print(f"✅ Merged: {output.name} ({size_mb}MB)")
+    logger.info("Merged: %s (%dMB)", output.name, size_mb)
     return output
 
 
@@ -62,7 +64,7 @@ def upload(video_id: str) -> str | None:
     is_long  = video_id.startswith("L")
 
     if not meta_file.exists():
-        print(f"❌ metadata.json not found for {video_id}"); return None
+        logger.error("metadata.json not found for %s", video_id); return None
 
     meta = json.loads(meta_file.read_text())
     title = meta.get("selected_title") or meta.get("title_selected") or meta.get("title", "")
@@ -72,12 +74,12 @@ def upload(video_id: str) -> str | None:
 
     # Determine scheduled publish date
     publish_at = get_next_publish_date("long" if is_long else "short")
-    print(f"Scheduled publish: {publish_at}")
+    logger.info("Scheduled publish: %s", publish_at)
 
     # Upload video
     video_path = out_dir / "video.mp4"
     if not video_path.exists():
-        print(f"❌ video.mp4 not found — run render first"); return None
+        logger.error("video.mp4 not found — run render first"); return None
 
     yt_id = upload_video(
         video_path=video_path,
@@ -89,22 +91,22 @@ def upload(video_id: str) -> str | None:
         privacy="private",
     )
     if not yt_id:
-        print("❌ Upload failed"); return None
+        logger.error("Upload failed"); return None
 
     # Thumbnail
     thumb = out_dir / "thumbnail.jpg"
     if thumb.exists():
         ok = set_thumbnail(yt_id, thumb)
         if not ok:
-            print("⚠️  Thumbnail API blocked (expected for Shorts — set manually in Studio)")
+            logger.warning("Thumbnail API blocked (expected for Shorts — set manually in Studio)")
     else:
-        print("⚠️  No thumbnail.jpg found")
+        logger.warning("No thumbnail.jpg found")
 
     # Subtitles — generate if not yet done (needs word_timestamps.json)
     srt_dir = out_dir / "subtitles"
     ts_path = out_dir / "word_timestamps.json"
     if ts_path.exists() and (not srt_dir.exists() or not any(srt_dir.glob("*.srt"))):
-        print("Generating subtitles (7 languages)...")
+        logger.info("Generating subtitles (7 languages)...")
         generate_subtitles(video_id)
 
     # Subtitles (7 languages if available)
@@ -115,13 +117,16 @@ def upload(video_id: str) -> str | None:
             lang = srt_file.stem.split("_")[-1]
             if lang in lang_names:
                 ok = upload_caption(yt_id, srt_file, lang, lang_names[lang])
-                print(f"  {'✅' if ok else '⚠️ '} Subtitles {lang}")
+                if ok:
+                    logger.info("Subtitles %s uploaded", lang)
+                else:
+                    logger.warning("Subtitles %s upload failed", lang)
 
     # Update state
     video_type = "long" if is_long else "short"
     update_state_after_upload(video_id, yt_id, publish_at, title, video_type)
 
-    print(f"\n✅ {video_id} → https://youtu.be/{yt_id}  (publishes {publish_at})")
+    logger.info("%s → https://youtu.be/%s  (publishes %s)", video_id, yt_id, publish_at)
     return yt_id
 
 
@@ -133,18 +138,19 @@ if __name__ == "__main__":
 
     is_long = video_id.startswith("L")
 
-    print(f"\n{'='*50}")
-    print(f"Finalizing {video_id}")
-    print(f"{'='*50}\n")
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S")
+    logger.info("=" * 50)
+    logger.info("Finalizing %s", video_id)
+    logger.info("=" * 50)
 
     # Merge only if video_noaudio exists (render was done separately)
     out_dir = ROOT / "output" / video_id
     if (out_dir / "video_noaudio.mp4").exists() and not (out_dir / "video.mp4").exists():
-        print("[1/2] Merging audio...")
+        logger.info("[1/2] Merging audio...")
         if not merge_audio(video_id):
             sys.exit(1)
 
-    print("[2/2] Uploading to YouTube...")
+    logger.info("[2/2] Uploading to YouTube...")
     yt_id = upload(video_id)
     if not yt_id:
         sys.exit(1)
