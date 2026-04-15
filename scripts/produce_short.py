@@ -263,53 +263,110 @@ def _query_from_filename(bg_video_path: str) -> str:
     return query
 
 
-def _fetch_pexels_video(query: str, out_path: Path, api_key: str) -> bool:
-    """Download first HD Pexels video matching query. Returns True on success."""
+def _fetch_pexels_video(
+    query: str,
+    out_path: Path,
+    api_key: str,
+    used_pexels_ids: set,
+    fallback_queries: list = None,
+) -> bool:
+    """
+    Download a unique HD Pexels video matching query.
+    - Fetches per_page=15 results and skips already-used Pexels video IDs.
+    - If no unused result found, tries each fallback_queries in order.
+    - Returns True on success.
+    """
     headers = {"Authorization": api_key}
-    params  = {"query": query, "per_page": 5, "size": "medium", "orientation": "portrait"}
+    all_queries = [query] + (fallback_queries or [])
 
-    r = requests.get(
-        "https://api.pexels.com/videos/search",
-        headers=headers,
-        params=params,
-        timeout=30,
-    )
-    if r.status_code != 200:
-        print(f"    ⚠️  Pexels API error {r.status_code} for '{query}'")
-        return False
+    for attempt_query in all_queries:
+        params = {
+            "query": attempt_query,
+            "per_page": 15,
+            "size": "medium",
+            "orientation": "portrait",
+        }
+        r = requests.get(
+            "https://api.pexels.com/videos/search",
+            headers=headers,
+            params=params,
+            timeout=30,
+        )
+        if r.status_code != 200:
+            print(f"    ⚠️  Pexels API error {r.status_code} for '{attempt_query}'")
+            continue
 
-    data = r.json()
-    videos = data.get("videos", [])
-    if not videos:
-        print(f"    ⚠️  No Pexels results for '{query}'")
-        return False
+        videos = r.json().get("videos", [])
+        if not videos:
+            print(f"    ⚠️  No Pexels results for '{attempt_query}'")
+            continue
 
-    # Pick first video with an HD file
-    video_file_url = None
-    for vid in videos:
-        for vf in vid.get("video_files", []):
-            if vf.get("quality") in ("hd", "sd") and vf.get("file_type") == "video/mp4":
-                video_file_url = vf["link"]
-                break
-        if video_file_url:
-            break
+        # Pick first video NOT already used
+        for vid in videos:
+            pexels_id = vid["id"]
+            if pexels_id in used_pexels_ids:
+                continue  # skip — already used in this video
 
-    if not video_file_url:
-        print(f"    ⚠️  No MP4 file found for '{query}'")
-        return False
+            # Find best MP4 file (prefer hd over sd)
+            files = sorted(
+                vid.get("video_files", []),
+                key=lambda f: 1 if f.get("quality") == "hd" else 0,
+                reverse=True,
+            )
+            video_file_url = next(
+                (
+                    f["link"]
+                    for f in files
+                    if f.get("quality") in ("hd", "sd")
+                    and f.get("file_type") == "video/mp4"
+                ),
+                None,
+            )
+            if not video_file_url:
+                continue
 
-    dl = requests.get(video_file_url, timeout=120, stream=True)
-    dl.raise_for_status()
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(out_path, "wb") as fh:
-        for chunk in dl.iter_content(chunk_size=1024 * 256):
-            fh.write(chunk)
-    print(f"    ✓ Downloaded {out_path.name} ({out_path.stat().st_size // 1024}KB)")
-    return True
+            dl = requests.get(video_file_url, timeout=120, stream=True)
+            dl.raise_for_status()
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(out_path, "wb") as fh:
+                for chunk in dl.iter_content(chunk_size=1024 * 256):
+                    fh.write(chunk)
+
+            used_pexels_ids.add(pexels_id)
+            source_label = f"(query: '{attempt_query}')" if attempt_query != query else ""
+            print(
+                f"    ✓ {out_path.name} — pexels#{pexels_id} {source_label}"
+                f" ({out_path.stat().st_size // 1024}KB)"
+            )
+            return True
+
+        print(f"    ⚠️  All {len(videos)} results for '{attempt_query}' already used — trying next query")
+
+    print(f"    ✗ Could not find unique video for '{query}' after all fallbacks")
+    return False
+
+
+# ─── Fallback query chains per segment type ──────────────────────────────────
+# When the primary scene_query fails or produces a duplicate, these generic
+# queries ensure every segment gets a visually distinct clip.
+_TYPE_FALLBACKS = {
+    "hook":   ["dramatic reveal", "cinematic landscape", "aerial city"],
+    "fact":   ["documentary footage", "world map", "research data"],
+    "impact": ["explosion effect", "shock wave", "dramatic moment"],
+    "number": ["financial data", "statistics screen", "stock market"],
+    "cta":    ["subscribe notification", "social media phone", "modern city"],
+}
+_GENERIC_FALLBACKS = ["city aerial", "nature landscape", "technology abstract", "ocean waves", "crowd people"]
 
 
 def step_bg_videos(video_id: str, cp: dict) -> None:
-    """Fetch Pexels background videos for each segment."""
+    """
+    Fetch unique Pexels background videos for every segment.
+    Priority order for query:
+      1. seg['scene_query']  — direct semantic description from script writing
+      2. filename-derived    — fallback from backgroundVideo path
+    Deduplication: tracks used Pexels video IDs so no two segments share the same clip.
+    """
     props_path = OUTPUT_DIR / video_id / "remotion_props.json"
     if not props_path.exists():
         raise FileNotFoundError(f"remotion_props.json not found for {video_id}")
@@ -329,7 +386,8 @@ def step_bg_videos(video_id: str, cp: dict) -> None:
     bg_dir  = OUTPUT_DIR / video_id / "bg_videos"
     bg_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"  Fetching {len(segments)} Pexels background clips...")
+    used_pexels_ids: set = set()
+    print(f"  Fetching {len(segments)} unique Pexels background clips...")
     failed = 0
 
     for i, seg in enumerate(segments):
@@ -344,10 +402,14 @@ def step_bg_videos(video_id: str, cp: dict) -> None:
             print(f"    [SKIP] {out_filename} already downloaded")
             continue
 
-        query = _query_from_filename(bg_path_str)
-        print(f"    [{i+1}/{len(segments)}] Pexels: '{query}' → {out_filename}")
+        # Prefer explicit scene_query written by Claude during script creation
+        primary_query = seg.get("scene_query") or _query_from_filename(bg_path_str)
+        seg_type      = seg.get("type", "fact")
+        fallbacks     = _TYPE_FALLBACKS.get(seg_type, []) + _GENERIC_FALLBACKS
 
-        ok = _fetch_pexels_video(query, out_path, api_key)
+        print(f"    [{i+1}/{len(segments)}] '{primary_query}' → {out_filename}")
+
+        ok = _fetch_pexels_video(primary_query, out_path, api_key, used_pexels_ids, fallbacks)
         if not ok:
             failed += 1
         # Polite rate limit
@@ -356,7 +418,7 @@ def step_bg_videos(video_id: str, cp: dict) -> None:
     if failed > 0:
         print(f"  ⚠️  {failed}/{len(segments)} clips failed to download")
 
-    print(f"  bg_videos ready in {bg_dir}")
+    print(f"  bg_videos ready in {bg_dir} ({len(segments) - failed} unique clips)")
 
 
 # ══════════════════════════════════════════════════════════════════════════════

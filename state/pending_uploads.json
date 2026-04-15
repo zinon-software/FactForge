@@ -347,12 +347,16 @@
       "type": "short"
     },
     {
-      "id": "S00893",
-      "title": "What Al-Aqsa Mosque Represents to 1.8 Billion Muslims",
-      "youtube_id": "kr2W3rRjcZ0",
-      "status": "scheduled",
+      "id": "S00550",
+      "title": "S00550",
+      "video_file": "output/S00550/video.mp4",
+      "metadata_file": "output/S00550/metadata.json",
+      "ready": true,
+      "scheduled": true,
+      "youtube_id": "74I69vfNj4c",
       "publish_at": "2026-05-31T14:00:00Z",
-      "type": "short"
+      "status": "scheduled",
+      "published_at": "2026-04-15T04:42:40.099600+00:00"
     }
   ]
 }

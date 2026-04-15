@@ -37,7 +37,7 @@ def render(video_id: str):
         "--codec=h264",
         "--crf=18",
         "--pixel-format=yuv420p",
-        "--concurrency=4",
+        "--concurrency=2",
     ]
 
     result = subprocess.run(render_cmd, cwd=REMOTION_DIR, capture_output=False, timeout=1800)
@@ -50,6 +50,8 @@ def render(video_id: str):
         "ffmpeg", "-y",
         "-i", str(noaudio_path),
         "-i", str(audio_path),
+        "-map", "0:v:0",      # video stream from noaudio.mp4
+        "-map", "1:a:0",      # audio stream from audio.mp3 (explicit)
         "-c:v", "libx264",
         "-crf", "18",
         "-preset", "slow",

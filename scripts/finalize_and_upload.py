@@ -32,6 +32,8 @@ def merge_audio(video_id: str) -> Path | None:
         "ffmpeg", "-y",
         "-i", str(noaudio),
         "-i", str(audio),
+        "-map", "0:v:0",      # video from noaudio
+        "-map", "1:a:0",      # audio from audio.mp3 (explicit — prevents silent video)
         "-c:v", "libx264",
         "-crf", "18",
         "-preset", "slow",

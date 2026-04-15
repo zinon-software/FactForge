@@ -17,6 +17,11 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
+# ─── A/B Testing constants ────────────────────────────────────────────────────
+AB_CTR_THRESHOLD    = 3.5   # % — rotate title if CTR below this after 48h
+AB_MIN_IMPRESSIONS  = 200   # minimum impressions before judging CTR
+AB_WAIT_HOURS       = 48    # hours to wait before evaluating
+
 from googleapiclient.discovery import build
 from googleapiclient.discovery import Resource
 from googleapiclient.http import MediaFileUpload
@@ -373,3 +378,100 @@ def update_state_after_upload(
                     with open(queue_path, "w") as f:
                         json.dump(queue_data, f, indent=2, ensure_ascii=False)
                 break
+
+
+# ─── A/B Title Testing ────────────────────────────────────────────────────────
+
+def update_video_title(youtube_id: str, new_title: str) -> bool:
+    """
+    Update the title of a YouTube video via the API.
+    Fetches current snippet first (required by YouTube API for partial updates).
+
+    Returns True on success.
+    """
+    try:
+        youtube = get_youtube_client()
+        # Fetch current snippet (must include categoryId)
+        resp = youtube.videos().list(part="snippet", id=youtube_id).execute()
+        items = resp.get("items", [])
+        if not items:
+            print(f"  [A/B] Video {youtube_id} not found")
+            return False
+
+        snippet = items[0]["snippet"]
+        snippet["title"] = new_title[:100]
+
+        youtube.videos().update(
+            part="snippet",
+            body={"id": youtube_id, "snippet": snippet},
+        ).execute()
+        print(f"  [A/B] Title updated → {new_title[:60]}")
+        return True
+    except Exception as exc:
+        print(f"  [A/B] Title update failed for {youtube_id}: {exc}")
+        return False
+
+
+def rotate_title_if_needed(video_id: str, youtube_id: str, ctr_pct: float, impressions: int) -> Optional[str]:
+    """
+    Check if title needs rotation based on CTR performance.
+    - Only rotates if: impressions >= AB_MIN_IMPRESSIONS AND ctr_pct < AB_CTR_THRESHOLD
+    - Reads titles from output/[id]/metadata.json (titles array)
+    - Tracks rotation index in state/hook_performance.json title_rotations
+
+    Returns new title string if rotated, None if no rotation needed.
+    """
+    if impressions < AB_MIN_IMPRESSIONS:
+        return None
+    if ctr_pct >= AB_CTR_THRESHOLD:
+        return None
+
+    meta_path = BASE_DIR / "output" / video_id / "metadata.json"
+    if not meta_path.exists():
+        return None
+
+    with open(meta_path) as f:
+        meta = json.load(f)
+
+    titles = meta.get("titles", [])
+    if not titles:
+        return None
+
+    # Find current title index from hook_performance title_rotations log
+    hp_path = STATE_DIR / "hook_performance.json"
+    hp_data = {}
+    if hp_path.exists():
+        with open(hp_path) as f:
+            hp_data = json.load(f)
+
+    rotations = hp_data.setdefault("title_rotations", [])
+    video_rotations = [r for r in rotations if r.get("video_id") == video_id]
+    current_index = len(video_rotations)  # 0 = first title (already used), so try index 1, 2...
+
+    next_index = current_index + 1
+    if next_index >= len(titles):
+        print(f"  [A/B] {video_id}: all {len(titles)} titles exhausted")
+        return None
+
+    new_title = titles[next_index]
+    ok = update_video_title(youtube_id, new_title)
+    if ok:
+        rotations.append({
+            "video_id":    video_id,
+            "youtube_id":  youtube_id,
+            "old_index":   current_index,
+            "new_index":   next_index,
+            "new_title":   new_title,
+            "reason":      f"CTR {ctr_pct:.1f}% < {AB_CTR_THRESHOLD}% threshold (impressions: {impressions})",
+            "rotated_at":  datetime.now(timezone.utc).isoformat(),
+        })
+        with open(hp_path, "w") as f:
+            json.dump(hp_data, f, indent=2, ensure_ascii=False)
+
+        # Also update metadata.json selected_title
+        meta["selected_title"] = new_title
+        with open(meta_path, "w") as f:
+            json.dump(meta, f, indent=2, ensure_ascii=False)
+
+        return new_title
+    return None

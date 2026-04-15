@@ -156,11 +156,45 @@ def generate_short_thumbnail(
 
 ---
 
-## Quality Checklist
+## Quality Gate (MANDATORY — score ≥ 12/16 before proceeding)
 
-- [ ] Main text readable at 100px thumbnail size
-- [ ] Maximum 3 words on main text
-- [ ] Background not distracting from text
-- [ ] Color theme matches video topic
-- [ ] No misleading images (matches video content)
-- [ ] Correct dimensions (1080×1920 short, 1280×720 long)
+Score each criterion. If total < 12, regenerate with different prompt/layout.
+Save result to `output/[id]/thumbnail_score.json`.
+
+### Scoring Rubric
+
+| Criterion | 0 pts | 1 pt | 2 pts |
+|---|---|---|---|
+| **Text readability at 100px** | Unreadable | Partially readable | Crystal clear |
+| **Single focal point** | Cluttered/confusing | Two competing elements | One clear hero element |
+| **Contrast ratio** | Low contrast, text blends | Moderate contrast | High contrast, text pops |
+| **Emotional impact** | Neutral, forgettable | Mildly interesting | Immediately stops the scroll |
+| **Topic accuracy** | Misleading or wrong | Loosely related | Directly matches video content |
+| **Color theme consistency** | Random colors | Partially matches theme | Perfect theme match |
+| **Mobile legibility** | Text too small | Readable with effort | Instantly readable |
+| **Uniqueness** | Generic stock photo look | Somewhat distinct | Distinctive, recognizable style |
+
+**Minimum to proceed: 12/16**
+If score 10–11: revise main text or regenerate background image
+If score < 10: regenerate completely with different Pollinations prompt
+
+### Save format:
+```json
+{"score": 14, "approved": true, "notes": "Strong contrast, clear number hero, Islamic gold theme matches perfectly"}
+```
+
+### Common failure modes and fixes:
+- **Text unreadable**: increase font size, add heavier dark overlay (opacity 180+)
+- **Cluttered**: remove subtitle text, let the number speak alone
+- **Low contrast**: switch background to darker version, use white or gold text
+- **Generic feel**: add the category pill badge, make the stat number 3x larger
+- **Wrong emotion**: regenerate Pollinations background with stronger emotional prompt
+
+### Pollinations prompt formula for maximum impact:
+```
+[dramatic adjective] [specific subject], [era/location], [lighting style], cinematic, photorealistic, 8K, ultra-detailed, no text, no watermarks
+```
+Examples:
+- `"burning library ancient scrolls Baghdad 1258, golden firelight, cinematic, photorealistic, 8K"`
+- `"empty Wall Street trading floor crash 2008, harsh fluorescent light, cinematic, photorealistic, 8K"`
+- `"gold vault overflowing coins extreme closeup, dramatic rim lighting, cinematic, 8K"`
