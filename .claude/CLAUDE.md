@@ -379,12 +379,19 @@ When user says "produce next long video" or idea starts with L:
 - **NO hardcoded stat cards** — pure cinematic visuals driven by images
 - **Cinematic Ken Burns**: 5 modes cycling — zoom_in, zoom_out, pan_left, pan_right, tilt_up
 - **Crossfade**: imageA → imageB at 55% through each section (18-frame fade)
-- **Chapter badge**: animated slide-in at top-left, shows for 3s then fades
+- **Chapter transitions**: ChapterTransition component — white flash + accent color fade (28 frames) between every section
+- **Exit fade**: each section fades out in last 12 frames (opacity 1→0) for smooth blend
+- **Chapter badge**: animated slide-in at top-left with accent bar, shows for 3s then fades
+- **Hook title**: dynamic from `title` prop — "FACTFORGE PRESENTS" + main title + animated underline
 - **Karaoke captions**: bottom 90px offset, font 58px, 5 words/line
 - **Progress bar**: top of screen showing overall video progress
 - **Color themes**: islamic (gold), wealth (green), science (cyan), military (red), ancient (orange)
 - **Image resolution**: 1920×1080 ONLY — never render images at wrong size
 - **Video quality**: CRF 18 + preset slow + maxrate 20M — MANDATORY for no pixelation
+- **Color grading**: applied in ffmpeg step — contrast 1.06, warmth curves, colorbalance warm-shadows/cool-highlights, unsharp 0.4
+- **Ambient music**: Kevin MacLeod "Perspectives" (CC BY 4.0) at 8% volume, looped to match audio duration
+  - Cached at: assets/ambient_documentary.mp3
+  - Attribution required in video description: Music by Kevin MacLeod (incompetech.com)
 
 ### Stickman Animation (for both Shorts and Long):
 - Use the `StickmanScene` Remotion component for segments that explain a concept or tell a story

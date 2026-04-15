@@ -93,6 +93,26 @@ const ProgressBar: React.FC<{ accent: string; total: number }> = ({ accent, tota
   );
 };
 
+// ─── Chapter Transition Flash ────────────────────────────────────────────────
+
+const ChapterTransition: React.FC<{ accent: string }> = ({ accent }) => {
+  const frame = useCurrentFrame();
+  // Frame 0–6: white flash; 6–18: accent color fade out; 18–28: vignette wipe
+  const flashOp = interpolate(frame, [0, 4, 14, 22], [0.9, 0.6, 0.15, 0], {
+    extrapolateRight: "clamp",
+  });
+  const accentOp = interpolate(frame, [0, 3, 16, 26], [0.5, 0.3, 0.08, 0], {
+    extrapolateRight: "clamp",
+  });
+  if (frame > 28) return null;
+  return (
+    <>
+      <AbsoluteFill style={{ background: `rgba(255,255,255,${flashOp})`, pointerEvents: "none", zIndex: 99 }} />
+      <AbsoluteFill style={{ background: `${accent}${Math.round(accentOp * 255).toString(16).padStart(2,"0")}`, pointerEvents: "none", zIndex: 98 }} />
+    </>
+  );
+};
+
 // ─── Chapter Overlay ─────────────────────────────────────────────────────────
 
 const ChapterBadge: React.FC<{
@@ -116,6 +136,13 @@ const ChapterBadge: React.FC<{
       opacity, transform: `translateX(${x}px)`, zIndex: 50,
       display: "flex", alignItems: "center", gap: 18,
     }}>
+      {/* Accent bar entering from left */}
+      <div style={{
+        width: interpolate(ent, [0, 1], [0, 6]), height: 58,
+        background: accent, borderRadius: 3,
+        boxShadow: `0 0 18px ${accent}`, flexShrink: 0,
+        transition: "width 0.1s",
+      }} />
       <div style={{
         width: 52, height: 52, borderRadius: "50%",
         background: accent, display: "flex", alignItems: "center", justifyContent: "center",
@@ -242,7 +269,8 @@ const CinematicBackground: React.FC<{
 const HookSection: React.FC<{
   sec: z.infer<typeof docSectionSchema>;
   theme: (typeof THEMES)["general"];
-}> = ({ sec, theme }) => {
+  videoTitle?: string;
+}> = ({ sec, theme, videoTitle }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const dur = sec.endFrame - sec.startFrame;
@@ -254,47 +282,62 @@ const HookSection: React.FC<{
   // Exit fade
   const exitOp = interpolate(frame, [dur - 20, dur], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
+  // Animated underline width
+  const lineW = interpolate(titleEnt, [0, 1], [0, 700]);
+
+  // Use dynamic title from props, fallback to sec.title
+  const displayTitle = videoTitle || sec.title;
+
   return (
     <AbsoluteFill>
       <CinematicBackground imageA={sec.imageA} imageB={sec.imageB} duration={dur} theme={theme} mode="zoom_in" />
+      <ChapterTransition accent={theme.accent} />
 
-      {/* Hero title card — shown only for first 4 seconds */}
-      {frame < 120 && (
+      {/* Hero title card — shown only for first 5 seconds */}
+      {frame < 150 && (
         <AbsoluteFill style={{
           justifyContent: "center", alignItems: "center", opacity: exitOp * titleOp,
         }}>
-          <div style={{ textAlign: "center", padding: "0 120px" }}>
+          <div style={{ textAlign: "center", padding: "0 100px" }}>
+            {/* FACTFORGE label */}
             <div style={{
-              fontFamily: FONTS.DISPLAY,
-              fontSize: 80,
+              fontFamily: FONTS.DISPLAY, fontSize: 22, color: theme.accent,
+              letterSpacing: "0.35em", textTransform: "uppercase",
+              opacity: interpolate(titleEnt, [0, 1], [0, 0.8]),
+              marginBottom: 20,
+              transform: `translateY(${interpolate(titleEnt, [0, 1], [-12, 0])}px)`,
+            }}>FACTFORGE PRESENTS</div>
+
+            {/* Main title */}
+            <div style={{
+              fontFamily: FONTS.DISPLAY, fontSize: 78,
               color: theme.accent,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              lineHeight: 1.15,
+              letterSpacing: "0.06em", textTransform: "uppercase",
+              lineHeight: 1.12,
               transform: `scale(${titleScale})`,
-              textShadow: `0 0 50px ${theme.accent}77, 0 4px 20px rgba(0,0,0,0.95)`,
-              marginBottom: 28,
+              textShadow: `0 0 60px ${theme.accent}66, 0 0 120px ${theme.accent}33, 0 4px 24px rgba(0,0,0,0.98)`,
+              marginBottom: 24,
             }}>
-              The Islamic Golden Age
+              {displayTitle}
             </div>
+
+            {/* Animated accent line */}
             <div style={{
-              height: 5,
-              background: theme.accent,
-              width: `${interpolate(titleEnt, [0, 1], [0, 700])}px`,
-              margin: "0 auto",
-              boxShadow: `0 0 20px ${theme.accent}`,
+              height: 5, background: theme.accent,
+              width: `${lineW}px`, maxWidth: "80%",
+              margin: "0 auto", borderRadius: 3,
+              boxShadow: `0 0 24px ${theme.accent}, 0 0 48px ${theme.accent}55`,
             }} />
+
+            {/* Subtitle */}
             <div style={{
-              fontFamily: FONTS.DISPLAY,
-              fontSize: 36,
-              color: "rgba(255,255,255,0.75)",
-              marginTop: 28,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              transform: `translateY(${interpolate(titleEnt, [0, 1], [20, 0])}px)`,
-              opacity: interpolate(titleEnt, [0, 1], [0, 0.75]),
+              fontFamily: FONTS.DISPLAY, fontSize: 32,
+              color: "rgba(255,255,255,0.72)", marginTop: 28,
+              letterSpacing: "0.16em", textTransform: "uppercase",
+              transform: `translateY(${interpolate(titleEnt, [0, 1], [24, 0])}px)`,
+              opacity: interpolate(titleEnt, [0, 1], [0, 0.72]),
             }}>
-              How Muslim Scientists Invented the Modern World
+              {sec.title}
             </div>
           </div>
         </AbsoluteFill>
@@ -317,9 +360,16 @@ const StandardSection: React.FC<{
   const mode = KEN_BURNS_MODES[index % KEN_BURNS_MODES.length];
   const sm = sec.stickman;
 
+  // Exit fade for smooth transition to next section
+  const exitOp = interpolate(frame, [dur - 12, dur], [1, 0], {
+    extrapolateLeft: "clamp", extrapolateRight: "clamp",
+  });
+
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={{ opacity: exitOp }}>
       <CinematicBackground imageA={sec.imageA} imageB={sec.imageB} duration={dur} theme={theme} mode={mode} />
+      {/* Cinematic flash transition on entry */}
+      <ChapterTransition accent={theme.accent} />
       {sec.chapter_num > 0 && (
         <ChapterBadge num={sec.chapter_num} title={sec.title} accent={theme.accent} startFrame={0} />
       )}
@@ -396,6 +446,7 @@ export const DocumentaryVideo: React.FC<DocVideoProps> = ({
   wordTimestamps,
   colorTheme,
   totalDurationFrames,
+  title,
 }) => {
   const theme = THEMES[colorTheme] ?? THEMES.general;
   const { durationInFrames } = useVideoConfig();
@@ -409,7 +460,7 @@ export const DocumentaryVideo: React.FC<DocVideoProps> = ({
         let content: React.ReactNode;
 
         if (sec.type === "hook") {
-          content = <HookSection sec={sec} theme={theme} />;
+          content = <HookSection sec={sec} theme={theme} videoTitle={title} />;
         } else if (sec.type === "cta") {
           content = <CtaSection sec={sec} theme={theme} />;
         } else {
