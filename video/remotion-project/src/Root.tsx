@@ -65,7 +65,7 @@ export const Root: React.FC = () => {
       <Composition
         id="DocumentaryVideo"
         component={DocumentaryVideo}
-        durationInFrames={18603}
+        durationInFrames={21600}
         fps={30}
         width={1920}
         height={1080}
@@ -77,7 +77,7 @@ export const Root: React.FC = () => {
           sections: [],
           audioFile: null,
           wordTimestamps: [],
-          totalDurationFrames: 18603,
+          totalDurationFrames: 21600,
         }}
       />
 

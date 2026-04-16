@@ -357,6 +357,33 @@
       "publish_at": "2026-05-31T14:00:00Z",
       "status": "scheduled",
       "published_at": "2026-04-15T04:42:40.099600+00:00"
+    },
+    {
+      "id": "L00300",
+      "title": "From Shells to Bitcoin: The Shocking History of Money",
+      "youtube_id": "VMTGuDE9uHI",
+      "status": "scheduled",
+      "publish_at": "2026-05-05T14:00:00Z",
+      "type": "long",
+      "scheduled": true
+    },
+    {
+      "id": "S01700",
+      "title": "We Know More About Mars Than Our Own Ocean Floor",
+      "youtube_id": "9o4vjzWw2dI",
+      "status": "scheduled",
+      "publish_at": "2026-06-02T14:00:00Z",
+      "type": "short",
+      "scheduled": true
+    },
+    {
+      "id": "S01800",
+      "title": "You Spend 26 Years of Your Life Unconscious",
+      "youtube_id": "eoB0zitZlzU",
+      "status": "scheduled",
+      "publish_at": "2026-06-04T14:00:00Z",
+      "type": "short",
+      "scheduled": true
     }
   ]
 }

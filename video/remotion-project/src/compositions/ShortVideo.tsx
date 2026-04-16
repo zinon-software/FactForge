@@ -356,9 +356,9 @@ export const ShortVideo: React.FC<ShortVideoProps> = ({
         <KaraokeCaption
           words={wordTimestamps as WordTimestamp[]}
           accentColor={accentColor}
-          fontSize={68 * S}
+          fontSize={76 * S}
           wordsPerLine={4}
-          bottomOffset={120 * S}
+          bottomOffset={320 * S}
           pillPadding={`${18 * S}px ${32 * S}px`}
         />
       )}

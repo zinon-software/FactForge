@@ -281,11 +281,9 @@ When user says "produce next video" (Short):
    - MANDATORY: segment frames must be aligned to word timestamps × 60fps (ms × 60 / 1000)
    - Shorts duration: 35–60 seconds (target 45–58s sweet spot)
 10. Visual gate: score ≥ 14/16 (visual_design.md) — revise if fails
-11. Thumbnail: Pollinations.ai Flux AI background + Pillow overlay → output/[id]/thumbnail.jpg (JPEG, NOT PNG)
-    - ALL thumbnails (Shorts AND Long): 1280×720 (16:9) — YouTube requires this for ALL video types
-    - The 1080×1920 format is for the VIDEO itself only, NEVER for thumbnails
-    - AI prompt via: https://image.pollinations.ai/prompt/{prompt}?width={w}&height={h}&nologo=true&model=flux
-    - No API key needed — free & commercial use allowed
+11. Thumbnail: **SKIP for Shorts** — YouTube auto-selects from video frames (no thumbnail generation needed)
+    - Do NOT generate, do NOT upload thumbnail for any Short video
+    - YouTube will auto-pick the best frame — this is intentional
 12. Metadata: title × 5 variants + description + tags → output/[id]/metadata.json
 13. SEO gate: score metadata ≥ 18/22 (youtube_seo.md) — revise if fails
 14. Publish: `python3 scripts/finalize_and_upload.py [id]` — handles upload + thumbnail + state in one step
@@ -334,16 +332,81 @@ When user says "produce next long video" or idea starts with L:
 
 ## Video Design Rules (NEVER VIOLATE)
 
+### Audio Engineering — 3-Tier System (MANDATORY for ALL videos):
+```
+Tier 1 — BGM:    ambient_documentary.mp3 at 8% volume (Kevin MacLeod CC BY 4.0)
+Tier 2 — SFX:    context-matched, max 5 events/40s, min 3s gap between events
+Tier 3 — Ambient: (future) topic-specific ambient bed
+```
+
+**SFX is CONTEXT-AWARE — topic determines which sounds fire:**
+| Topic | Transition | Stat | Impact | Hook |
+|-------|-----------|------|--------|------|
+| Ocean/Sea | water_transition | sonar_ping | pressure_boom | bubble_burst |
+| Space | space_whoosh | sci_fi_beep | space_thud | radio_static |
+| Economy/Money | money_whoosh | coin_drop | market_crash | cash_register |
+| Tech/AI | tech_whoosh | keyboard_click | system_alert | digital_glitch |
+| History | parchment_rustle | typewriter_click | dramatic_sting | bell_toll |
+| Universal | soft_whoosh | reveal_sting | hard_impact | tension_build |
+
+**SFX placement rules (NEVER fire on every transition):**
+- Hook (i=0): MANDATORY hook SFX at frame 0
+- Stat/number segments: fire stat SFX (coin, ping, beep)
+- Impact segments: fire impact SFX
+- Scene transitions: MAX 3 across video (at ~25%, 50%, 75% positions)
+- Final segment: always reveal_sting (universal)
+- MINIMUM 3-second gap between any two SFX events
+- Assets: `audio_engineering/assets/sfx/{topic}/{name}.wav` (25 files total)
+- Config: `audio_engineering/sfx_config.json`
+- Regenerate: `python3 audio_engineering/generate_sfx.py`
+
+**Hook Optimization (First 1.5 Seconds — MANDATORY):**
+- Max 12 words in hook sentence
+- Must contain a shock word: `never`, `impossible`, `zero`, `only`, `less than`, `billion`, `secret`, `nobody`
+- Visual: zoom-in Ken Burns on most shocking frame
+- Audio: hook SFX fires at frame 0
+- BAD: "Did you know the ocean is deep?" ❌
+- GOOD: "We know more about Mars than our own ocean floor." ✅
+
+**Vocal Humanization — Automated Post-Processing (audio_engineering/vocal_humanizer.py):**
+Applied automatically in `produce_audio()` after Kokoro TTS. Do NOT skip.
+
+| Segment Role | Speed | Pre-Pause | Post-Pause |
+|-------------|-------|-----------|------------|
+| hook | ×1.15 (urgent) | 0ms | 0ms |
+| climax/impact | ×0.95 (heavy) | 600ms ← dramatic | 250ms |
+| stat/number | ×0.97 (clear) | 0ms | 250ms ← let numbers land |
+| outro/cta | ×0.92 (trustworthy) | 0ms | 400ms |
+| explainer | ×1.05 (normal) | 0ms | 0ms |
+
+EQ Chain (applied every video):
+- +2.5dB @ 150Hz — warmth
+- +1.8dB @ 380Hz — body/chest  
+- -2.5dB @ 3200Hz — removes AI nasal artifact
+- +1.5dB @ 8kHz — air/presence
+- acompressor ratio=3:1 — brings up quiet consonants
+- aecho 60ms — subtle room character (not reverb)
+- loudnorm I=-16 LUFS — YouTube broadcast standard
+
+In Script Writing (additional humanization):
+- Use em dash (—) for 350ms dramatic pause
+- Capitalize shocking words: `ZERO percent`, `FIVE people`
+- Add dramatic pause after: `but`, `however`, `yet`, `only`, `wait`
+- Example: `"More people walked on the Moon. But — fewer than five reached the ocean floor."`
+
 ### Short Videos (Reels/Shorts):
 - **NO text overlays in center of screen** — مشاهد حية تملأ الشاشة بالكامل
 - **Captions ONLY at bottom** — KaraokeCaption component, word-by-word synced to audio
-- **Ken Burns effect** on every background segment (zoom-in / zoom-out / pan)
+- **Ken Burns effect** on every background segment (zoom-in / zoom-out / pan) — MUST VARY direction each segment
 - **Dark gradient overlay** at bottom 35% only — for caption readability
 - **Impact flash** on "impact" segments — subtle, no text
 - **Number stat badge** — small, positioned above captions (bottom 320px), NOT center screen
 - Background: Pexels stock videos via SegmentBackground component
 - **Segments: 14–18 per 50s video** (scene change every 2.5–3.5 seconds = cinematic pace)
+- **2-second rule**: every segment triggers a visual pattern interrupt (zoom/cut/pan) — no static holds
 - Max 6–8 words per caption segment
+- **CTA question MANDATORY**: Every Short must end with a direct viewer question in the last/second-to-last segment. Examples: "How many hours do you sleep? Comment below." / "Did you know this? Drop a 🤯" — this boosts Shorts feed visibility via comment engagement
+- **First segment hook rule**: seg_00 MUST use scene_query with maximum visual drama. If narration is abstract, still choose the most cinematic/shocking matching visual available.
 - **Every segment MUST have scene_query** — exact English description of what should be visible on screen at that narration moment (NOT a generic category — match the spoken words)
 - **No two consecutive segments may share the same backgroundVideo filename**
 - **scene_query must match narration**: if voiceover says "medieval Baghdad", scene_query = "ancient Middle Eastern market torchlight" — not "city" or "buildings"

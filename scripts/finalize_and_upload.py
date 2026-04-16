@@ -19,7 +19,7 @@ from utils.youtube_helper import (
 from scripts.generate_subtitles import generate_subtitles
 
 
-def merge_audio(video_id: str) -> Path | None:
+def merge_audio(video_id: str) -> Path:
     """Merge voice audio into rendered video using FFmpeg (CRF 18, high quality)."""
     out_dir = ROOT / "output" / video_id
     noaudio = out_dir / "video_noaudio.mp4"
@@ -57,7 +57,7 @@ def merge_audio(video_id: str) -> Path | None:
     return output
 
 
-def upload(video_id: str) -> str | None:
+def upload(video_id: str) -> str:
     """Full upload pipeline: merge → YouTube upload → thumbnail → subtitles → state."""
     out_dir  = ROOT / "output" / video_id
     meta_file = out_dir / "metadata.json"
@@ -93,14 +93,17 @@ def upload(video_id: str) -> str | None:
     if not yt_id:
         logger.error("Upload failed"); return None
 
-    # Thumbnail
-    thumb = out_dir / "thumbnail.jpg"
-    if thumb.exists():
-        ok = set_thumbnail(yt_id, thumb)
-        if not ok:
-            logger.warning("Thumbnail API blocked (expected for Shorts — set manually in Studio)")
+    # Thumbnail — Long videos only. Shorts: let YouTube auto-select from video frames.
+    if is_long:
+        thumb = out_dir / "thumbnail.jpg"
+        if thumb.exists():
+            ok = set_thumbnail(yt_id, thumb)
+            if not ok:
+                logger.warning("Thumbnail upload failed for %s", video_id)
+        else:
+            logger.warning("No thumbnail.jpg found for long video %s", video_id)
     else:
-        logger.warning("No thumbnail.jpg found")
+        logger.info("Short video — skipping thumbnail upload (YouTube will auto-select from frames)")
 
     # Subtitles — generate if not yet done (needs word_timestamps.json)
     srt_dir = out_dir / "subtitles"

@@ -1,0 +1,303 @@
+{
+  "_comment": "SFX configuration \u2014 maps topic keywords to SFX assets and placement rules",
+  "topic_detection": {
+    "ocean": {
+      "keywords": [
+        "ocean",
+        "sea",
+        "marine",
+        "deep",
+        "underwater",
+        "trench",
+        "aquatic",
+        "coral",
+        "shark",
+        "whale",
+        "tide",
+        "abyss",
+        "bioluminescent",
+        "mariana",
+        "submarine"
+      ],
+      "sfx_map": {
+        "transition": "water_transition",
+        "stat": "sonar_ping",
+        "impact": "pressure_boom",
+        "hook": "bubble_burst",
+        "reveal": "depth_tone"
+      },
+      "volumes": {
+        "transition": 0.22,
+        "stat": 0.3,
+        "impact": 0.28,
+        "hook": 0.25,
+        "reveal": 0.2
+      }
+    },
+    "space": {
+      "keywords": [
+        "space",
+        "mars",
+        "planet",
+        "galaxy",
+        "star",
+        "astronaut",
+        "nasa",
+        "rocket",
+        "orbit",
+        "moon",
+        "cosmic",
+        "universe",
+        "satellite",
+        "telescope",
+        "asteroid"
+      ],
+      "sfx_map": {
+        "transition": "space_whoosh",
+        "stat": "sci_fi_beep",
+        "impact": "space_thud",
+        "hook": "radio_static",
+        "reveal": "sci_fi_beep"
+      },
+      "volumes": {
+        "transition": 0.18,
+        "stat": 0.28,
+        "impact": 0.3,
+        "hook": 0.15,
+        "reveal": 0.25
+      }
+    },
+    "economy": {
+      "keywords": [
+        "million",
+        "billion",
+        "trillion",
+        "money",
+        "dollar",
+        "profit",
+        "economy",
+        "market",
+        "stock",
+        "price",
+        "wealth",
+        "income",
+        "salary",
+        "bank",
+        "fraud",
+        "scam",
+        "theft",
+        "steal",
+        "transfer",
+        "deepfake",
+        "corporate",
+        "monopoly",
+        "pharma"
+      ],
+      "sfx_map": {
+        "transition": "money_whoosh",
+        "stat": "coin_drop",
+        "impact": "market_crash",
+        "hook": "cash_register",
+        "reveal": "coin_drop"
+      },
+      "volumes": {
+        "transition": 0.2,
+        "stat": 0.35,
+        "impact": 0.28,
+        "hook": 0.3,
+        "reveal": 0.32
+      }
+    },
+    "tech": {
+      "keywords": [
+        "ai",
+        "algorithm",
+        "robot",
+        "software",
+        "computer",
+        "digital",
+        "internet",
+        "code",
+        "hack",
+        "cyber",
+        "data",
+        "tech",
+        "gpt",
+        "neural",
+        "machine",
+        "deepfake",
+        "app",
+        "smartphone",
+        "silicon",
+        "chip"
+      ],
+      "sfx_map": {
+        "transition": "tech_whoosh",
+        "stat": "keyboard_click",
+        "impact": "system_alert",
+        "hook": "digital_glitch",
+        "reveal": "keyboard_click"
+      },
+      "volumes": {
+        "transition": 0.18,
+        "stat": 0.28,
+        "impact": 0.25,
+        "hook": 0.22,
+        "reveal": 0.25
+      }
+    },
+    "history": {
+      "keywords": [
+        "ancient",
+        "century",
+        "empire",
+        "civilization",
+        "history",
+        "historical",
+        "medieval",
+        "dynasty",
+        "war",
+        "battle",
+        "pharaoh",
+        "roman",
+        "greek",
+        "mesopotamia",
+        "kingdom",
+        "century",
+        "bc",
+        "ad",
+        "era",
+        "age"
+      ],
+      "sfx_map": {
+        "transition": "parchment_rustle",
+        "stat": "typewriter_click",
+        "impact": "dramatic_sting",
+        "hook": "bell_toll",
+        "reveal": "dramatic_sting"
+      },
+      "volumes": {
+        "transition": 0.2,
+        "stat": 0.25,
+        "impact": 0.3,
+        "hook": 0.22,
+        "reveal": 0.28
+      }
+    },
+    "science": {
+      "keywords": ["sleep", "brain", "dream", "body", "human", "blood", "cell", "dna", "gene", "protein", "virus", "bacteria", "heart", "lung", "neuron", "hormone", "evolution", "species", "fossil", "atom", "molecule", "chemistry", "physics", "biology", "medicine", "health", "disease", "cancer", "alzheimer", "consciousness", "psychology", "cognitive"],
+      "sfx_map": {
+        "transition": "soft_whoosh",
+        "stat":       "reveal_sting",
+        "impact":     "hard_impact",
+        "hook":       "tension_build",
+        "reveal":     "reveal_sting"
+      },
+      "volumes": {
+        "transition": 0.16,
+        "stat":       0.22,
+        "impact":     0.28,
+        "hook":       0.22,
+        "reveal":     0.20
+      }
+    },
+    "universal": {
+      "keywords": [],
+      "sfx_map": {
+        "transition": "soft_whoosh",
+        "stat": "reveal_sting",
+        "impact": "hard_impact",
+        "hook": "tension_build",
+        "reveal": "reveal_sting"
+      },
+      "volumes": {
+        "transition": 0.18,
+        "stat": 0.22,
+        "impact": 0.25,
+        "hook": 0.2,
+        "reveal": 0.22
+      }
+    }
+  },
+  "placement_rules": {
+    "_comment": "Controls WHEN SFX fires \u2014 prevents over-saturation",
+    "max_sfx_per_40s": 5,
+    "min_gap_between_sfx_ms": 3000,
+    "hook_sfx_mandatory": true,
+    "hook_sfx_offset_ms": 0,
+    "stat_sfx_on_number_words": true,
+    "impact_sfx_on_impact_segments": true,
+    "transition_sfx_max_count": 3,
+    "transition_sfx_on_segments": [
+      1,
+      4,
+      8,
+      12
+    ],
+    "final_segment_sfx": "reveal_sting",
+    "final_segment_volume": 0.2
+  },
+  "3_tier_audio": {
+    "_comment": "3-tier audio layering: BGM + SFX + Ambient",
+    "tier1_bgm": {
+      "volume": 0.08,
+      "type": "ambient_documentary",
+      "path": "assets/ambient_documentary.mp3",
+      "fade_in_s": 1.0,
+      "fade_out_s": 2.0
+    },
+    "tier2_sfx": {
+      "volume_multiplier": 1.0,
+      "ducking_while_sfx": false
+    },
+    "tier3_ambient": {
+      "enabled": false,
+      "_note": "Future: topic-specific ambient bed (ocean waves, city noise, etc.)"
+    }
+  },
+  "vocal_humanization": {
+    "_comment": "TTS parameters for natural-sounding speech",
+    "speed_base": 1.08,
+    "pause_after_hook_ms": 400,
+    "pause_after_stat_ms": 300,
+    "pause_after_impact_ms": 500,
+    "pause_between_sentences_ms": 200,
+    "dramatic_pause_trigger_words": [
+      "but",
+      "however",
+      "yet",
+      "instead",
+      "actually",
+      "wait",
+      "only",
+      "just"
+    ],
+    "dramatic_pause_duration_ms": 350
+  },
+  "hook_optimization": {
+    "_comment": "First 1.5 seconds must be high-impact",
+    "max_hook_words": 12,
+    "hook_must_contain_shock_word": true,
+    "shock_words": [
+      "never",
+      "impossible",
+      "zero",
+      "only",
+      "less than",
+      "more than",
+      "billion",
+      "million",
+      "discovered",
+      "banned",
+      "secret",
+      "hidden",
+      "nobody",
+      "everybody"
+    ],
+    "hook_segment_type": "hook",
+    "hook_visual_rule": "zoom-in",
+    "hook_sfx_mandatory": true
+  },
+  "real_assets_dir": "audio_engineering/assets/sfx_real",
+  "prefer_real_assets": true
+}

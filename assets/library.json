@@ -433,5 +433,29 @@
     "scene_lab_science — laboratory, DNA, research, CRISPR",
     "scene_stock_market — finance, economy, crash, trading",
     "scene_nature — environment, climate, earth"
-  ]
+  ],
+
+  "sfx": {
+    "_location": "audio_engineering/assets/sfx/",
+    "_regenerate": "python3 audio_engineering/generate_sfx.py",
+    "_config": "audio_engineering/sfx_config.json",
+    "_total_assets": 25,
+    "ocean":     ["sonar_ping", "bubble_burst", "pressure_boom", "water_transition", "depth_tone"],
+    "space":     ["sci_fi_beep", "space_whoosh", "space_thud", "radio_static"],
+    "economy":   ["coin_drop", "cash_register", "market_crash", "money_whoosh"],
+    "tech":      ["digital_glitch", "keyboard_click", "system_alert", "tech_whoosh"],
+    "history":   ["bell_toll", "typewriter_click", "dramatic_sting", "parchment_rustle"],
+    "universal": ["soft_whoosh", "hard_impact", "reveal_sting", "tension_build"]
+  },
+
+  "music": {
+    "ambient_documentary": {
+      "file": "assets/ambient_documentary.mp3",
+      "source": "Kevin MacLeod — Perspectives",
+      "license": "CC BY 4.0",
+      "attribution": "Music by Kevin MacLeod (incompetech.com) — Licensed under CC BY 4.0",
+      "usage": "BGM at 8% volume for all documentary long videos",
+      "volume": 0.08
+    }
+  }
 }

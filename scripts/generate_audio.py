@@ -100,68 +100,171 @@ def get_word_timestamps(audio_path: Path) -> list:
     return words
 
 
-# ── Sound Effects (procedural — no external files needed) ────────────────────
+# ── Context-Aware SFX Engine ─────────────────────────────────────────────────
 
-def _make_whoosh(sr: int = 44100, duration: float = 0.35, volume: float = 0.18) -> np.ndarray:
-    """Frequency sweep 150Hz→1200Hz — scene transition whoosh."""
-    t = np.linspace(0, duration, int(sr * duration))
-    freq = np.linspace(150, 1200, len(t))
-    phase = np.cumsum(2 * np.pi * freq / sr)
-    wave = np.sin(phase)
-    # Envelope: fade in fast, fade out slow
-    env = np.ones(len(t))
-    fade_in  = int(0.05 * sr)
-    fade_out = int(0.20 * sr)
-    env[:fade_in]  = np.linspace(0, 1, fade_in)
-    env[-fade_out:] = np.linspace(1, 0, fade_out)
-    return (wave * env * volume).astype(np.float32)
+SFX_CONFIG_PATH = BASE / "audio_engineering" / "sfx_config.json"
+SFX_ASSETS_DIR  = BASE / "audio_engineering" / "assets" / "sfx"
+_sfx_config = None
+_sfx_cache: dict = {}  # topic/name → np.ndarray
 
 
-def _make_tick(sr: int = 44100, volume: float = 0.22) -> np.ndarray:
-    """Short click/tick — used on number reveals."""
-    duration = 0.06
-    t = np.linspace(0, duration, int(sr * duration))
-    wave = np.sin(2 * np.pi * 1800 * t) * np.exp(-t * 60)
-    return (wave * volume).astype(np.float32)
+def _load_sfx_config() -> dict:
+    global _sfx_config
+    if _sfx_config is None and SFX_CONFIG_PATH.exists():
+        with open(SFX_CONFIG_PATH) as f:
+            _sfx_config = json.load(f)
+    return _sfx_config or {}
 
 
-def _make_heartbeat(sr: int = 44100, volume: float = 0.15) -> np.ndarray:
-    """Double thump — used at peak/impact moment."""
-    def thump(freq=60, dur=0.12):
-        t = np.linspace(0, dur, int(sr * dur))
-        wave = np.sin(2 * np.pi * freq * t) * np.exp(-t * 25)
-        return wave
-    beat1 = thump(60)
-    gap   = np.zeros(int(sr * 0.10))
-    beat2 = thump(55, 0.10)
-    silence = np.zeros(int(sr * 0.05))
-    full = np.concatenate([silence, beat1, gap, beat2, silence])
-    return (full * volume).astype(np.float32)
+def _detect_topic(script_data: dict) -> str:
+    """Detect video topic from title + script text → return topic key."""
+    cfg = _load_sfx_config()
+    title = (script_data.get("title", "") + " " + script_data.get("tts_script", "")).lower()
+    best_topic = "universal"
+    best_count = 0
+    for topic, info in cfg.get("topic_detection", {}).items():
+        if topic == "universal":
+            continue
+        count = sum(1 for kw in info.get("keywords", []) if kw in title)
+        if count > best_count:
+            best_count = count
+            best_topic = topic
+    logger.info("SFX topic detected: %s (score=%d)", best_topic, best_count)
+    return best_topic
 
 
-def _mix_sfx_into_audio(audio_path: Path, props_path: Path, sr_target: int = 44100) -> None:
+def _load_sfx_wav(topic: str, sfx_name: str, sr_target: int = 44100) -> np.ndarray:
     """
-    Read remotion_props.json segments, inject SFX at segment boundaries:
-    - whoosh at every scene change (segment start, except first)
-    - tick at "number" type segments
-    - heartbeat at "impact" type segments
-    Mixes SFX into the existing audio.mp3 in-place (saves backup as audio_clean.mp3).
+    Load an SFX asset. Priority order:
+      1. Real asset (mp3) from audio_engineering/assets/sfx_real/{topic}/{name}.mp3
+      2. Procedural asset (wav) from audio_engineering/assets/sfx/{topic}/{name}.wav
+      3. Universal fallback
+    """
+    cache_key = f"{topic}/{sfx_name}"
+    if cache_key in _sfx_cache:
+        return _sfx_cache[cache_key]
+
+    SFX_REAL_DIR = BASE / "audio_engineering" / "assets" / "sfx_real"
+
+    # 1. Real downloaded asset (mp3)
+    real_mp3  = SFX_REAL_DIR / topic / f"{sfx_name}.mp3"
+    real_wav  = SFX_REAL_DIR / topic / f"{sfx_name}.wav"
+    proc_wav  = SFX_ASSETS_DIR / topic / f"{sfx_name}.wav"
+    fallback  = SFX_ASSETS_DIR / "universal" / f"{sfx_name}.wav"
+
+    path = None
+    for candidate in [real_mp3, real_wav, proc_wav, fallback]:
+        if candidate.exists():
+            path = candidate
+            break
+
+    if path is None:
+        logger.warning("SFX not found: %s/%s — regenerating...", topic, sfx_name)
+        _ensure_sfx_generated(topic)
+        path = proc_wav if proc_wav.exists() else None
+
+    if path is None:
+        logger.warning("SFX still missing after regen: %s — using silence", sfx_name)
+        _sfx_cache[cache_key] = np.zeros(int(sr_target * 0.1), dtype=np.float32)
+        return _sfx_cache[cache_key]
+
+    wav_path = path
+    fallback  = SFX_ASSETS_DIR / "universal" / f"{sfx_name}.wav"
+    if path is None:
+        logger.warning("SFX not found: %s/%s — regenerating...", topic, sfx_name)
+        _ensure_sfx_generated(topic)
+        path = wav_path if wav_path.exists() else None
+
+    if path is None:
+        logger.warning("SFX still missing after regen: %s — using silence", sfx_name)
+        _sfx_cache[cache_key] = np.zeros(int(sr_target * 0.1), dtype=np.float32)
+        return _sfx_cache[cache_key]
+
+    data, sr = sf.read(str(path))
+    data = data.astype(np.float32)
+    if data.ndim > 1:
+        data = data.mean(axis=1)  # stereo → mono
+
+    # Resample if needed (simple linear interpolation)
+    if sr != sr_target:
+        new_len = int(len(data) * sr_target / sr)
+        data = np.interp(
+            np.linspace(0, len(data) - 1, new_len),
+            np.arange(len(data)), data
+        ).astype(np.float32)
+
+    _sfx_cache[cache_key] = data
+    return data
+
+
+def _ensure_sfx_generated(topic: str = None):
+    """Run generate_sfx.py if assets don't exist."""
+    import subprocess as _sp
+    gen_script = BASE / "audio_engineering" / "generate_sfx.py"
+    if not gen_script.exists():
+        return
+    cmd = ["python3", str(gen_script)]
+    if topic:
+        cmd += ["--topic", topic]
+    _sp.run(cmd, capture_output=True)
+
+
+def _mix_sfx_into_audio(audio_path: Path, props_path: Path, script_path: Path = None,
+                         sr_target: int = 44100) -> None:
+    """
+    Context-aware SFX mixer — 3-tier audio design:
+      Tier 1: BGM (ambient music, already mixed by caller)
+      Tier 2: Precision SFX (topic-matched, max 5 events per 40s, min 3s gap)
+      Tier 3: Ambient bed (future enhancement)
+
+    Placement logic:
+      - Hook segment (i=0): mandatory SFX for high-impact opening
+      - Stat/number segments: coin/ping/beep matching topic
+      - Impact segments: heavy impact matching topic
+      - Scene transitions: max 3 transition SFX spread across video
+      - Final segment: closing sting
+      - NEVER fire 2 SFX within 3 seconds of each other
     """
     if not props_path.exists():
-        return  # no props yet — skip
+        return
 
     props = json.loads(props_path.read_text())
     segments = props.get("segments", [])
     fps = props.get("fps", 60)
-
     if not segments:
         return
 
+    # Load script for topic detection
+    script_data = {}
+    if script_path and script_path.exists():
+        with open(script_path) as f:
+            script_data = json.load(f)
+    elif (audio_path.parent / "script.json").exists():
+        with open(audio_path.parent / "script.json") as f:
+            script_data = json.load(f)
+
+    # Detect topic and get SFX map
+    cfg = _load_sfx_config()
+    topic = _detect_topic(script_data)
+    topic_cfg = cfg.get("topic_detection", {}).get(topic, cfg["topic_detection"]["universal"])
+    sfx_map = topic_cfg["sfx_map"]
+    volumes  = topic_cfg["volumes"]
+    rules    = cfg.get("placement_rules", {})
+
+    min_gap_samples = int(rules.get("min_gap_between_sfx_ms", 3000) / 1000 * sr_target)
+    max_sfx = rules.get("max_sfx_per_40s", 5)
+
+    # Pre-generate SFX assets if missing
+    test_path = SFX_ASSETS_DIR / topic / f"{sfx_map['transition']}.wav"
+    if not test_path.exists():
+        logger.info("Generating SFX assets for topic '%s'...", topic)
+        _ensure_sfx_generated(topic)
+        _ensure_sfx_generated("universal")
+
     # Load main audio
-    import subprocess, tempfile, os
-    # Convert mp3 → wav for numpy processing
+    import subprocess as _sp
     tmp_wav = audio_path.with_suffix(".sfx_work.wav")
-    subprocess.run([
+    _sp.run([
         "ffmpeg", "-y", "-i", str(audio_path),
         "-ar", str(sr_target), "-ac", "1", str(tmp_wav)
     ], capture_output=True)
@@ -174,54 +277,90 @@ def _mix_sfx_into_audio(audio_path: Path, props_path: Path, sr_target: int = 441
     total_samples = len(audio_data)
 
     def frame_to_sample(frame: int) -> int:
-        sec = frame / fps
-        return min(int(sec * sr), total_samples - 1)
+        return min(int(frame / fps * sr), total_samples - 1)
 
-    whoosh = _make_whoosh(sr)
-    tick   = _make_tick(sr)
-    hb     = _make_heartbeat(sr)
-
-    def _mix_at(sfx: np.ndarray, pos: int):
+    def mix_at(sfx: np.ndarray, pos: int, volume: float = 1.0):
         end = min(pos + len(sfx), total_samples)
         length = end - pos
-        audio_data[pos:end] += sfx[:length]
+        audio_data[pos:end] += sfx[:length] * volume
+
+    # ── Build SFX event list ─────────────────────────────────────────────────
+    events = []  # (sample_pos, sfx_name, volume, reason)
+    total_segs = len(segments)
+    transition_count = 0
+    max_transitions = min(3, total_segs // 4)
+
+    # Identify key segments
+    allowed_transitions = set()
+    if total_segs > 1:
+        # Spread transitions: ~25%, ~50%, ~75%
+        for frac in [0.25, 0.50, 0.75]:
+            idx = max(1, int(total_segs * frac))
+            allowed_transitions.add(idx)
 
     for i, seg in enumerate(segments):
+        seg_type = seg.get("type", "fact")
         start_frame = seg.get("startFrame", 0)
-        seg_type    = seg.get("type", "fact")
         pos = frame_to_sample(start_frame)
 
-        if i > 0:
-            # Whoosh on every scene transition (not on the very first segment)
-            _mix_at(whoosh, max(0, pos - int(0.05 * sr)))
+        if i == 0:
+            # Hook: mandatory high-impact SFX
+            sfx_name = sfx_map.get("hook", sfx_map["transition"])
+            events.append((pos, topic, sfx_name, volumes.get("hook", 0.25), "hook"))
 
-        if seg_type == "number":
-            _mix_at(tick, pos + int(0.05 * sr))
+        elif seg_type in ("impact",) :
+            sfx_name = sfx_map.get("impact", sfx_map["transition"])
+            events.append((pos, topic, sfx_name, volumes.get("impact", 0.28), "impact"))
 
-        if seg_type == "impact":
-            _mix_at(hb, pos)
+        elif seg_type in ("stat", "number"):
+            sfx_name = sfx_map.get("stat", sfx_map["transition"])
+            events.append((pos, topic, sfx_name, volumes.get("stat", 0.28), "stat"))
 
-    # Normalize to prevent clipping
+        elif i in allowed_transitions and transition_count < max_transitions:
+            sfx_name = sfx_map.get("transition")
+            events.append((pos, topic, sfx_name, volumes.get("transition", 0.20), "transition"))
+            transition_count += 1
+
+        # Final segment: closing sting (universal)
+        if i == total_segs - 1:
+            sfx_name = rules.get("final_segment_sfx", "reveal_sting")
+            vol = rules.get("final_segment_volume", 0.20)
+            events.append((pos, "universal", sfx_name, vol, "final"))
+
+    # ── Apply minimum gap filter ──────────────────────────────────────────────
+    events.sort(key=lambda e: e[0])
+    last_pos = -min_gap_samples
+    applied = []
+    sfx_log = {}
+    for (pos, ev_topic, sfx_name, vol, reason) in events:
+        if pos - last_pos < min_gap_samples and reason not in ("hook", "final"):
+            continue  # too close — skip
+        if len(applied) >= max_sfx and reason not in ("hook", "final"):
+            continue  # cap reached
+        sfx_data = _load_sfx_wav(ev_topic, sfx_name, sr)
+        mix_at(sfx_data, pos, volume=vol)
+        last_pos = pos
+        applied.append((pos, sfx_name, reason))
+        sfx_log[reason] = sfx_log.get(reason, 0) + 1
+
+    # ── Normalize to prevent clipping ────────────────────────────────────────
     peak = np.max(np.abs(audio_data))
     if peak > 0.95:
-        audio_data = audio_data * (0.92 / peak)
+        audio_data = (audio_data * 0.92 / peak).astype(np.float32)
 
-    # Save backup of clean audio, then write mixed version
+    # Save backup then overwrite
     clean_backup = audio_path.parent / "audio_clean.mp3"
     if not clean_backup.exists():
-        import shutil as _shutil
-        _shutil.copy(audio_path, clean_backup)
+        import shutil as _sh
+        _sh.copy(audio_path, clean_backup)
 
     sf.write(str(tmp_wav), audio_data, sr)
-    subprocess.run([
-        "ffmpeg", "-y", "-i", str(tmp_wav),
-        "-b:a", "192k", str(audio_path)
-    ], capture_output=True)
+    _sp.run(["ffmpeg", "-y", "-i", str(tmp_wav),
+             "-b:a", "192k", str(audio_path)], capture_output=True)
     tmp_wav.unlink(missing_ok=True)
-    logger.info("SFX mixed: whoosh×%d + tick×%d + hb×%d",
-                len(segments[1:]),
-                len([s for s in segments if s.get('type') == 'number']),
-                len([s for s in segments if s.get('type') == 'impact']))
+
+    log_str = " | ".join(f"{k}×{v}" for k, v in sfx_log.items())
+    logger.info("SFX [%s] applied %d events: %s", topic, len(applied), log_str)
 
 
 def mix_background_music(video_id: str, volume: float = 0.10) -> None:
@@ -318,17 +457,24 @@ def mix_background_music(video_id: str, volume: float = 0.10) -> None:
     logger.info("Background music mixed at %d%% — audio.mp3 updated", int(volume * 100))
 
 
-def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED, sfx: bool = True, music: bool = False) -> dict:
+def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED,
+                  sfx: bool = True, music: bool = False, humanize: bool = True) -> dict:
     """
-    Full pipeline: text → Kokoro audio → whisper timestamps.
+    Full pipeline: text → Kokoro TTS → vocal humanization → timestamps → SFX mix.
     Returns {"audio_path": Path, "words": [...], "duration_seconds": float}
+
+    Steps:
+      1. Kokoro TTS → raw audio.mp3
+      2. Vocal humanizer: EQ warmth + compression + room presence + per-segment speed
+      3. Whisper word timestamps
+      4. SFX mix (context-aware, topic-matched)
     """
     output_dir = BASE / "output" / video_id
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Get text from script.json if not provided
+    script_path = output_dir / "script.json"
     if text is None:
-        script_path = output_dir / "script.json"
         if not script_path.exists():
             logger.error("%s not found", script_path)
             sys.exit(1)
@@ -338,21 +484,39 @@ def produce_audio(video_id: str, text: str = None, speed: float = KOKORO_SPEED, 
 
     audio_path = output_dir / "audio.mp3"
 
-    logger.info("[1/3] Kokoro TTS (%s) for %s...", KOKORO_VOICE, video_id)
+    logger.info("[1/4] Kokoro TTS (%s) for %s...", KOKORO_VOICE, video_id)
     duration = generate_tts(text, audio_path, voice=KOKORO_VOICE, speed=speed)
 
-    logger.info("[2/3] Word timestamps (Whisper base)...")
+    # ── Step 2: Vocal Humanization ───────────────────────────────────────────
+    if humanize:
+        logger.info("[2/4] Vocal humanization (EQ + compression + warmth)...")
+        try:
+            import sys as _sys
+            _sys.path.insert(0, str(BASE))
+            from audio_engineering.vocal_humanizer import humanize as _humanize
+            _humanize(
+                audio_path,
+                script_path=script_path if script_path.exists() else None,
+                apply_speed_variation=True,
+                apply_eq_chain=True,
+            )
+        except Exception as e:
+            logger.warning("Vocal humanizer failed (%s) — using raw TTS", e)
+    else:
+        logger.info("[2/4] Vocal humanization skipped")
+
+    logger.info("[3/4] Word timestamps (Whisper base)...")
     words = get_word_timestamps(audio_path)
 
     ts_path = output_dir / "word_timestamps.json"
     with open(ts_path, "w") as f:
         json.dump(words, f, indent=2)
 
-    # Mix SFX into audio (whoosh on scene changes, tick on numbers, heartbeat on impact)
+    # Mix SFX into audio (context-aware topic-matched SFX)
     if sfx:
         props_path = output_dir / "remotion_props.json"
         if props_path.exists():
-            logger.info("Mixing SFX...")
+            logger.info("[4/4] Mixing SFX...")
             _mix_sfx_into_audio(audio_path, props_path)
         else:
             logger.info("[SFX] No remotion_props.json yet — SFX will be applied after props are built")
