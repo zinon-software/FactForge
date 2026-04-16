@@ -86,16 +86,14 @@ At the START of every session (or when user says "resume", "status", or opens a 
        │            Remotion render → ffmpeg merge
        │            🚦 Gate: بصري ≥ 14/16 ← يعيد إذا فشل
        ▼
-  ⑥ THUMBNAIL ── Pollinations Flux AI + Pillow overlay (1280×720 JPEG)
-       ▼
-  ⑦ METADATA ── عنوان×5 + وصف + tags
+  ⑥ METADATA ── عنوان×5 + وصف + tags
        │             🚦 Gate: SEO ≥ 18/22 ← يعيد إذا فشل
        ▼
-  ⑧ UPLOAD ── python3 scripts/finalize_and_upload.py [id]
+  ⑦ UPLOAD ── python3 scripts/finalize_and_upload.py [id]
        │            (يولّد SRT 7 لغات تلقائياً قبل الرفع)
        │            publish_at: تلقائي via get_next_publish_date()
        ▼
-  ⑨ CLEAN ── حذف video.mp4 + audio.mp3 + bg_videos/ تلقائياً
+  ⑧ CLEAN ── حذف video.mp4 + audio.mp3 + bg_videos/ تلقائياً
        │
        ▼
   ✅ DONE — مجدول على يوتيوب
@@ -116,7 +114,7 @@ At the START of every session (or when user says "resume", "status", or opens a 
 
 Translate pending_tasks to Arabic:
 - subtitles_7_languages → "ترجمات نصية (7 لغات)"
-- thumbnail → "صورة مصغرة"
+
 - upload → "رفع على يوتيوب"
 - subtitles_uploaded → "✅ ترجمات مرفوعة"
 
@@ -134,7 +132,7 @@ Always suggest the next idea at the bottom — never wait to be asked.
 3. **Work one idea at a time** — never batch produce without explicit user command
 4. **NO PRE-MADE LISTS** — there is no queue to read. Ideas are generated fresh each time.
 5. **AUTONOMOUS OPERATION** — do NOT ask for permission at each step. When user approves a topic, execute the full pipeline end-to-end without stopping. Only stop if a quality gate fails or a hard error occurs.
-6. **Save state after every major step** — script, audio, thumbnail, video, publish
+6. **Save state after every major step** — script, audio, video, publish
 7. **Verify facts before writing any script** — minimum 2 official sources
 8. **If interrupted, resume from last saved checkpoint** — never start over
 9. **Auto-choose publish date** — use utils/youtube_helper.get_next_publish_date() — never ask user for dates
@@ -281,16 +279,13 @@ When user says "produce next video" (Short):
    - MANDATORY: segment frames must be aligned to word timestamps × 60fps (ms × 60 / 1000)
    - Shorts duration: 35–60 seconds (target 45–58s sweet spot)
 10. Visual gate: score ≥ 14/16 (visual_design.md) — revise if fails
-11. Thumbnail: **SKIP for Shorts** — YouTube auto-selects from video frames (no thumbnail generation needed)
-    - Do NOT generate, do NOT upload thumbnail for any Short video
-    - YouTube will auto-pick the best frame — this is intentional
-12. Metadata: title × 5 variants + description + tags → output/[id]/metadata.json
-13. SEO gate: score metadata ≥ 18/22 (youtube_seo.md) — revise if fails
-14. Publish: `python3 scripts/finalize_and_upload.py [id]` — handles upload + thumbnail + state in one step
+11. Metadata: title × 5 variants + description + tags → output/[id]/metadata.json
+12. SEO gate: score metadata ≥ 18/22 (youtube_seo.md) — revise if fails
+13. Publish: `python3 scripts/finalize_and_upload.py [id]` — handles upload + state in one step
     - publish date: auto-calculated via utils/youtube_helper.get_next_publish_date() — never ask user
-    - Thumbnail upload via API (works for Long videos, may be blocked for Shorts)
-15. Auto-clean: delete video.mp4, audio.mp3, bg_videos/, public/[id]/ after successful upload
-16. Subtitles: generate SRT for 7 languages (EN/AR/ES/FR/HI/PT/TR) → upload via captions().insert()
+    - **NO thumbnail** — YouTube auto-selects from video frames for ALL video types
+14. Auto-clean: delete video.mp4, audio.mp3, bg_videos/, public/[id]/ after successful upload
+15. Subtitles: generate SRT for 7 languages (EN/AR/ES/FR/HI/PT/TR) → upload via captions().insert()
 
 ### Long Videos (Documentary Format)
 
@@ -321,11 +316,10 @@ When user says "produce next long video" or idea starts with L:
     - CRF 18 + preset slow + maxrate 20M → NO PIXELATION
     - Output: output/[id]/video.mp4 (1920×1080, ~200–400 MB)
 11. Visual gate: score ≥ 14/16 — revise if fails
-12. Thumbnail: Pollinations Flux 1280×720 + Pillow overlay → output/[id]/thumbnail.jpg
-13. Metadata: title × 5 + description + tags → output/[id]/metadata.json
-14. SEO gate: score ≥ 18/22 — revise if fails
-15. Publish: YouTube API upload scheduled private → save youtube_id
-    - Long videos: upload thumbnail via thumbnails().set() ✅ works
+12. Metadata: title × 5 + description + tags → output/[id]/metadata.json
+13. SEO gate: score ≥ 18/22 — revise if fails
+14. Publish: YouTube API upload scheduled private → save youtube_id
+    - **NO thumbnail** — YouTube auto-selects for ALL video types
     - Schedule: 7 days after previous long video, at 14:00 UTC (5 PM Riyadh)
 
 ---
@@ -465,16 +459,6 @@ In Script Writing (additional humanization):
 - Trigger words in script that suggest stickman: "imagine", "picture this", "a person", "when someone", "step by step"
 - Never use stickman for: historical documentary footage, real-world statistics, breaking news topics
 
-### Thumbnail Design (MrBeast/Veritasium standard):
-- Bright vivid AI-generated background (Pollinations Flux)
-- Dark overlay on bottom 50% for text readability
-- Top accent bar (14px) + bottom accent bar
-- Category pill badge at top center
-- ONE giant shocking stat as hero (huge, glowing)
-- Max 2 lines of text (all-caps, outline stroke width=7)
-- FACTFORGE watermark bottom center
-- Save as JPEG quality=95 (NEVER PNG — causes black display on YouTube)
-
 ### Word Timestamps (MANDATORY for every video):
 - Use faster-whisper "base" model with word_timestamps=True
 - Store in remotion_props.json under "wordTimestamps" array
@@ -507,13 +491,13 @@ In Script Writing (additional humanization):
 | `auto upload` | ارفع تلقائياً حسب الحصة اليومية — `python3 scripts/auto_upload.py` |
 | `status` | اعرض لوحة التحكم |
 | `resume` | نفس status — اعرض اللوحة واستمر |
-| `clean [id]` | احذف ملفات المقطع المرفوع من الكمبيوتر — احتفظ فقط بـ metadata.json و script.json و thumbnail.png |
+| `clean [id]` | احذف ملفات المقطع المرفوع من الكمبيوتر — احتفظ فقط بـ metadata.json و script.json |
 | `clean all` | نظّف كل المقاطع المرفوعة دفعة واحدة |
 
 ### قواعد الـ clean (لا تُخالَف):
 - احذف فقط إذا كان `status = uploaded` في pending_uploads.json أو youtube_id موجود في progress.json
 - الملفات التي تُحذف: video*.mp4، audio*.mp3، video_noaudio*.mp4، bg_videos/، dubbed/، images/، subtitles/
-- الملفات التي تُبقى دائماً: metadata.json، script.json، research.json، sources.json، thumbnail.png، remotion_props.json
+- الملفات التي تُبقى دائماً: metadata.json، script.json، research.json، sources.json، remotion_props.json
 - اعرض قائمة ما سيُحذف وحجمه قبل الحذف، واطلب تأكيداً
 
 Any variation of these works: "produce next", "show me the queue", "what's next" etc.

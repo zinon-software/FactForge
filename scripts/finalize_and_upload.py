@@ -13,7 +13,7 @@ ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
 
 from utils.youtube_helper import (
-    upload_video, set_thumbnail, upload_caption,
+    upload_video, upload_caption,
     get_next_publish_date, update_state_after_upload
 )
 from scripts.generate_subtitles import generate_subtitles
@@ -58,7 +58,7 @@ def merge_audio(video_id: str) -> Path:
 
 
 def upload(video_id: str) -> str:
-    """Full upload pipeline: merge → YouTube upload → thumbnail → subtitles → state."""
+    """Full upload pipeline: merge → YouTube upload → subtitles → state."""
     out_dir  = ROOT / "output" / video_id
     meta_file = out_dir / "metadata.json"
     is_long  = video_id.startswith("L")
@@ -92,18 +92,6 @@ def upload(video_id: str) -> str:
     )
     if not yt_id:
         logger.error("Upload failed"); return None
-
-    # Thumbnail — Long videos only. Shorts: let YouTube auto-select from video frames.
-    if is_long:
-        thumb = out_dir / "thumbnail.jpg"
-        if thumb.exists():
-            ok = set_thumbnail(yt_id, thumb)
-            if not ok:
-                logger.warning("Thumbnail upload failed for %s", video_id)
-        else:
-            logger.warning("No thumbnail.jpg found for long video %s", video_id)
-    else:
-        logger.info("Short video — skipping thumbnail upload (YouTube will auto-select from frames)")
 
     # Subtitles — generate if not yet done (needs word_timestamps.json)
     srt_dir = out_dir / "subtitles"
