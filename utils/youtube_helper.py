@@ -40,7 +40,7 @@ TOKEN_PATH = BASE_DIR / "config" / "youtube_token.json"
 STATE_DIR  = BASE_DIR / "state"
 
 # ─── Schedule constants ───────────────────────────────────────────────────────
-SCOPES             = ["https://www.googleapis.com/auth/youtube"]
+SCOPES             = ["https://www.googleapis.com/auth/youtube", "https://www.googleapis.com/auth/youtube.force-ssl"]
 SHORT_EVERY_N_DAYS = 2
 LONG_EVERY_N_DAYS  = 7
 PUBLISH_TIME       = "14:00:00Z"   # 14:00 UTC = 17:00 Riyadh
